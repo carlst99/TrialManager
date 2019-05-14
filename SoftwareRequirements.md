@@ -3,4 +3,7 @@ Software I Require:
 	- Roslynator
 	- Github for VS
 	- Middle Click Scroll
+- .NET Framework 4.7.2
+- MvvmCross Templates
+- .NET Core 2.2
 - Mockplus
