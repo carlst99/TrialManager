@@ -54,8 +54,8 @@
      inkscape:groupmode="layer"
      id="layer1">
     <image
-       sodipodi:absref="C:\Users\5cstephe\source\repos\TrialManager\Branding\Assets\GreaterSwissMountainDog.jpeg"
-       xlink:href="C:\Users\5cstephe\source\repos\TrialManager\Branding\Assets\GreaterSwissMountainDog.jpeg"
+       sodipodi:absref="..\..\Assets\GreaterSwissMountainDog.jpeg"
+       xlink:href="..\..\Assets\GreaterSwissMountainDog.jpeg"
        width="1676.4"
        height="1117.6"
        preserveAspectRatio="none"
