@@ -14,6 +14,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="MvvmCrossExtensions.Core">
+      <HintPath>..\packages\MvvmCrossExtensions\MvvmCrossExtensions.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Resources\AppStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

@@ -1,16 +1,64 @@
 ﻿<views:MvxWpfView x:Class="UIConcepts.Wpf.Views.HomeView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:UIConcepts.Wpf.Views"
-             xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
-             xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                  xmlns:local="clr-namespace:UIConcepts.Wpf.Views"
+                  xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+                  xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
+                  xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                  mc:Ignorable="d" 
+                  d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="Welcome to MvvmCross WPF!"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <md:DrawerHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                       BorderThickness="2" BorderBrush="{DynamicResource MaterialDesignDivider}"
+                       mvx:Bi.nd="IsLeftDrawerOpen DrawerStatus, Mode=OneWay"
+                       Grid.Row="1">
+            <md:DrawerHost.LeftDrawerContent>
+                <StackPanel MinWidth="150">
+                    <md:ColorZone Mode="Standard"
+                                  Padding="12">
+                        <ToggleButton Style="{DynamicResource MaterialDesignHamburgerToggleButton}"
+                                      mvx:Bi.nd="IsChecked DrawerStatus"/>
+                    </md:ColorZone>
+                    <ListView mvx:Bi.nd="ItemsSource AvailableNavigationPages, Mode=OneWay; SelectionChanged OnNavigateRequestedCommand"
+                              HorizontalContentAlignment="Center"/>
+                    <!--<StackPanel>
+                        <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}"
+                                     Margin="0,4"
+                                     IsChecked="True"
+                                     Content="Data Input / Editing"/>
+                        <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}"
+                                     Margin="0,4"
+                                     IsChecked="False"
+                                     Content="SECOND"/>
+                        <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}"
+                                     Margin="0,4"
+                                     IsChecked="False"
+                                     Content="THIRD" />
+                    </StackPanel>-->
+                </StackPanel>
+            </md:DrawerHost.LeftDrawerContent>
+
+            <StackPanel Orientation="Vertical">
+                <md:ColorZone Mode="PrimaryDark"
+                              Padding="12">
+                    <StackPanel Orientation="Horizontal">
+                        <ToggleButton Style="{DynamicResource MaterialDesignHamburgerToggleButton}"
+                                      mvx:Bi.nd="IsChecked DrawerStatus"/>
+                        <TextBlock VerticalAlignment="Center"
+                           Margin="16 0 0 0"
+                           Text="Import and edit data"/>
+                    </StackPanel>
+                </md:ColorZone>
+                <Frame mvx:Bi.nd="Content DetailView, Mode=OneWay"/>
+            </StackPanel>
+        </md:DrawerHost>
     </Grid>
 </views:MvxWpfView>
