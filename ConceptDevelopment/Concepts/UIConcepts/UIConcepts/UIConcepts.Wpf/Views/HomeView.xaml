@@ -27,8 +27,15 @@
                         <ToggleButton Style="{DynamicResource MaterialDesignHamburgerToggleButton}"
                                       mvx:Bi.nd="IsChecked DrawerStatus"/>
                     </md:ColorZone>
-                    <ListView mvx:Bi.nd="ItemsSource AvailableNavigationPages, Mode=OneWay; SelectionChanged OnNavigateRequestedCommand"
-                              HorizontalContentAlignment="Center"/>
+                    <ListView mvx:Bi.nd="ItemsSource AvailableNavigationPages, Mode=OneWay"
+                              x:Name="LstVwNavigation"
+                              HorizontalContentAlignment="Center">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction mvx:Bi.nd="Command OnNavigateRequestedCommand" CommandParameter="{Binding ElementName=LstVwNavigation, Path=SelectedItem}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ListView>
                     <!--<StackPanel>
                         <RadioButton Style="{StaticResource MaterialDesignTabRadioButton}"
                                      Margin="0,4"
@@ -47,15 +54,18 @@
             </md:DrawerHost.LeftDrawerContent>
 
             <StackPanel Orientation="Vertical">
-                <md:ColorZone Mode="PrimaryDark"
-                              Padding="12">
-                    <StackPanel Orientation="Horizontal">
+                <md:ColorZone Mode="PrimaryMid"
+                              Padding="16">
+                    <Grid>
                         <ToggleButton Style="{DynamicResource MaterialDesignHamburgerToggleButton}"
-                                      mvx:Bi.nd="IsChecked DrawerStatus"/>
+                                      mvx:Bi.nd="IsChecked DrawerStatus"
+                                      HorizontalAlignment="Left"/>
                         <TextBlock VerticalAlignment="Center"
-                           Margin="16 0 0 0"
-                           Text="Import and edit data"/>
-                    </StackPanel>
+                                   HorizontalAlignment="Center"
+                                   Style="{DynamicResource MaterialDesignTitleTextBlock}"
+                                   Margin="16 0 0 0"
+                                   Text="Import and edit data"/>
+                    </Grid>
                 </md:ColorZone>
                 <Frame mvx:Bi.nd="Content DetailView, Mode=OneWay"/>
             </StackPanel>
