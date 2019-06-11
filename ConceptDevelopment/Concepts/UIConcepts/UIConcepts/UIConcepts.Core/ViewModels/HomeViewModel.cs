@@ -3,37 +3,32 @@ using MvvmCross.Navigation;
 using MvvmCrossExtensions.Wpf.Presenters.MasterDetail;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UIConcepts.Core.ViewModels.Base;
 
 namespace UIConcepts.Core.ViewModels
 {
-    public class HomeViewModel : Base.ViewModelBase, IMasterPresentationViewModel
+    public class HomeViewModel : ViewModelBase, IMasterPresentationViewModel
     {
-        public HomeViewModel(IMvxNavigationService navigationService)
-            : base(navigationService)
-        {
-        }
-
         #region Fields
 
         private bool _drawerStatus;
         private object _detailView;
 
-        private readonly Dictionary<string, Type> _keyViewModelValuePairs = new Dictionary<string, Type>()
-        {
-            { "View/Edit Data", typeof(DataDisplayViewModel) }
-        };
+        public Dictionary<string, Type> NavigatableViewModels { get; }
 
         #endregion
 
         #region Commands
 
-        public IMvxCommand OnNavigateRequestedCommand => new MvxCommand(OnNavigateRequested);
+        public IMvxCommand OnNavigateRequestedCommand => new MvxCommand<Type>(OnNavigateRequested);
 
         #endregion
 
         #region Properties
 
-        public bool DrawerStatus
+        public bool IsDrawerOpen
         {
             get => _drawerStatus;
             set => SetProperty(ref _drawerStatus, value);
@@ -45,13 +40,32 @@ namespace UIConcepts.Core.ViewModels
             set => SetProperty(ref _detailView, value);
         }
 
-        public Dictionary<string, Type>.KeyCollection AvailableNavigationPages => _keyViewModelValuePairs.Keys;
-
         #endregion
 
-        private void OnNavigateRequested()
+        public HomeViewModel(IMvxNavigationService navigationService)
+            : base (navigationService)
         {
-            throw new NotImplementedException();
+            NavigatableViewModels = new Dictionary<string, Type>();
+            QueryNavigatableTypes();
+        }
+
+        private void OnNavigateRequested(Type navigationItem)
+        {
+            NavigationService.Navigate(navigationItem);
+            IsDrawerOpen = false;
+        }
+
+        private void QueryNavigatableTypes()
+        {
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            var types = from type in currentAssembly.GetTypes()
+                        where Attribute.IsDefined(type, typeof(DisplayNavigationAttribute))
+                        select type;
+            foreach (Type type in types)
+            {
+                DisplayNavigationAttribute attribute = type.GetCustomAttribute<DisplayNavigationAttribute>();
+                NavigatableViewModels.Add(attribute.DisplayName, type);
+            }
         }
     }
 }

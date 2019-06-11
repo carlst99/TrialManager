@@ -1,5 +1,4 @@
 ﻿using MvvmCross.Navigation;
-using MvvmCross.ViewModels;
 
 namespace UIConcepts.Core.ViewModels.Base
 {

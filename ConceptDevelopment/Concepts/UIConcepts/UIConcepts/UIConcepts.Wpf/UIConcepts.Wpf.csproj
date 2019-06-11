@@ -73,7 +73,7 @@
       <HintPath>..\packages\MvvmCross.Core.5.7.0\lib\net45\MvvmCross.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="MvvmCrossExtensions.Wpf">
-      <HintPath>..\packages\MvvmCrossExtensions\MvvmCrossExtensions.Wpf.dll</HintPath>
+      <HintPath>..\libraries\MvvmCrossExtensions.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Plugin.DeviceInfo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xam.Plugin.DeviceInfo.4.1.1\lib\net45\Plugin.DeviceInfo.dll</HintPath>

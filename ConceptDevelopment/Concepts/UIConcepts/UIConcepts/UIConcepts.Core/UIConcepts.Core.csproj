@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <Reference Include="MvvmCrossExtensions.Core">
-      <HintPath>..\packages\MvvmCrossExtensions\MvvmCrossExtensions.Core.dll</HintPath>
+      <HintPath>..\libraries\MvvmCrossExtensions.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 
