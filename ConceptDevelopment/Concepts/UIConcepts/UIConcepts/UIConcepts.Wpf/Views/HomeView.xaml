@@ -58,10 +58,11 @@
                                    HorizontalAlignment="Center"
                                    Style="{DynamicResource MaterialDesignTitleTextBlock}"
                                    Margin="16 0 0 0"
-                                   Text="Import and edit data"/>
+                                   Text="TrialManager UI Concepts"/>
                     </Grid>
                 </md:ColorZone>
-                <Frame mvx:Bi.nd="Content DetailView, Mode=OneWay"/>
+                <Frame mvx:Bi.nd="Content DetailView, Mode=OneWay"
+                       Margin="0,4,0,0"/>
             </StackPanel>
         </md:DrawerHost>
     </Grid>

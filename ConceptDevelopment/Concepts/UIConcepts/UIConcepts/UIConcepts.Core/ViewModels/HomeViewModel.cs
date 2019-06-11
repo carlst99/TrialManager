@@ -46,6 +46,11 @@ namespace UIConcepts.Core.ViewModels
             : base (navigationService)
         {
             NavigatableViewModels = new Dictionary<string, Type>();
+        }
+
+        public override void ViewAppearing()
+        {
+            base.ViewCreated();
             QueryNavigatableTypes();
         }
 
@@ -66,6 +71,8 @@ namespace UIConcepts.Core.ViewModels
                 DisplayNavigationAttribute attribute = type.GetCustomAttribute<DisplayNavigationAttribute>();
                 NavigatableViewModels.Add(attribute.DisplayName, type);
             }
+            if (NavigatableViewModels.Count > 0)
+                OnNavigateRequested(NavigatableViewModels.Values.First());
         }
     }
 }
