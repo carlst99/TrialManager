@@ -1,4 +1,6 @@
-﻿using MvvmCross.Navigation;
+﻿using MvvmCross.Commands;
+using MvvmCross.Navigation;
+using System;
 using UIConcepts.Core.ViewModels.Base;
 
 namespace UIConcepts.Core.ViewModels
@@ -10,6 +12,12 @@ namespace UIConcepts.Core.ViewModels
 
         #endregion
 
+        #region Commands
+
+        public IMvxCommand ImportDataCommand => new MvxCommand(OnImportData);
+
+        #endregion
+
         #region Properties
 
         #endregion
@@ -17,6 +25,11 @@ namespace UIConcepts.Core.ViewModels
         public DataDisplayViewModel(IMvxNavigationService navigationService)
             : base(navigationService)
         {
+        }
+
+        private void OnImportData()
+        {
+            throw new NotImplementedException();
         }
     }
 }

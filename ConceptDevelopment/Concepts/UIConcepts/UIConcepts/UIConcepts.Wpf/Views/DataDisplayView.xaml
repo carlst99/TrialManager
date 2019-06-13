@@ -9,8 +9,14 @@
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                   mc:Ignorable="d" 
                   d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Text="Data Display View"/>
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Button mvx:Bi.nd="Content [Label_ImportData], Mode=OneTime; Command ImportDataCommand"/>
+        </StackPanel>
     </Grid>
 </views:MvxWpfView>

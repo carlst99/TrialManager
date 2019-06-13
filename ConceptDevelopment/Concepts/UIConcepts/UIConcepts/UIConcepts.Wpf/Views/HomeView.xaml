@@ -58,7 +58,7 @@
                                    HorizontalAlignment="Center"
                                    Style="{DynamicResource MaterialDesignTitleTextBlock}"
                                    Margin="16 0 0 0"
-                                   Text="TrialManager UI Concepts"/>
+                                   mvx:Bi.nd="Text [App_Title], Mode=OneTime"/>
                     </Grid>
                 </md:ColorZone>
                 <Frame mvx:Bi.nd="Content DetailView, Mode=OneWay"
