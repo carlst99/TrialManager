@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace UIConcepts.Core.Model.Context
+namespace UIConcepts.Core.Model.ContextModel
 {
     public abstract class ContextItem : INotifyPropertyChanged
     {

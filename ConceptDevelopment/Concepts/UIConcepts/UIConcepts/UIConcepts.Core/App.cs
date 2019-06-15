@@ -18,7 +18,7 @@ namespace UIConcepts.Core
     {
         public const string LOG_FILE_NAME = "log.log";
 
-        public override void Initialize()
+        public async override void Initialize()
         {
             CreatableTypes()
                 .EndingWith("Service")
@@ -28,6 +28,11 @@ namespace UIConcepts.Core
             RegisterAppStart<HomeViewModel>();
 
             Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
+            Mvx.IoCProvider.RegisterSingleton(Plugin.Settings.CrossSettings.Current);
+
+            var context = new Model.Context.ManagerContext(Mvx.IoCProvider.Resolve<Plugin.Settings.Abstractions.ISettings>());
+            await context.Database.EnsureCreatedAsync().ConfigureAwait(false);
+            Mvx.IoCProvider.RegisterSingleton<Model.Context.IManagerContext>(context);
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()

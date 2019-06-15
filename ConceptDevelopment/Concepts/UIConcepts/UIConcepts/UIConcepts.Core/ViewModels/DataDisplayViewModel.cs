@@ -1,6 +1,8 @@
 ﻿using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using System;
+using UIConcepts.Core.Model.Context;
+using UIConcepts.Core.Model.ContextModel;
 using UIConcepts.Core.ViewModels.Base;
 
 namespace UIConcepts.Core.ViewModels
@@ -9,6 +11,8 @@ namespace UIConcepts.Core.ViewModels
     public class DataDisplayViewModel : ViewModelBase
     {
         #region Fields
+
+        private readonly ManagerContext _managerContext;
 
         #endregion
 
@@ -22,14 +26,22 @@ namespace UIConcepts.Core.ViewModels
 
         #endregion
 
-        public DataDisplayViewModel(IMvxNavigationService navigationService)
+        public DataDisplayViewModel(IMvxNavigationService navigationService, IManagerContext managerContext)
             : base(navigationService)
         {
+            _managerContext = (ManagerContext)managerContext;
         }
 
         private void OnImportData()
         {
-            throw new NotImplementedException();
+            Trialist trialist = new Trialist
+            {
+                FirstName = "Robyn",
+                Surname = "Stephens",
+                Status = EntityStatus.OpenBlack,
+            };
+            _managerContext.Trialists.Add(trialist);
+            _managerContext.SaveChanges();
         }
     }
 }

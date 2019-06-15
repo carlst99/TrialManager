@@ -1,15 +1,22 @@
-﻿namespace UIConcepts.Core.Model.Context
+﻿namespace UIConcepts.Core.Model.ContextModel
 {
     public class Dog : ContextItem
     {
         #region Fields
 
+        private int _dogId;
         private string _name;
         private EntityStatus _status;
 
         #endregion Fields
 
         #region Properties
+
+        public int DogId
+        {
+            get => _dogId;
+            set => SetProperty(ref _dogId, value, nameof(DogId));
+        }
 
         /// <summary>
         /// Gets or sets the name of the dog

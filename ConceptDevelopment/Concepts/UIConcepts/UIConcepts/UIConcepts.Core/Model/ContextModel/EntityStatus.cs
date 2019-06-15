@@ -1,4 +1,4 @@
-﻿namespace UIConcepts.Core.Model.Context
+﻿namespace UIConcepts.Core.Model.ContextModel
 {
     /// <summary>
     /// Describes the status of a trialist/dog

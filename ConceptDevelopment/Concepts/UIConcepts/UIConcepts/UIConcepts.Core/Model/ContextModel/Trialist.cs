@@ -1,11 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace UIConcepts.Core.Model.Context
+namespace UIConcepts.Core.Model.ContextModel
 {
     public class Trialist : ContextItem
     {
         #region Fields
 
+        private int _trialistId;
         private string _firstName;
         private string _surname;
         private string _phoneNumber;
@@ -15,6 +16,15 @@ namespace UIConcepts.Core.Model.Context
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets or sets the database ID of the trialist
+        /// </summary>
+        public int TrialistId
+        {
+            get => _trialistId;
+            set => SetProperty(ref _trialistId, value, nameof(TrialistId));
+        }
 
         /// <summary>
         /// Gets or sets the first name of the trialist
