@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIConcepts.Core", "UIConcep
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConcepts.Wpf", "UIConcepts.Wpf\UIConcepts.Wpf.csproj", "{5B733226-93BD-4124-992C-65DCC23286B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConcepts.DbMigrator", "UIConcepts.DbMigrator\UIConcepts.DbMigrator.csproj", "{3CFCB83C-1E94-4F11-9DCA-E445625BED50}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{5B733226-93BD-4124-992C-65DCC23286B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B733226-93BD-4124-992C-65DCC23286B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B733226-93BD-4124-992C-65DCC23286B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3CFCB83C-1E94-4F11-9DCA-E445625BED50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3CFCB83C-1E94-4F11-9DCA-E445625BED50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3CFCB83C-1E94-4F11-9DCA-E445625BED50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3CFCB83C-1E94-4F11-9DCA-E445625BED50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
