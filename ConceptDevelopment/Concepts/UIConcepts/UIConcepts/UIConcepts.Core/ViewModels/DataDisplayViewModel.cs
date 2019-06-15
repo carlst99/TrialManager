@@ -32,16 +32,15 @@ namespace UIConcepts.Core.ViewModels
             _managerContext = (ManagerContext)managerContext;
         }
 
-        private void OnImportData()
+        private async void OnImportData()
         {
             Trialist trialist = new Trialist
             {
-                FirstName = "Robyn",
-                Surname = "Stephens",
-                Status = EntityStatus.OpenBlack,
+                FirstName = DateTime.Now.ToLongTimeString(),
+                Surname = "Stephens"
             };
             _managerContext.Trialists.Add(trialist);
-            _managerContext.SaveChanges();
+            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

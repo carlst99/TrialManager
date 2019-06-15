@@ -1,8 +1,7 @@
 {
   "profiles": {
     "UIConcepts.Core": {
-      "commandName": "Project",
-      "workingDirectory": "C:\\Users\\carls\\source\\repos\\TrialManager\\ConceptDevelopment\\Concepts\\UIConcepts\\UIConcepts\\UIConcepts.Core\\bin\\Debug\\netstandard2.0"
+      "commandName": "Project"
     }
   }
 }
