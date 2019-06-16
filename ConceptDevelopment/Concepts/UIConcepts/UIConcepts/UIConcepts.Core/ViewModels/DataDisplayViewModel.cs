@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UIConcepts.Core.Model.Context;
 using UIConcepts.Core.Model.ContextModel;
+using UIConcepts.Core.Services.CoreMessaging;
 using UIConcepts.Core.ViewModels.Base;
 
 namespace UIConcepts.Core.ViewModels
@@ -16,6 +17,7 @@ namespace UIConcepts.Core.ViewModels
 
         private readonly ManagerContext _managerContext;
         private List<Trialist> _trialists;
+        private ICoreMessagingService _messagingService;
 
         #endregion
 
@@ -35,10 +37,13 @@ namespace UIConcepts.Core.ViewModels
 
         #endregion
 
-        public DataDisplayViewModel(IMvxNavigationService navigationService, IManagerContext managerContext)
+        public DataDisplayViewModel(IMvxNavigationService navigationService,
+                                    IManagerContext managerContext,
+                                    ICoreMessagingService messagingService)
             : base(navigationService)
         {
             _managerContext = (ManagerContext)managerContext;
+            _messagingService = messagingService;
             _trialists = _managerContext.Trialists.ToList();
         }
 

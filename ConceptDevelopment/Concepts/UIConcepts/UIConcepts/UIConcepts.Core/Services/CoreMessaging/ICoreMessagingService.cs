@@ -7,9 +7,8 @@ namespace UIConcepts.Core.Services.CoreMessaging
     {
         ICollection<MessageSubscriber> Subscribers { get; }
 
-        void Enqueue<T>(object sender, T message) where T : EventArgs;
-
-        void Subscribe(Action<object, object> callback, Guid unsubKey, Type[] requestedMessageTypes = null);
+        void Enqueue<T>(T message) where T : ICoreMessage;
+        void Subscribe(Action<ICoreMessage> callback, Guid unsubKey, Type[] requestedMessageTypes = null);
         void Unsubscribe(Guid unsubKey);
     }
 }

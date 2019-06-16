@@ -18,19 +18,19 @@ namespace UIConcepts.Core.Services.CoreMessaging
             Subscribers = new List<MessageSubscriber>();
         }
 
-        public void Enqueue<T>(object sender, T message) where T : EventArgs
+        public void Enqueue<T>(T message) where T : ICoreMessage
         {
             foreach (MessageSubscriber subscriber in Subscribers)
-                subscriber.InitiateCallback(sender, message);
+                subscriber.InitiateCallback(message);
         }
 
-        public async Task EnqueueAsync<T>(object sender, T message) where T : EventArgs
+        public async Task EnqueueAsync<T>(T message) where T : ICoreMessage
         {
-            await Task.Factory.StartNew(() => Enqueue(sender, message)).ConfigureAwait(false);
+            await Task.Factory.StartNew(() => Enqueue(message)).ConfigureAwait(false);
             return;
         }
 
-        public void Subscribe(Action<object, object> callback, Guid unsubKey, Type[] requestedMessageTypes = null)
+        public void Subscribe(Action<ICoreMessage> callback, Guid unsubKey, Type[] requestedMessageTypes = null)
         {
             Subscribers.Add(new MessageSubscriber(callback, unsubKey, requestedMessageTypes));
         }

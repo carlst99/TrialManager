@@ -10,7 +10,10 @@ namespace UIConcepts.Core.Services.CoreMessaging
         /// </summary>
         internal SubscriptionSet SubscriptionSet { get; }
 
-        public Action<object, object> Callback { get; }
+        /// <summary>
+        /// Gets the callback invoked when a message is queued
+        /// </summary>
+        public Action<ICoreMessage> Callback { get; }
 
         /// <summary>
         /// Gets the types of message that the subscriber wants to receive, provided <see cref="SubscriptionSet.Defined"/> is flagged
@@ -22,7 +25,7 @@ namespace UIConcepts.Core.Services.CoreMessaging
         /// </summary>
         public Guid UnsubscribeKey { get; }
 
-        internal MessageSubscriber(Action<object, object> callback, Guid unsubKey, Type[] subTypes = null)
+        internal MessageSubscriber(Action<ICoreMessage> callback, Guid unsubKey, Type[] subTypes = null)
         {
             Callback = callback;
             UnsubscribeKey = unsubKey;
@@ -41,21 +44,23 @@ namespace UIConcepts.Core.Services.CoreMessaging
         /// <param name="sender">The sender of the message</param>
         /// <param name="message">The message to send</param>
         /// <returns>A value indicating whether the callback was run</returns>
-        internal bool InitiateCallback<T>(object sender, T message) where T : EventArgs
+        internal bool InitiateCallback<T>(T message) where T : ICoreMessage
         {
             switch (SubscriptionSet)
             {
                 case SubscriptionSet.All:
-                    Callback.Invoke(sender, message);
+                    Callback.Invoke(message);
                     return true;
                 case SubscriptionSet.Defined:
                     if (MessageTypes.Contains(typeof(T)))
-                        Callback.Invoke(sender, message);
+                        Callback.Invoke(message);
                     return true;
                 default:
                     return false;
             }
         }
+
+        #region Equality Overrides
 
         public override bool Equals(object obj)
         {
@@ -87,6 +92,8 @@ namespace UIConcepts.Core.Services.CoreMessaging
         public static bool operator ==(MessageSubscriber sub1, MessageSubscriber sub2) => sub1.Equals(sub2);
 
         public static bool operator !=(MessageSubscriber sub1, MessageSubscriber sub2) => !sub1.Equals(sub2);
+
+        #endregion
     }
 
     /// <summary>
