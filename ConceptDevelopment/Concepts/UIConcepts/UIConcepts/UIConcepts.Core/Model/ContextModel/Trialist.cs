@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace UIConcepts.Core.Model.ContextModel
 {
@@ -29,6 +30,7 @@ namespace UIConcepts.Core.Model.ContextModel
         /// <summary>
         /// Gets or sets the first name of the trialist
         /// </summary>
+        [Required]
         public string FirstName
         {
             get => _firstName;
@@ -38,6 +40,7 @@ namespace UIConcepts.Core.Model.ContextModel
         /// <summary>
         /// Gets or sets the surname of the trialist
         /// </summary>
+        [Required]
         public string Surname
         {
             get => _surname;
@@ -47,6 +50,7 @@ namespace UIConcepts.Core.Model.ContextModel
         /// <summary>
         /// Gets or sets the phone number of the trialist
         /// </summary>
+        [Required]
         public string PhoneNumber
         {
             get => _phoneNumber;
@@ -65,6 +69,7 @@ namespace UIConcepts.Core.Model.ContextModel
         /// <summary>
         /// Gets or sets the status of the trialist
         /// </summary>
+        [Required]
         public EntityStatus Status
         {
             get => _status;
