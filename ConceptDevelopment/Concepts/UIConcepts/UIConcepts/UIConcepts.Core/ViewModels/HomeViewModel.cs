@@ -1,10 +1,12 @@
-﻿using MvvmCross.Commands;
+﻿using IntraMessaging;
+using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCrossExtensions.Wpf.Presenters.MasterDetail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UIConcepts.Core.Model.Messages;
 using UIConcepts.Core.ViewModels.Base;
 
 namespace UIConcepts.Core.ViewModels
@@ -13,10 +15,9 @@ namespace UIConcepts.Core.ViewModels
     {
         #region Fields
 
+        private readonly IIntraMessager _messagingService;
         private bool _drawerStatus;
         private object _detailView;
-
-        public Dictionary<string, Type> NavigatableViewModels { get; }
 
         #endregion
 
@@ -27,6 +28,8 @@ namespace UIConcepts.Core.ViewModels
         #endregion
 
         #region Properties
+
+        public Dictionary<string, Type> NavigatableViewModels { get; }
 
         public bool IsDrawerOpen
         {
@@ -42,10 +45,12 @@ namespace UIConcepts.Core.ViewModels
 
         #endregion
 
-        public HomeViewModel(IMvxNavigationService navigationService)
+        public HomeViewModel(IMvxNavigationService navigationService, IIntraMessager messagingService)
             : base (navigationService)
         {
             NavigatableViewModels = new Dictionary<string, Type>();
+            _messagingService = messagingService;
+            _messagingService.Subscribe(OnMessageReceived, Guid.Empty);
         }
 
         public override void ViewAppearing()
@@ -73,6 +78,14 @@ namespace UIConcepts.Core.ViewModels
             }
             if (NavigatableViewModels.Count > 0)
                 OnNavigateRequested(NavigatableViewModels.Values.First());
+        }
+
+        private void OnMessageReceived(IMessage message)
+        {
+            if (message is MessageDialogMessage mdMessage)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿using MvvmCross.Commands;
+﻿using IntraMessaging;
+using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UIConcepts.Core.Model.Context;
 using UIConcepts.Core.Model.ContextModel;
-using UIConcepts.Core.Services.CoreMessaging;
+using UIConcepts.Core.Model.Messages;
 using UIConcepts.Core.ViewModels.Base;
 
 namespace UIConcepts.Core.ViewModels
@@ -16,8 +17,9 @@ namespace UIConcepts.Core.ViewModels
         #region Fields
 
         private readonly ManagerContext _managerContext;
+        private readonly IIntraMessager _messagingService;
         private List<Trialist> _trialists;
-        private ICoreMessagingService _messagingService;
+        private Guid _lastMessageId;
 
         #endregion
 
@@ -39,26 +41,54 @@ namespace UIConcepts.Core.ViewModels
 
         public DataDisplayViewModel(IMvxNavigationService navigationService,
                                     IManagerContext managerContext,
-                                    ICoreMessagingService messagingService)
+                                    IIntraMessager messagingService)
             : base(navigationService)
         {
             _managerContext = (ManagerContext)managerContext;
             _messagingService = messagingService;
-            _trialists = _managerContext.Trialists.ToList();
+            _messagingService.Subscribe(OnMessageReceived, Guid.Empty, new Type[] { typeof(DialogResultMessage) });
+
+            //_trialists = _managerContext.Trialists.ToList();
         }
 
-        private async void OnImportData()
+        private void OnImportData()
         {
-            //Trialist trialist = new Trialist
-            //{
-            //    FirstName = DateTime.Now.ToLongTimeString(),
-            //    Surname = "Stephens"
-            //};
-            //_managerContext.Trialists.Add(trialist);
             if (_trialists?.Count != 0)
-                _trialists = _managerContext.Trialists.ToList();
+            {
+                MessageDialogMessage dialogRequest = new MessageDialogMessage
+                {
+                    Action = DialogAction.Yes | DialogAction.No,
+                    Id = GetNewMessageId(),
+                    Title = "Warning",
+                    Content = "Do you wish to merge the import with the current data?"
+                };
+                _messagingService.Enqueue(dialogRequest);
+            } else
+            {
+                ImportData(false);
+            }
+        }
 
-            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
+        private async void ImportData(bool merge)
+        {
+
+        }
+
+        private void OnMessageReceived(IMessage message)
+        {
+            if (message is DialogResultMessage dMessage && dMessage.Id == _lastMessageId)
+            {
+                if (dMessage.Result.HasFlag(DialogAction.Yes))
+                    ImportData(true);
+                else if (dMessage.Result.HasFlag(DialogAction.No))
+                    ImportData(false);
+            }
+        }
+
+        private Guid GetNewMessageId()
+        {
+            _lastMessageId = Guid.NewGuid();
+            return _lastMessageId;
         }
     }
 }
