@@ -3,6 +3,7 @@ using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UIConcepts.Core.Model.Context;
 using UIConcepts.Core.Model.ContextModel;
@@ -18,7 +19,7 @@ namespace UIConcepts.Core.ViewModels
 
         private readonly ManagerContext _managerContext;
         private readonly IIntraMessager _messagingService;
-        private List<Trialist> _trialists;
+        private ObservableCollection<Trialist> _trialists;
         private Guid _lastMessageId;
 
         #endregion
@@ -31,7 +32,7 @@ namespace UIConcepts.Core.ViewModels
 
         #region Properties
 
-        public List<Trialist> Trialists
+        public ObservableCollection<Trialist> Trialists
         {
             get => _trialists;
             set => SetProperty(ref _trialists, value);
@@ -49,24 +50,42 @@ namespace UIConcepts.Core.ViewModels
             _messagingService.Subscribe(OnMessageReceived, Guid.Empty, new Type[] { typeof(DialogResultMessage) });
 
             //_trialists = _managerContext.Trialists.ToList();
+            if (_managerContext.Trialists.Any())
+                _trialists = new ObservableCollection<Trialist>(_managerContext.Trialists.ToList());
+            else
+                _trialists = new ObservableCollection<Trialist>();
+        }
+
+        public override void ViewDisappearing()
+        {
         }
 
         private void OnImportData()
         {
-            if (_trialists?.Count != 0)
+            Trialist trialist = new Trialist
             {
-                MessageDialogMessage dialogRequest = new MessageDialogMessage
-                {
-                    Action = DialogAction.Yes | DialogAction.No,
-                    Id = GetNewMessageId(),
-                    Title = "Warning",
-                    Content = "Do you wish to merge the import with the current data?"
-                };
-                _messagingService.Enqueue(dialogRequest);
-            } else
-            {
-                ImportData(false);
-            }
+                FirstName = DateTime.Now.ToLongTimeString(),
+                Surname = "Name, sir",
+                Email = "gg123@gg123.com",
+                PhoneNumber = "0123456789",
+                Status = EntityStatus.Maiden
+            };
+            Trialists.Add(trialist);
+
+            //if (_trialists?.Count != 0)
+            //{
+            //    MessageDialogMessage dialogRequest = new MessageDialogMessage
+            //    {
+            //        Action = DialogAction.Yes | DialogAction.No,
+            //        Id = GetNewMessageId(),
+            //        Title = "Warning",
+            //        Content = "Do you wish to merge the import with the current data?"
+            //    };
+            //    _messagingService.Enqueue(dialogRequest);
+            //} else
+            //{
+            //    ImportData(false);
+            //}
         }
 
         private async void ImportData(bool merge)

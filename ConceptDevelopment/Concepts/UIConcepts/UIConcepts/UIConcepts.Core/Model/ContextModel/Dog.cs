@@ -37,5 +37,37 @@
         }
 
         #endregion
+
+        #region Object Overrides
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Dog dog
+                && dog.Name.Equals(Name)
+                && dog.Status.Equals(Status);
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 13;
+            return (hash * 7) + DogId;
+        }
+
+        public static bool operator ==(Dog one, Dog two)
+        {
+            return one.Equals(two);
+        }
+
+        public static bool operator !=(Dog one, Dog two)
+        {
+            return !one.Equals(two);
+        }
+
+        #endregion
     }
 }

@@ -92,15 +92,14 @@ namespace UIConcepts.Core.Model.ContextModel
             return obj is Trialist trialist
                 && trialist.FirstName.Equals(FirstName)
                 && trialist.Surname.Equals(Surname)
-                && trialist.PhoneNumber.Equals(PhoneNumber);
+                && trialist.PhoneNumber.Equals(PhoneNumber)
+                && trialist.Status.Equals(Status);
         }
 
         public override int GetHashCode()
         {
             int hash = 13;
-            hash = (hash * 7) + FirstName.GetHashCode();
-            hash = (hash * 7) + Surname.GetHashCode();
-            return (hash * 7) + PhoneNumber.GetHashCode();
+            return (hash * 7) + TrialistId;
         }
 
         public static bool operator ==(Trialist one, Trialist two)

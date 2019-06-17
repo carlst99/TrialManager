@@ -121,6 +121,18 @@
     <value>TrialManager UI Concepts</value>
     <comment>This is the title of the application</comment>
   </data>
+  <data name="Header_FirstName" xml:space="preserve">
+    <value>First Name</value>
+    <comment>This header appears above a list of first names</comment>
+  </data>
+  <data name="Header_Status" xml:space="preserve">
+    <value>Status</value>
+    <comment>This header appears above a list of trialist status'</comment>
+  </data>
+  <data name="Header_Surname" xml:space="preserve">
+    <value>Surname</value>
+    <comment>This header appears above a list of surnames</comment>
+  </data>
   <data name="Label_ImportData" xml:space="preserve">
     <value>Import Data</value>
     <comment>This label appears on a control which initiates the data import sequence</comment>
