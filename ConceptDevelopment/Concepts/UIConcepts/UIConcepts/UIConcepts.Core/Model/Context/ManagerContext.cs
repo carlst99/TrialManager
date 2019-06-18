@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Plugin.Settings.Abstractions;
+using System.Collections.ObjectModel;
 using UIConcepts.Core.Model.ContextModel;
 
 namespace UIConcepts.Core.Model.Context
@@ -21,6 +22,16 @@ namespace UIConcepts.Core.Model.Context
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(GetConnectionString());
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Trialist>()
+                        .Property(t => t.Dogs)
+                        .HasConversion(
+                            f => MessagePack.MessagePackSerializer.Serialize(f),
+                            b => MessagePack.MessagePackSerializer.Deserialize<ObservableCollection<Dog>>(b));
+            base.OnModelCreating(modelBuilder);
         }
 
         private string GetConnectionString()

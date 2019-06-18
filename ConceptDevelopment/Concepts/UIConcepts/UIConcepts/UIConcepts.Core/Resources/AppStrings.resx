@@ -121,6 +121,10 @@
     <value>TrialManager UI Concepts</value>
     <comment>This is the title of the application</comment>
   </data>
+  <data name="Header_Dogs" xml:space="preserve">
+    <value>Dogs</value>
+    <comment>This header appears above a list of dogs</comment>
+  </data>
   <data name="Header_Email" xml:space="preserve">
     <value>Email</value>
     <comment>This header appears above a list of email addresses</comment>

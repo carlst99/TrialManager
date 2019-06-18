@@ -56,21 +56,26 @@ namespace UIConcepts.Core.ViewModels
                 _trialists = new ObservableCollection<Trialist>();
         }
 
-        public override void ViewDisappearing()
+        private async void OnImportData()
         {
-        }
-
-        private void OnImportData()
-        {
+            Dog dog = new Dog
+            {
+                Name = "Flynn",
+                Status = EntityStatus.OpenBlack
+            };
+            Dog[] dogs = new Dog[] { dog, dog, dog };
             Trialist trialist = new Trialist
             {
                 FirstName = DateTime.Now.ToLongTimeString(),
                 Surname = "Name, sir",
                 Email = "gg123@gg123.com",
                 PhoneNumber = "0123456789",
-                Status = EntityStatus.Maiden
+                Status = EntityStatus.Maiden,
+                Dogs = new ObservableCollection<Dog>(dogs)
             };
             Trialists.Add(trialist);
+            _managerContext.Add(trialist);
+            await _managerContext.SaveChangesAsync();
 
             //if (_trialists?.Count != 0)
             //{

@@ -32,6 +32,7 @@ namespace UIConcepts.Core
             Mvx.IoCProvider.RegisterSingleton(IntraMessaging.IntraMessager.Instance);
 
             var context = new Model.Context.ManagerContext(Mvx.IoCProvider.Resolve<Plugin.Settings.Abstractions.ISettings>());
+            //await context.Database.EnsureDeletedAsync().ConfigureAwait(false);
             await context.Database.EnsureCreatedAsync().ConfigureAwait(false);
             Mvx.IoCProvider.RegisterSingleton<Model.Context.IManagerContext>(context);
 

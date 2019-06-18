@@ -50,7 +50,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="{Binding DataContext.[Header_FirstName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="200">
+                                    Width="150">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
                                 <TextBox Text="{Binding FirstName}"/>
@@ -81,6 +81,35 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
                                 <TextBox Text="{Binding Email}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="{Binding DataContext.[Header_Dogs], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
+                                    Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Trialist}">
+                                <ItemsControl ItemsSource="{Binding Dogs}"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                                              ScrollViewer.CanContentScroll="True">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type model:Dog}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBox Text="{Binding Name}"
+                                                         Margin="0,0,4,0"/>
+                                                <ComboBox ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
+                                                          SelectedItem="{Binding Status}"
+                                                          Background="{DynamicResource MaterialDesignPaper}"
+                                                          Padding="8,6"
+                                                          Margin="0,0,8,0"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
