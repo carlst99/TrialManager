@@ -50,7 +50,6 @@ namespace UIConcepts.Core.Model.ContextModel
         /// <summary>
         /// Gets or sets the phone number of the trialist
         /// </summary>
-        [Required]
         public string PhoneNumber
         {
             get => _phoneNumber;

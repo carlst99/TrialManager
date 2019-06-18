@@ -41,7 +41,7 @@
                   SelectionMode="Single">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="{Binding DataContext.[Header_Surname], RelativeSource={RelativeSource AncestorType=ListView}}"
+                    <GridViewColumn Header="{Binding DataContext.[Header_Surname], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
                                     Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
@@ -49,7 +49,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="{Binding DataContext.[Header_FirstName], RelativeSource={RelativeSource AncestorType=ListView}}"
+                    <GridViewColumn Header="{Binding DataContext.[Header_FirstName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
                                     Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
@@ -57,15 +57,30 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="{Binding DataContext.[Header_Status], RelativeSource={RelativeSource AncestorType=ListView}}"
-                                    Width="150">
+                    <GridViewColumn Header="{Binding DataContext.[Header_Status], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
+                                    Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
                                 <ComboBox ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
                                           SelectedItem="{Binding Status}"
                                           Background="{DynamicResource MaterialDesignPaper}"
-                                          Padding="8,6"
-                                          Width="120"/>
+                                          Padding="8,6"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="{Binding DataContext.[Header_PhoneNumber], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
+                                    Width="130">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Trialist}">
+                                <TextBox Text="{Binding PhoneNumber}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="{Binding DataContext.[Header_Email], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
+                                    Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Trialist}">
+                                <TextBox Text="{Binding Email}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

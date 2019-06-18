@@ -121,13 +121,21 @@
     <value>TrialManager UI Concepts</value>
     <comment>This is the title of the application</comment>
   </data>
+  <data name="Header_Email" xml:space="preserve">
+    <value>Email</value>
+    <comment>This header appears above a list of email addresses</comment>
+  </data>
   <data name="Header_FirstName" xml:space="preserve">
     <value>First Name</value>
     <comment>This header appears above a list of first names</comment>
   </data>
+  <data name="Header_PhoneNumber" xml:space="preserve">
+    <value>Phone Number</value>
+    <comment>This header appears above a list of phone numbers</comment>
+  </data>
   <data name="Header_Status" xml:space="preserve">
     <value>Status</value>
-    <comment>This header appears above a list of trialist status'</comment>
+    <comment>This header appears above a list of trialist/dog status'</comment>
   </data>
   <data name="Header_Surname" xml:space="preserve">
     <value>Surname</value>
