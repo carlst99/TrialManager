@@ -27,30 +27,45 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Button mvx:Bi.nd="Content [Label_ImportData], Mode=OneTime; Command ImportDataCommand"/>
         </StackPanel>
 
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button mvx:Bi.nd="ToolTip [ToolTip_AddItem], Mode=OneTime" 
+                    HorizontalAlignment="Right"
+                    Content="{md:PackIcon Kind=Add}"
+                    Margin="0,0,8,0"/>
+            <Button mvx:Bi.nd="ToolTip [ToolTip_DeleteItem], Mode=OneTime" 
+                    HorizontalAlignment="Right"
+                    Content="{md:PackIcon Kind=Trash}"/>
+        </StackPanel>
         <!-- Border option -->
         <!--<Border Background="White"
                 BorderBrush="Black" BorderThickness="1"
                 Grid.Row="1"
                 Margin="0,10,0,0"/>-->
 
-        <ListView mvx:Bi.nd="ItemsSource Trialists" Grid.Row="1"
-                  SelectionMode="Single">
+        <ListView mvx:Bi.nd="ItemsSource Trialists" 
+                  Grid.Row="1" Height="500"
+                  Margin="0,8,0,0">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="{Binding DataContext.[Header_Surname], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="200">
+                                    Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
-                                <TextBox Text="{Binding Surname}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="Person"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,4,0"/>
+                                    <TextBox Text="{Binding Surname}"/>
+                                </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="{Binding DataContext.[Header_FirstName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="150">
+                                    Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
                                 <TextBox Text="{Binding FirstName}"/>
@@ -58,7 +73,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="{Binding DataContext.[Header_Status], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="120">
+                                    Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
                                 <ComboBox ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
@@ -69,23 +84,33 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="{Binding DataContext.[Header_PhoneNumber], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="130">
+                                    Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
-                                <TextBox Text="{Binding PhoneNumber}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="Phone"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,4,0"/>
+                                    <TextBox Text="{Binding PhoneNumber}"/>
+                                </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="{Binding DataContext.[Header_Email], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="200">
+                                    Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
-                                <TextBox Text="{Binding Email}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="Email"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,4,0"/>
+                                    <TextBox Text="{Binding Email}"/>
+                                </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="{Binding DataContext.[Header_Dogs], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="200">
+                                    Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
                                 <ItemsControl ItemsSource="{Binding Dogs}"
@@ -94,13 +119,19 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type model:Dog}">
                                             <StackPanel Orientation="Horizontal">
+                                                <md:PackIcon Kind="DogSide"
+                                                             VerticalAlignment="Center"
+                                                             Margin="0,0,4,0"/>
                                                 <TextBox Text="{Binding Name}"
-                                                         Margin="0,0,4,0"/>
+                                                         Margin="0,0,4,0"
+                                                         VerticalAlignment="Center"
+                                                         Width="100"/>
                                                 <ComboBox ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
                                                           SelectedItem="{Binding Status}"
                                                           Background="{DynamicResource MaterialDesignPaper}"
                                                           Padding="8,6"
-                                                          Margin="0,0,8,0"/>
+                                                          Margin="0,0,8,0"
+                                                          VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

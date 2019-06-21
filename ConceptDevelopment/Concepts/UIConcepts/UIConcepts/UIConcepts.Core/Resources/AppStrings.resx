@@ -149,4 +149,12 @@
     <value>Import Data</value>
     <comment>This label appears on a control which initiates the data import sequence</comment>
   </data>
+  <data name="ToolTip_AddItem" xml:space="preserve">
+    <value>Add Entry</value>
+    <comment>This tooltip appears on a control which adds a data entry</comment>
+  </data>
+  <data name="ToolTip_DeleteItem" xml:space="preserve">
+    <value>Delete Entry</value>
+    <comment>This tooltip appears on a control which deletes a data entry</comment>
+  </data>
 </root>

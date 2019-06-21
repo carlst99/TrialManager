@@ -131,5 +131,23 @@ namespace UIConcepts.Core.Resources {
                 return ResourceManager.GetString("Label_ImportData", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Entry.
+        /// </summary>
+        public static string ToolTip_AddItem {
+            get {
+                return ResourceManager.GetString("ToolTip_AddItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Entry.
+        /// </summary>
+        public static string ToolTip_DeleteItem {
+            get {
+                return ResourceManager.GetString("ToolTip_DeleteItem", resourceCulture);
+            }
+        }
     }
 }
