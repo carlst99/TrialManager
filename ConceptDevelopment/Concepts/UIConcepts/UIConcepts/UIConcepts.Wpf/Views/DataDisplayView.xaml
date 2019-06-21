@@ -59,7 +59,7 @@
                                     <md:PackIcon Kind="Person"
                                                  VerticalAlignment="Center"
                                                  Margin="0,0,4,0"/>
-                                    <TextBox Text="{Binding Surname}"/>
+                                    <TextBlock Text="{Binding Surname}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -68,7 +68,7 @@
                                     Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
-                                <TextBox Text="{Binding FirstName}"/>
+                                <TextBlock Text="{Binding FirstName}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -76,10 +76,7 @@
                                     Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:Trialist}">
-                                <ComboBox ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
-                                          SelectedItem="{Binding Status}"
-                                          Background="{DynamicResource MaterialDesignPaper}"
-                                          Padding="8,6"/>
+                                <TextBlock Text="{Binding Status}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -91,7 +88,7 @@
                                     <md:PackIcon Kind="Phone"
                                                  VerticalAlignment="Center"
                                                  Margin="0,0,4,0"/>
-                                    <TextBox Text="{Binding PhoneNumber}"/>
+                                    <TextBlock Text="{Binding PhoneNumber}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -104,7 +101,7 @@
                                     <md:PackIcon Kind="Email"
                                                  VerticalAlignment="Center"
                                                  Margin="0,0,4,0"/>
-                                    <TextBox Text="{Binding Email}"/>
+                                    <TextBlock Text="{Binding Email}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -122,16 +119,10 @@
                                                 <md:PackIcon Kind="DogSide"
                                                              VerticalAlignment="Center"
                                                              Margin="0,0,4,0"/>
-                                                <TextBox Text="{Binding Name}"
-                                                         Margin="0,0,4,0"
-                                                         VerticalAlignment="Center"
-                                                         Width="100"/>
-                                                <ComboBox ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
-                                                          SelectedItem="{Binding Status}"
-                                                          Background="{DynamicResource MaterialDesignPaper}"
-                                                          Padding="8,6"
-                                                          Margin="0,0,8,0"
-                                                          VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding Name}"
+                                                         VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding Status}"
+                                                           Margin="0,0,16,0"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
