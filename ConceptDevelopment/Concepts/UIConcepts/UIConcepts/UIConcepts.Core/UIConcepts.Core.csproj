@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IntraMessaging" Version="1.0.1" />
+    <PackageReference Include="IntraMessaging" Version="1.0.3" />
     <PackageReference Include="MessagePack" Version="1.7.3.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.4" />
     <PackageReference Include="MvvmCross" Version="6.3.1" />

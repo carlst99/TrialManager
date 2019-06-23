@@ -2,7 +2,6 @@
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UIConcepts.Core.Model.Context;
@@ -18,7 +17,7 @@ namespace UIConcepts.Core.ViewModels
         #region Fields
 
         private readonly ManagerContext _managerContext;
-        private readonly IIntraMessager _messagingService;
+        private readonly IIntraMessenger _messagingService;
         private ObservableCollection<Trialist> _trialists;
         private Guid _lastMessageId;
 
@@ -42,12 +41,12 @@ namespace UIConcepts.Core.ViewModels
 
         public DataDisplayViewModel(IMvxNavigationService navigationService,
                                     IManagerContext managerContext,
-                                    IIntraMessager messagingService)
+                                    IIntraMessenger messagingService)
             : base(navigationService)
         {
             _managerContext = (ManagerContext)managerContext;
             _messagingService = messagingService;
-            _messagingService.Subscribe(OnMessageReceived, Guid.Empty, new Type[] { typeof(DialogResultMessage) });
+            _messagingService.Subscribe(OnMessageReceived, new Type[] { typeof(DialogResultMessage) });
 
             //_trialists = _managerContext.Trialists.ToList();
             if (_managerContext.Trialists.Any())
@@ -75,7 +74,7 @@ namespace UIConcepts.Core.ViewModels
             };
             Trialists.Add(trialist);
             _managerContext.Add(trialist);
-            await _managerContext.SaveChangesAsync();
+            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
 
             //if (_trialists?.Count != 0)
             //{

@@ -15,7 +15,7 @@ namespace UIConcepts.Core.ViewModels
     {
         #region Fields
 
-        private readonly IIntraMessager _messagingService;
+        private readonly IIntraMessenger _messagingService;
         private bool _drawerStatus;
         private object _detailView;
 
@@ -45,12 +45,12 @@ namespace UIConcepts.Core.ViewModels
 
         #endregion
 
-        public HomeViewModel(IMvxNavigationService navigationService, IIntraMessager messagingService)
+        public HomeViewModel(IMvxNavigationService navigationService, IIntraMessenger messagingService)
             : base (navigationService)
         {
             NavigatableViewModels = new Dictionary<string, Type>();
             _messagingService = messagingService;
-            _messagingService.Subscribe(OnMessageReceived, Guid.Empty);
+            _messagingService.Subscribe(OnMessageReceived);
         }
 
         public override void ViewAppearing()

@@ -29,7 +29,7 @@ namespace UIConcepts.Core
 
             Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
             Mvx.IoCProvider.RegisterSingleton(Plugin.Settings.CrossSettings.Current);
-            Mvx.IoCProvider.RegisterSingleton(IntraMessaging.IntraMessager.Instance);
+            Mvx.IoCProvider.RegisterSingleton<IntraMessaging.IIntraMessenger>(IntraMessaging.IntraMessenger.Instance);
 
             var context = new Model.Context.ManagerContext(Mvx.IoCProvider.Resolve<Plugin.Settings.Abstractions.ISettings>());
             //await context.Database.EnsureDeletedAsync().ConfigureAwait(false);

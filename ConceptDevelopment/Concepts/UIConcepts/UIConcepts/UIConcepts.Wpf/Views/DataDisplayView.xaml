@@ -120,9 +120,12 @@
                                                              VerticalAlignment="Center"
                                                              Margin="0,0,4,0"/>
                                                 <TextBlock Text="{Binding Name}"
-                                                         VerticalAlignment="Center"/>
+                                                           VerticalAlignment="Center"/>
+                                                <TextBlock Text=" | "
+                                                           VerticalAlignment="Center"/>
                                                 <TextBlock Text="{Binding Status}"
-                                                           Margin="0,0,16,0"/>
+                                                           Margin="0,0,16,0"
+                                                           VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
