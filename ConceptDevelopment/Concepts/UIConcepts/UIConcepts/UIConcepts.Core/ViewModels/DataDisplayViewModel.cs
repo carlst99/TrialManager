@@ -2,6 +2,7 @@
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace UIConcepts.Core.ViewModels
 
         public IMvxCommand ImportDataCommand => new MvxCommand(OnImportData);
         public IMvxCommand EditDataEntryCommand => new MvxCommand(OnEditDataEntry);
-        public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand();
+        public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand<IList>(OnTrialistSelectionChanged);
 
         #endregion
 
@@ -114,9 +115,9 @@ namespace UIConcepts.Core.ViewModels
 
         }
 
-        private void OnTrialistSelectionChanged(IList<Trialist> selection)
+        private void OnTrialistSelectionChanged(IList selection)
         {
-            _selectedTrialists = selection;
+            _selectedTrialists = ConvertToList<Trialist>(selection);
             RaisePropertyChanged(nameof(CanEditDataEntry));
         }
 
@@ -140,6 +141,18 @@ namespace UIConcepts.Core.ViewModels
         {
             _lastMessageId = Guid.NewGuid();
             return _lastMessageId;
+        }
+
+        private IList<T> ConvertToList<T>(IList list)
+        {
+            List<T> converted = new List<T>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                converted.Add((T)list[i]);
+            }
+
+            return converted;
         }
     }
 }
