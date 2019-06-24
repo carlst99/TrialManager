@@ -28,7 +28,7 @@
         <md:DialogHost.DialogContent>
             <StackPanel DataContext="{Binding TrialistToEdit}"
                         Margin="16" MinWidth="300">
-                <TextBlock Text="{Binding DataContext.[Surname], Mode=OneTime, RelativeSource={RelativeSource AncestorType=StackPanel}}"
+                <TextBlock mvx:La.ng="Text Header_Surname"
                            Foreground="Gray"/>
                 <TextBox Text="{Binding Surname}"/>
                 
