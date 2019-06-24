@@ -1,4 +1,5 @@
 ﻿using IntraMessaging;
+using System;
 
 namespace UIConcepts.Core.Model.Messages
 {
@@ -6,6 +7,7 @@ namespace UIConcepts.Core.Model.Messages
     {
         public string Title { get; set; }
         public string Content { get; set; }
-        public DialogAction Action { get; set; }
+        public DialogAction Actions { get; set; }
+        public Action<DialogAction> Callback { get; set; }
     }
 }

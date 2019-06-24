@@ -28,6 +28,22 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <Popup mvx:Bi.nd="IsOpen IsEditDialogOpen"
+               AllowsTransparency="True"
+               StaysOpen="False"
+               Placement="Center"
+               MinWidth="300">
+            <Border BorderBrush="Black" BorderThickness="2"
+                    Padding="16"
+                    Background="White"
+                    CornerRadius="4">
+                <StackPanel DataContext="{Binding TrialistToEdit}">
+                    <TextBlock Text="Surname" Foreground="Gray"/>
+                    <TextBlock Text="{Binding Surname}"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Button mvx:Bi.nd="Content [Label_ImportData], Mode=OneTime; Command ImportDataCommand"/>
         </StackPanel>
@@ -37,7 +53,8 @@
                     HorizontalAlignment="Right"
                     Content="{md:PackIcon Kind=Add}"
                     Margin="0,0,8,0"/>
-            <Button mvx:Bi.nd="ToolTip [ToolTip_EditItem], Mode=OneTime; Command EditDataEntryCommand; IsEnabled CanEditDataEntry" 
+            <Button mvx:Bi.nd="ToolTip [ToolTip_EditItem], Mode=OneTime; Command EditDataEntryCommand; IsEnabled CanEditDataEntry"
+                    CommandParameter="{Binding SelectedItem, ElementName=LstVwTrialists}"
                     HorizontalAlignment="Right"
                     Content="{md:PackIcon Kind=Edit}"
                     Margin="0,0,8,0"/>
@@ -45,6 +62,7 @@
                     HorizontalAlignment="Right"
                     Content="{md:PackIcon Kind=Trash}"/>
         </StackPanel>
+        
         <!-- Border option -->
         <!--<Border Background="White"
                 BorderBrush="Black" BorderThickness="1"

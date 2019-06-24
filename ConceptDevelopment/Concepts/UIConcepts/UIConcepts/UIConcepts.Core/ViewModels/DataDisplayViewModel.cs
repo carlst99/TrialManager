@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using UIConcepts.Core.Model.Context;
 using UIConcepts.Core.Model.ContextModel;
 using UIConcepts.Core.Model.Messages;
@@ -20,22 +21,27 @@ namespace UIConcepts.Core.ViewModels
 
         private readonly ManagerContext _managerContext;
         private readonly IIntraMessenger _messagingService;
+
         private ObservableCollection<Trialist> _trialists;
         private IList<Trialist> _selectedTrialists;
-        private Guid _lastMessageId;
+        private Trialist _trialistToEdit;
+        private bool _isEditDialogOpen;
 
         #endregion
 
         #region Commands
 
         public IMvxCommand ImportDataCommand => new MvxCommand(OnImportData);
-        public IMvxCommand EditDataEntryCommand => new MvxCommand(OnEditDataEntry);
+        public IMvxCommand EditDataEntryCommand => new MvxCommand<Trialist>(OnEditDataEntry);
         public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand<IList>(OnTrialistSelectionChanged);
 
         #endregion
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets the list of trialists held in the database
+        /// </summary>
         public ObservableCollection<Trialist> Trialists
         {
             get => _trialists;
@@ -56,16 +62,31 @@ namespace UIConcepts.Core.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="Trialist"/> object that should be loaded by the editor
+        /// </summary>
+        public Trialist TrialistToEdit
+        {
+            get => _trialistToEdit;
+            set => SetProperty(ref _trialistToEdit, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the editing dialog is open
+        /// </summary>
+        public bool IsEditDialogOpen
+        {
+            get => _isEditDialogOpen;
+            set => SetProperty(ref _isEditDialogOpen, value);
+        }
+
         #endregion
 
-        public DataDisplayViewModel(IMvxNavigationService navigationService,
-                                    IManagerContext managerContext,
-                                    IIntraMessenger messagingService)
+        public DataDisplayViewModel(IMvxNavigationService navigationService, IManagerContext managerContext, IIntraMessenger messagingService)
             : base(navigationService)
         {
             _managerContext = (ManagerContext)managerContext;
             _messagingService = messagingService;
-            _messagingService.Subscribe(OnMessageReceived, new Type[] { typeof(DialogResultMessage) });
 
             if (_managerContext.Trialists.Any())
                 _trialists = new ObservableCollection<Trialist>(_managerContext.Trialists.ToList());
@@ -96,23 +117,33 @@ namespace UIConcepts.Core.ViewModels
 
             //if (_trialists?.Count != 0)
             //{
+            //    async void ResultCallback(DialogAction d)
+            //    {
+            //        if (d.HasFlag(DialogAction.Yes))
+            //            await ImportData(true).ConfigureAwait(false);
+            //        else
+            //            await ImportData(false).ConfigureAwait(false);
+            //    }
+
             //    MessageDialogMessage dialogRequest = new MessageDialogMessage
             //    {
-            //        Action = DialogAction.Yes | DialogAction.No,
-            //        Id = GetNewMessageId(),
+            //        Actions = DialogAction.Yes | DialogAction.No,
             //        Title = "Warning",
-            //        Content = "Do you wish to merge the import with the current data?"
+            //        Content = "Do you wish to merge the import with the current data?",
+            //        Callback = ResultCallback
             //    };
-            //    _messagingService.Enqueue(dialogRequest);
-            //} else
+            //    _messagingService.Send(dialogRequest);
+            //}
+            //else
             //{
-            //    ImportData(false);
+            //    await ImportData(false).ConfigureAwait(false);
             //}
         }
 
-        private void OnEditDataEntry()
+        private void OnEditDataEntry(Trialist trialist)
         {
-
+            TrialistToEdit = trialist;
+            IsEditDialogOpen = true;
         }
 
         private void OnTrialistSelectionChanged(IList selection)
@@ -121,26 +152,9 @@ namespace UIConcepts.Core.ViewModels
             RaisePropertyChanged(nameof(CanEditDataEntry));
         }
 
-        private async void ImportData(bool merge)
+        private async Task ImportData(bool merge)
         {
-
-        }
-
-        private void OnMessageReceived(IMessage message)
-        {
-            if (message is DialogResultMessage dMessage && dMessage.Id == _lastMessageId)
-            {
-                if (dMessage.Result.HasFlag(DialogAction.Yes))
-                    ImportData(true);
-                else if (dMessage.Result.HasFlag(DialogAction.No))
-                    ImportData(false);
-            }
-        }
-
-        private Guid GetNewMessageId()
-        {
-            _lastMessageId = Guid.NewGuid();
-            return _lastMessageId;
+            throw new NotImplementedException();
         }
 
         private IList<T> ConvertToList<T>(IList list)

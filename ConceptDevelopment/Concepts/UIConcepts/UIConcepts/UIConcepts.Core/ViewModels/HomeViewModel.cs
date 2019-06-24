@@ -65,6 +65,9 @@ namespace UIConcepts.Core.ViewModels
             IsDrawerOpen = false;
         }
 
+        /// <summary>
+        /// Obtains a list of viewmodel types that should be listed in the navigation pane
+        /// </summary>
         private void QueryNavigatableTypes()
         {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
@@ -84,7 +87,7 @@ namespace UIConcepts.Core.ViewModels
         {
             if (message is MessageDialogMessage mdMessage)
             {
-                throw new NotImplementedException();
+                mdMessage.Callback?.Invoke(DialogAction.Yes);
             }
         }
     }
