@@ -2,6 +2,7 @@
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UIConcepts.Core.Model.Context;
@@ -19,6 +20,7 @@ namespace UIConcepts.Core.ViewModels
         private readonly ManagerContext _managerContext;
         private readonly IIntraMessenger _messagingService;
         private ObservableCollection<Trialist> _trialists;
+        private IList<Trialist> _selectedTrialists;
         private Guid _lastMessageId;
 
         #endregion
@@ -26,6 +28,8 @@ namespace UIConcepts.Core.ViewModels
         #region Commands
 
         public IMvxCommand ImportDataCommand => new MvxCommand(OnImportData);
+        public IMvxCommand EditDataEntryCommand => new MvxCommand(OnEditDataEntry);
+        public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand();
 
         #endregion
 
@@ -35,6 +39,20 @@ namespace UIConcepts.Core.ViewModels
         {
             get => _trialists;
             set => SetProperty(ref _trialists, value);
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether or not a data entry selection can be edited
+        /// </summary>
+        public bool CanEditDataEntry
+        {
+            get
+            {
+                if (_selectedTrialists?.Count == 1)
+                    return true;
+                else
+                    return false;
+            }
         }
 
         #endregion
@@ -48,7 +66,6 @@ namespace UIConcepts.Core.ViewModels
             _messagingService = messagingService;
             _messagingService.Subscribe(OnMessageReceived, new Type[] { typeof(DialogResultMessage) });
 
-            //_trialists = _managerContext.Trialists.ToList();
             if (_managerContext.Trialists.Any())
                 _trialists = new ObservableCollection<Trialist>(_managerContext.Trialists.ToList());
             else
@@ -90,6 +107,17 @@ namespace UIConcepts.Core.ViewModels
             //{
             //    ImportData(false);
             //}
+        }
+
+        private void OnEditDataEntry()
+        {
+
+        }
+
+        private void OnTrialistSelectionChanged(IList<Trialist> selection)
+        {
+            _selectedTrialists = selection;
+            RaisePropertyChanged(nameof(CanEditDataEntry));
         }
 
         private async void ImportData(bool merge)

@@ -149,5 +149,14 @@ namespace UIConcepts.Core.Resources {
                 return ResourceManager.GetString("ToolTip_DeleteItem", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Entry.
+        /// </summary>
+        public static string ToolTip_EditItem {
+            get {
+                return ResourceManager.GetString("ToolTip_EditItem", resourceCulture);
+            }
+        }
     }
 }
