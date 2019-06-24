@@ -26,20 +26,45 @@
                    Identifier="DlgHstDataDisplayView"
                    CloseOnClickAway="True">
         <md:DialogHost.DialogContent>
-            <StackPanel DataContext="{Binding TrialistToEdit}"
-                        Margin="16" MinWidth="300">
-                <TextBlock Text="{Binding DataContext.[Surname], Mode=OneTime, RelativeSource={RelativeSource AncestorType=StackPanel}}"
-                           Foreground="Gray"/>
-                <TextBox Text="{Binding Surname}"/>
-                
-                <TextBlock mvx:Bi.nd="Text Header_FirstName, Mode=OneTime"
-                           Foreground="Gray" Margin="0,4,0,0"/>
-                <TextBox Text="{Binding FirstName}"/>
+            <Grid MinWidth="400">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <ComboBox ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
-                          SelectedItem="{Binding Status}"
-                          Padding="8,6"/>
-            </StackPanel>
+                <md:PackIcon Kind="Person" Margin="16"/>
+                <StackPanel DataContext="{Binding TrialistToEdit}"
+                            Margin="0,16,16,16"
+                            Grid.Column="1">
+                    <TextBlock Text="{Binding DataContext.[Header_Surname], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                               Foreground="Gray"/>
+                    <TextBox Text="{Binding Surname}"/>
+
+                    <TextBlock Text="{Binding DataContext.[Header_FirstName], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                               Foreground="Gray" Margin="0,4,0,0"/>
+                    <TextBox Text="{Binding FirstName}"/>
+
+                    <TextBlock Text="{Binding DataContext.[Header_Status], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                               Foreground="Gray" Margin="0,4,0,0"/>
+                    <ComboBox ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
+                              SelectedItem="{Binding Status}"
+                              Padding="0,6"/>
+                </StackPanel>
+
+                <md:PackIcon Kind="Phone" Grid.Row="1" Margin="16"/>
+                <StackPanel DataContext="{Binding TrialistToEdit}"
+                            Margin="0,0,16,16"
+                            Grid.Column="1" Grid.Row="1">
+                    <TextBlock Text="{Binding DataContext.[Header_PhoneNumber], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                               Foreground="Gray"/>
+                    <TextBox Text="{Binding PhoneNumber}"/>
+                </StackPanel>
+            </Grid>
         </md:DialogHost.DialogContent>
         
         <Grid Margin="16">
