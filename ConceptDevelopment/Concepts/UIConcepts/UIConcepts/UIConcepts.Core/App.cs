@@ -9,7 +9,6 @@ using Serilog.Events;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using MvvmCross.Plugin.ResxLocalization;
 
 [assembly: InternalsVisibleTo("MvvmCrossCoreTestProject")]
 
@@ -31,7 +30,6 @@ namespace UIConcepts.Core
             Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
             Mvx.IoCProvider.RegisterSingleton(Plugin.Settings.CrossSettings.Current);
             Mvx.IoCProvider.RegisterSingleton<IntraMessaging.IIntraMessenger>(IntraMessaging.IntraMessenger.Instance);
-            Mvx.IoCProvider.RegisterSingleton(new MvxResxTextProvider(Localisation.AppStrings.ResourceManager));
 
             var context = new Model.Context.ManagerContext(Mvx.IoCProvider.Resolve<Plugin.Settings.Abstractions.ISettings>());
             //await context.Database.EnsureDeletedAsync().ConfigureAwait(false);

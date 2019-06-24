@@ -1,5 +1,4 @@
-﻿using MvvmCross.Localization;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace UIConcepts.Core.Model.ContextModel
@@ -18,8 +17,6 @@ namespace UIConcepts.Core.Model.ContextModel
         #endregion
 
         #region Properties
-
-        public IMvxLanguageBinder TextSource => new MvxLanguageBinder("", GetType().Name);
 
         /// <summary>
         /// Gets or sets the database ID of the trialist

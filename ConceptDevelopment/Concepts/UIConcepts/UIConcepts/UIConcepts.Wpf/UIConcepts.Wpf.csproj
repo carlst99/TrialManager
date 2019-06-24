@@ -109,7 +109,6 @@
     </Reference>
     <Reference Include="MvvmCross, Version=6.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmCross.6.3.1\lib\net461\MvvmCross.dll</HintPath>
-      <Aliases>global,mvvmcrossnew</Aliases>
     </Reference>
     <Reference Include="MvvmCross.Binding, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmCross.Binding.5.7.0\lib\net45\MvvmCross.Binding.dll</HintPath>
@@ -131,9 +130,6 @@
     </Reference>
     <Reference Include="MvvmCross.Platforms.Wpf, Version=6.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmCross.Platforms.Wpf.6.3.1\lib\net461\MvvmCross.Platforms.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="MvvmCross.Plugin.ResxLocalization, Version=6.3.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvvmCross.Plugin.ResxLocalization.6.3.1\lib\netstandard2.0\MvvmCross.Plugin.ResxLocalization.dll</HintPath>
     </Reference>
     <Reference Include="MvvmCross.Wpf, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmCross.Core.5.7.0\lib\net45\MvvmCross.Wpf.dll</HintPath>
