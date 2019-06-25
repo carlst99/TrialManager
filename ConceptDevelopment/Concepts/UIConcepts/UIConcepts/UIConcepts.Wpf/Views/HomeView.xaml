@@ -46,7 +46,11 @@
                 </StackPanel>
             </md:DrawerHost.LeftDrawerContent>
 
-            <StackPanel Orientation="Vertical">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
                 <md:ColorZone Mode="PrimaryMid"
                               md:ShadowAssist.ShadowDepth="Depth2"
                               Padding="16">
@@ -62,8 +66,8 @@
                     </Grid>
                 </md:ColorZone>
                 <Frame mvx:Bi.nd="Content DetailView, Mode=OneWay"
-                       Margin="0,4,0,0"/>
-            </StackPanel>
+                       Margin="0,4,0,0" Grid.Row="1"/>
+            </Grid>
         </md:DrawerHost>
     </Grid>
 </views:MvxWpfView>
