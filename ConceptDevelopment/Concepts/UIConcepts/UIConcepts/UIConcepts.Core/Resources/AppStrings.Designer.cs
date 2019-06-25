@@ -19,7 +19,7 @@ namespace UIConcepts.Core.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
@@ -79,6 +79,15 @@ namespace UIConcepts.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Trialist Entry.
+        /// </summary>
+        public static string Header_EditTrialist {
+            get {
+                return ResourceManager.GetString("Header_EditTrialist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         public static string Header_Email {
@@ -120,6 +129,15 @@ namespace UIConcepts.Core.Resources {
         public static string Header_Surname {
             get {
                 return ResourceManager.GetString("Header_Surname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string Label_Done {
+            get {
+                return ResourceManager.GetString("Label_Done", resourceCulture);
             }
         }
         

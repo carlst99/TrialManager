@@ -32,9 +32,67 @@ namespace UIConcepts.Core.ViewModels
         #region Commands
 
         public IMvxCommand ImportDataCommand => new MvxCommand(OnImportData);
-        public IMvxCommand EditDataEntryCommand => new MvxCommand<Trialist>(OnEditDataEntry);
-        public IMvxCommand CloseEditDialogCommand => new MvxCommand(OnEditDialogClose);
-        public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand<IList>(OnTrialistSelectionChanged);
+
+        /// <summary>
+        /// Updates the list of selected trialists
+        /// </summary>
+        public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand<IList>((s) =>
+        {
+            _selectedTrialists = ConvertToList<Trialist>(s);
+            RaisePropertyChanged(nameof(CanEditDataEntry));
+            RaisePropertyChanged(nameof(CanDeleteDataEntries));
+        });
+
+        /// <summary>
+        /// Adds a trialist to the data source and saves the DB
+        /// </summary>
+        public IMvxCommand AddTrialistCommand => new MvxCommand(async () =>
+        {
+            Trialist trialist = Trialist.Default;
+            Trialists.Add(trialist);
+            await _managerContext.AddAsync(trialist).ConfigureAwait(false);
+            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
+        });
+
+        /// <summary>
+        /// Removes a trialist from the data source and saves the DB
+        /// </summary>
+        public IMvxCommand DeleteTrialistCommand => new MvxCommand(async () =>
+        {
+            _managerContext.RemoveRange(_selectedTrialists);
+            foreach (Trialist t in _selectedTrialists)
+                Trialists.Remove(t);
+            await _managerContext.SaveChangesAsync();
+        });
+
+        /// <summary>
+        /// Invokes the data edit dialog and starts tracking the edited item
+        /// </summary>
+        public IMvxCommand EditDataEntryCommand => new MvxCommand<Trialist>((t) =>
+        {
+            TrialistToEdit = t;
+            _managerContext.Update(t);
+            IsEditDialogOpen = true;
+        });
+
+        /// <summary>
+        /// Closes the data edit dialog and saves the DB
+        /// </summary>
+        public IMvxCommand CloseEditDialogCommand => new MvxCommand(async () =>
+        {
+            IsEditDialogOpen = false;
+            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
+        });
+
+        /// <summary>
+        /// Deletes a dog from the currently edited trialist
+        /// </summary>
+        public IMvxCommand DeleteDogCommand => new MvxCommand<Dog>((d) => _trialistToEdit.SafeRemoveDog(d));
+
+        /// <summary>
+        /// Adds a dog to the currently edited trialist
+        /// </summary>
+        public IMvxCommand AddDogCommand => new MvxCommand(() => _trialistToEdit.Dogs.Add(Dog.Default));
 
         #endregion
 
@@ -52,16 +110,12 @@ namespace UIConcepts.Core.ViewModels
         /// <summary>
         /// Gets a value indicating whether or not a data entry selection can be edited
         /// </summary>
-        public bool CanEditDataEntry
-        {
-            get
-            {
-                if (_selectedTrialists?.Count == 1)
-                    return true;
-                else
-                    return false;
-            }
-        }
+        public bool CanEditDataEntry => _selectedTrialists?.Count == 1;
+
+        /// <summary>
+        /// Gets a value indicating whether or not data entries can be deleted
+        /// </summary>
+        public bool CanDeleteDataEntries => _selectedTrialists?.Count > 0;
 
         /// <summary>
         /// Gets or sets the <see cref="Trialist"/> object that should be loaded by the editor
@@ -97,67 +151,29 @@ namespace UIConcepts.Core.ViewModels
 
         private async void OnImportData()
         {
-            Dog dog = new Dog
+            if (_trialists?.Count != 0)
             {
-                Name = "Flynn",
-                Status = EntityStatus.OpenBlack
-            };
-            Dog[] dogs = new Dog[] { dog, dog, dog };
-            Trialist trialist = new Trialist
+                async void ResultCallback(DialogAction d)
+                {
+                    if (d.HasFlag(DialogAction.Yes))
+                        await ImportData(true).ConfigureAwait(false);
+                    else
+                        await ImportData(false).ConfigureAwait(false);
+                }
+
+                MessageDialogMessage dialogRequest = new MessageDialogMessage
+                {
+                    Actions = DialogAction.Yes | DialogAction.No,
+                    Title = "Warning",
+                    Content = "Do you wish to merge the import with the current data?",
+                    Callback = ResultCallback
+                };
+                _messagingService.Send(dialogRequest);
+            }
+            else
             {
-                FirstName = DateTime.Now.ToLongTimeString(),
-                Surname = "Name, sir",
-                Email = "gg123@gg123.com",
-                PhoneNumber = "0123456789",
-                Status = EntityStatus.Maiden,
-                Dogs = new ObservableCollection<Dog>(dogs)
-            };
-            Trialists.Add(trialist);
-            _managerContext.Add(trialist);
-            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
-
-            //if (_trialists?.Count != 0)
-            //{
-            //    async void ResultCallback(DialogAction d)
-            //    {
-            //        if (d.HasFlag(DialogAction.Yes))
-            //            await ImportData(true).ConfigureAwait(false);
-            //        else
-            //            await ImportData(false).ConfigureAwait(false);
-            //    }
-
-            //    MessageDialogMessage dialogRequest = new MessageDialogMessage
-            //    {
-            //        Actions = DialogAction.Yes | DialogAction.No,
-            //        Title = "Warning",
-            //        Content = "Do you wish to merge the import with the current data?",
-            //        Callback = ResultCallback
-            //    };
-            //    _messagingService.Send(dialogRequest);
-            //}
-            //else
-            //{
-            //    await ImportData(false).ConfigureAwait(false);
-            //}
-        }
-
-        private void OnEditDataEntry(Trialist trialist)
-        {
-            TrialistToEdit = trialist;
-            _managerContext.Update(trialist);
-            IsEditDialogOpen = true;
-        }
-
-        private async void OnEditDialogClose()
-        {
-            IsEditDialogOpen = false;
-            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        private void OnTrialistSelectionChanged(IList selection)
-        {
-            _selectedTrialists = ConvertToList<Trialist>(selection);
-            RaisePropertyChanged(nameof(CanEditDataEntry));
+                await ImportData(false).ConfigureAwait(false);
+            }
         }
 
         private async Task ImportData(bool merge)

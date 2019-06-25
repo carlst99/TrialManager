@@ -5,6 +5,12 @@ namespace UIConcepts.Core.Model.ContextModel
     [MessagePackObject]
     public class Dog : ContextItem
     {
+        public static Dog Default => new Dog
+        {
+            Name = "Dog",
+            Status = EntityStatus.Maiden
+        };
+
         #region Fields
 
         private int _dogId;
@@ -60,7 +66,7 @@ namespace UIConcepts.Core.Model.ContextModel
 
         public override int GetHashCode()
         {
-            int hash = 13;
+            const int hash = 13;
             return (hash * 7) + DogId;
         }
 

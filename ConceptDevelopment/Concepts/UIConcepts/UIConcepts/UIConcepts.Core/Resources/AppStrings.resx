@@ -125,6 +125,10 @@
     <value>Dogs</value>
     <comment>This header appears above a list of dogs</comment>
   </data>
+  <data name="Header_EditTrialist" xml:space="preserve">
+    <value>Edit Trialist Entry</value>
+    <comment>This header appears on a control which provides means to edit a data entry</comment>
+  </data>
   <data name="Header_Email" xml:space="preserve">
     <value>Email</value>
     <comment>This header appears above a list of email addresses</comment>
@@ -144,6 +148,10 @@
   <data name="Header_Surname" xml:space="preserve">
     <value>Surname</value>
     <comment>This header appears above a list of surnames</comment>
+  </data>
+  <data name="Label_Done" xml:space="preserve">
+    <value>Done</value>
+    <comment>This label appears on a control which completes an action</comment>
   </data>
   <data name="Label_ImportData" xml:space="preserve">
     <value>Import Data</value>

@@ -5,6 +5,16 @@ namespace UIConcepts.Core.Model.ContextModel
 {
     public class Trialist : ContextItem
     {
+        public static Trialist Default => new Trialist
+        {
+            Surname = "Surname",
+            FirstName = "First Name",
+            Status = EntityStatus.Maiden,
+            PhoneNumber = "012 345 6789",
+            Email = "email@email.com",
+            Dogs = { Dog.Default }
+        };
+
         #region Fields
 
         private int _trialistId;
@@ -79,6 +89,13 @@ namespace UIConcepts.Core.Model.ContextModel
 
         #endregion
 
+        public void SafeRemoveDog(Dog dog)
+        {
+            Dogs.Remove(dog);
+            if (Dogs.Count <= 0)
+                Dogs.Add(Dog.Default);
+        }
+
         #region Object Overrides
 
         public override string ToString()
@@ -97,7 +114,7 @@ namespace UIConcepts.Core.Model.ContextModel
 
         public override int GetHashCode()
         {
-            int hash = 13;
+            const int hash = 13;
             return (hash * 7) + TrialistId;
         }
 
