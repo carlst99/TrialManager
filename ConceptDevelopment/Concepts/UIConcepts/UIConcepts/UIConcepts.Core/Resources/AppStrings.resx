@@ -169,4 +169,8 @@
     <value>Edit Entry</value>
     <comment>This tooltip appears on a control which allows a data entry to be edited</comment>
   </data>
+  <data name="ToolTip_EditRightClickShortcutHint" xml:space="preserve">
+    <value>Right click to edit entry</value>
+    <comment>This tooltip appears on an editable data entry which can be edited by right clicking</comment>
+  </data>
 </root>

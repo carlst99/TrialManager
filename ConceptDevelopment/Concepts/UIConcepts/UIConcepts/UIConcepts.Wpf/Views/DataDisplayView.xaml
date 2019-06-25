@@ -132,7 +132,7 @@
                         mvx:Bi.nd="Command CloseEditDialogCommand; Content [Label_Done], Mode=OneTime"/>
             </Grid>
         </md:DialogHost.DialogContent>
-        
+
         <Grid Margin="16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -141,6 +141,22 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <Button mvx:Bi.nd="Content [Label_ImportData], Mode=OneTime; Command ImportDataCommand"/>
+                <TextBlock Text="Hint: Right-click an entry to edit it!"
+                           Margin="16,0,0,0" VerticalAlignment="Center"
+                           x:Name="TxtBxHint"
+                           FontWeight="Bold">
+                    <TextBlock.Triggers>
+                        <EventTrigger RoutedEvent="TextBlock.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="TxtBxHint"
+                                                     Storyboard.TargetProperty="Opacity"
+                                                     From="1.0" To="0" Duration="0:0:3" BeginTime="0:0:2"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </TextBlock.Triggers>
+                </TextBlock>
             </StackPanel>
 
             <!-- Data modification controls -->
@@ -149,25 +165,17 @@
                     HorizontalAlignment="Right"
                     Content="{md:PackIcon Kind=Add}"
                     Margin="0,0,8,0"/>
-                <Button mvx:Bi.nd="ToolTip [ToolTip_EditItem], Mode=OneTime; Command EditDataEntryCommand; IsEnabled CanEditDataEntry"
+                <Button mvx:Bi.nd="ToolTip [ToolTip_EditItem], Mode=OneTime; Command EditDataEntryCommand; IsEnabled CanEditDataEntry, Mode=OneWay"
                     CommandParameter="{Binding SelectedItem, ElementName=LstVwTrialists}"
                     HorizontalAlignment="Right"
                     Content="{md:PackIcon Kind=Edit}"
                     Margin="0,0,8,0"/>
-                <Button mvx:Bi.nd="ToolTip [ToolTip_DeleteItem], Mode=OneTime; Command DeleteTrialistCommand; IsEnabled CanDeleteDataEntries" 
+                <Button mvx:Bi.nd="ToolTip [ToolTip_DeleteItem], Mode=OneTime; Command DeleteTrialistCommand; IsEnabled CanDeleteDataEntries, Mode=OneWay" 
                     HorizontalAlignment="Right"
                     Content="{md:PackIcon Kind=Trash}"/>
             </StackPanel>
-
-            <!-- Border option -->
-            <!--<Border Background="White"
-                    BorderBrush="Black" BorderThickness="1"
-                    Grid.Row="1"
-                    Margin="0,8,0,0">
-                
-            </Border>-->
-
-            <!-- Data view -->
+            
+            <!-- Data list -->
             <ListView mvx:Bi.nd="ItemsSource Trialists"
                   x:Name="LstVwTrialists"
                   SelectionMode="Extended"
@@ -176,10 +184,14 @@
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding TrialistSelectionChangedCommand}"
-                                           CommandParameter="{Binding SelectedItems, ElementName=LstVwTrialists}"/>
+                                               CommandParameter="{Binding SelectedItems, ElementName=LstVwTrialists}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseRightButtonUp">
+                        <i:InvokeCommandAction Command="{Binding EditDataEntryCommand}"
+                                               CommandParameter="{Binding SelectedItem, ElementName=LstVwTrialists}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                
+
                 <ListView.View>
                     <GridView>
                         <!-- Surname -->

@@ -51,6 +51,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+
                 <md:ColorZone Mode="PrimaryMid"
                               md:ShadowAssist.ShadowDepth="Depth2"
                               Padding="16">
