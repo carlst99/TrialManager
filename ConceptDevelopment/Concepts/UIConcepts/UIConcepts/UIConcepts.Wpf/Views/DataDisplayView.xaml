@@ -20,6 +20,8 @@
                 <x:Type TypeName="model:EntityStatus"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <Thickness x:Key="EditDialogIconMargin" Left="16" Top="0" Right="16" Bottom="16"/>
+        <Thickness x:Key="EditDialogContentMargin" Left="0" Top="0" Right="16" Bottom="16"/>
     </views:MvxWpfView.Resources>
 
     <md:DialogHost IsOpen="{Binding IsEditDialogOpen}"
@@ -32,6 +34,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -56,14 +60,53 @@
                               Padding="0,6"/>
                 </StackPanel>
 
-                <md:PackIcon Kind="Phone" Grid.Row="1" Margin="16"/>
+                <md:PackIcon Kind="Phone" Grid.Row="1" Margin="{StaticResource EditDialogIconMargin}"/>
                 <StackPanel DataContext="{Binding TrialistToEdit}"
-                            Margin="0,0,16,16"
+                            Margin="{StaticResource EditDialogContentMargin}"
                             Grid.Column="1" Grid.Row="1">
                     <TextBlock Text="{Binding DataContext.[Header_PhoneNumber], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
                                Foreground="Gray"/>
                     <TextBox Text="{Binding PhoneNumber}"/>
                 </StackPanel>
+
+                <md:PackIcon Kind="Email" Grid.Row="2" Margin="{StaticResource EditDialogIconMargin}"/>
+                <StackPanel DataContext="{Binding TrialistToEdit}"
+                            Margin="{StaticResource EditDialogContentMargin}"
+                            Grid.Column="1" Grid.Row="2">
+                    <TextBlock Text="{Binding DataContext.[Header_Email], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                               Foreground="Gray"/>
+                    <TextBox Text="{Binding Email}"/>
+                </StackPanel>
+
+                <md:PackIcon Kind="DogSide" Grid.Row="3" Margin="{StaticResource EditDialogIconMargin}"/>
+                <StackPanel DataContext="{Binding TrialistToEdit}"
+                            Margin="{StaticResource EditDialogContentMargin}"
+                            Grid.Column="1" Grid.Row="3">
+                    <TextBlock Text="{Binding DataContext.[Header_Dogs], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                               Foreground="Gray"/>
+                    <ItemsControl ItemsSource="{Binding Dogs}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type model:Dog}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Text="{Binding Name}"/>
+                                    <ComboBox ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
+                                              SelectedItem="{Binding Status}"
+                                              Padding="0,6" Grid.Column="1"
+                                              Margin="16,0,0,0"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <Button Grid.ColumnSpan="2" Grid.Row="4"
+                        HorizontalAlignment="Stretch"
+                        Content="Done"
+                        mvx:Bi.nd="Command CloseEditDialogCommand"/>
             </Grid>
         </md:DialogHost.DialogContent>
         

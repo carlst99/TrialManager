@@ -33,6 +33,7 @@ namespace UIConcepts.Core.ViewModels
 
         public IMvxCommand ImportDataCommand => new MvxCommand(OnImportData);
         public IMvxCommand EditDataEntryCommand => new MvxCommand<Trialist>(OnEditDataEntry);
+        public IMvxCommand CloseEditDialogCommand => new MvxCommand(OnEditDialogClose);
         public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand<IList>(OnTrialistSelectionChanged);
 
         #endregion
@@ -143,7 +144,14 @@ namespace UIConcepts.Core.ViewModels
         private void OnEditDataEntry(Trialist trialist)
         {
             TrialistToEdit = trialist;
+            _managerContext.Update(trialist);
             IsEditDialogOpen = true;
+        }
+
+        private async void OnEditDialogClose()
+        {
+            IsEditDialogOpen = false;
+            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         private void OnTrialistSelectionChanged(IList selection)
