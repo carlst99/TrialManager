@@ -144,9 +144,9 @@ namespace UIConcepts.Core.ViewModels
             _messagingService = messagingService;
 
             if (_managerContext.Trialists.Any())
-                _trialists = new ObservableCollection<Trialist>(_managerContext.Trialists.ToList());
+                Trialists = new ObservableCollection<Trialist>(_managerContext.Trialists.ToList());
             else
-                _trialists = new ObservableCollection<Trialist>();
+                Trialists = new ObservableCollection<Trialist>();
         }
 
         private async void OnImportData()
