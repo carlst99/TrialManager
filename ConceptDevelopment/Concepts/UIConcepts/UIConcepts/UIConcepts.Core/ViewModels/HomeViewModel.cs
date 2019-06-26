@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using UIConcepts.Core.Model.Messages;
 using UIConcepts.Core.ViewModels.Base;
 
@@ -29,14 +30,23 @@ namespace UIConcepts.Core.ViewModels
 
         #region Properties
 
-        public Dictionary<string, Type> NavigatableViewModels { get; }
+        /// <summary>
+        /// Gets a dictionary of navigatable viewmodel types, and their friendly name
+        /// </summary>
+        public Dictionary<Type, string> NavigatableViewModels { get; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the side drawer is open
+        /// </summary>
         public bool IsDrawerOpen
         {
             get => _drawerStatus;
             set => SetProperty(ref _drawerStatus, value);
         }
 
+        /// <summary>
+        /// Gets or sets the detail view of this <see cref="IMasterPresentationViewModel"/>
+        /// </summary>
         public object DetailView
         {
             get => _detailView;
@@ -48,15 +58,22 @@ namespace UIConcepts.Core.ViewModels
         public HomeViewModel(IMvxNavigationService navigationService, IIntraMessenger messagingService)
             : base (navigationService)
         {
-            NavigatableViewModels = new Dictionary<string, Type>();
+            NavigatableViewModels = new Dictionary<Type, string>();
             _messagingService = messagingService;
             _messagingService.Subscribe(OnMessageReceived);
         }
 
+        public override void Prepare()
+        {
+            QueryNavigatableTypes();
+            base.Prepare();
+        }
+
         public override void ViewAppearing()
         {
-            base.ViewCreated();
-            QueryNavigatableTypes();
+            base.ViewAppearing();
+            if (NavigatableViewModels.Count > 0)
+                OnNavigateRequested(NavigatableViewModels.Keys.First());
         }
 
         private void OnNavigateRequested(Type navigationItem)
@@ -77,10 +94,8 @@ namespace UIConcepts.Core.ViewModels
             foreach (Type type in types)
             {
                 DisplayNavigationAttribute attribute = type.GetCustomAttribute<DisplayNavigationAttribute>();
-                NavigatableViewModels.Add(attribute.DisplayName, type);
+                NavigatableViewModels.Add(type, attribute.DisplayName);
             }
-            if (NavigatableViewModels.Count > 0)
-                OnNavigateRequested(NavigatableViewModels.Values.First());
         }
 
         private void OnMessageReceived(IMessage message)
