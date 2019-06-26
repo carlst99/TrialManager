@@ -49,9 +49,9 @@ namespace UIConcepts.Core.ViewModels
         public IMvxCommand AddTrialistCommand => new MvxCommand(async () =>
         {
             Trialist trialist = Trialist.Default;
-            Trialists.Add(trialist);
-            await _managerContext.AddAsync(trialist).ConfigureAwait(false);
+            _managerContext.Add(trialist);
             await _managerContext.SaveChangesAsync().ConfigureAwait(false);
+            Trialists.Add(trialist);
         });
 
         /// <summary>
@@ -60,9 +60,9 @@ namespace UIConcepts.Core.ViewModels
         public IMvxCommand DeleteTrialistCommand => new MvxCommand(async () =>
         {
             _managerContext.RemoveRange(_selectedTrialists);
+            await _managerContext.SaveChangesAsync();
             foreach (Trialist t in _selectedTrialists)
                 Trialists.Remove(t);
-            await _managerContext.SaveChangesAsync();
         });
 
         /// <summary>
