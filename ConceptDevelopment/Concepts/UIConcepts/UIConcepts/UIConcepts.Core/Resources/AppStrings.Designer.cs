@@ -19,7 +19,7 @@ namespace UIConcepts.Core.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
@@ -133,6 +133,51 @@ namespace UIConcepts.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trial End Date.
+        /// </summary>
+        public static string Hint_TrialEndDate {
+            get {
+                return ResourceManager.GetString("Hint_TrialEndDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trial End Time.
+        /// </summary>
+        public static string Hint_TrialEndTime {
+            get {
+                return ResourceManager.GetString("Hint_TrialEndTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trial Start Date.
+        /// </summary>
+        public static string Hint_TrialStartDate {
+            get {
+                return ResourceManager.GetString("Hint_TrialStartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trial Start Time.
+        /// </summary>
+        public static string Hint_TrialStartTime {
+            get {
+                return ResourceManager.GetString("Hint_TrialStartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Draw.
+        /// </summary>
+        public static string Label_CreateDraw {
+            get {
+                return ResourceManager.GetString("Label_CreateDraw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Done.
         /// </summary>
         public static string Label_Done {
@@ -183,6 +228,15 @@ namespace UIConcepts.Core.Resources {
         public static string ToolTip_EditRightClickShortcutHint {
             get {
                 return ResourceManager.GetString("ToolTip_EditRightClickShortcutHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Dates/Times.
+        /// </summary>
+        public static string ToolTip_ResetTrialDates {
+            get {
+                return ResourceManager.GetString("ToolTip_ResetTrialDates", resourceCulture);
             }
         }
     }

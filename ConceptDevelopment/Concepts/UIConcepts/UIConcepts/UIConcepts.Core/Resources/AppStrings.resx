@@ -149,6 +149,26 @@
     <value>Surname</value>
     <comment>This header appears above a list of surnames</comment>
   </data>
+  <data name="Hint_TrialEndDate" xml:space="preserve">
+    <value>Trial End Date</value>
+    <comment>This hint appears on a datepicker control allowing the end date of the trial to be selected</comment>
+  </data>
+  <data name="Hint_TrialEndTime" xml:space="preserve">
+    <value>Trial End Time</value>
+    <comment>This hint appears on a timepicker control allowing the ending time of the trial to be selected</comment>
+  </data>
+  <data name="Hint_TrialStartDate" xml:space="preserve">
+    <value>Trial Start Date</value>
+    <comment>This hint appears on a datepicker control allowing the start date of the trial to be selected</comment>
+  </data>
+  <data name="Hint_TrialStartTime" xml:space="preserve">
+    <value>Trial Start Time</value>
+    <comment>This hint appears on a timepicker control allowing the starting time of the trial to be selected</comment>
+  </data>
+  <data name="Label_CreateDraw" xml:space="preserve">
+    <value>Create Draw</value>
+    <comment>This label appears on a control which initiates the draw creation sequence</comment>
+  </data>
   <data name="Label_Done" xml:space="preserve">
     <value>Done</value>
     <comment>This label appears on a control which completes an action</comment>
@@ -172,5 +192,9 @@
   <data name="ToolTip_EditRightClickShortcutHint" xml:space="preserve">
     <value>Right click to edit entry</value>
     <comment>This tooltip appears on an editable data entry which can be edited by right clicking</comment>
+  </data>
+  <data name="ToolTip_ResetTrialDates" xml:space="preserve">
+    <value>Reset Dates/Times</value>
+    <comment>This tooltip appears on a control allowing the start/end dates and times of a trial to be reset to default</comment>
   </data>
 </root>

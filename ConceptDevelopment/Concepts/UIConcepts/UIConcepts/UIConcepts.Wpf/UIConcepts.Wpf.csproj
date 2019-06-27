@@ -131,6 +131,9 @@
     <Reference Include="MvvmCross.Platforms.Wpf, Version=6.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmCross.Platforms.Wpf.6.3.1\lib\net461\MvvmCross.Platforms.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="MvvmCross.Plugin.Visibility, Version=6.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmCross.Plugin.Visibility.6.3.1\lib\net461\MvvmCross.Plugin.Visibility.dll</HintPath>
+    </Reference>
     <Reference Include="MvvmCross.Wpf, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmCross.Core.5.7.0\lib\net45\MvvmCross.Wpf.dll</HintPath>
     </Reference>
@@ -240,6 +243,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Helpers\Settings.cs" />
+    <Compile Include="NativeConverters.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="Views\CreateDrawView.xaml.cs">
       <DependentUpon>CreateDrawView.xaml</DependentUpon>

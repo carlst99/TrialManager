@@ -6,11 +6,56 @@
              xmlns:local="clr-namespace:UIConcepts.Wpf.Views"
              xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
              xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="CreateDrawView"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+    
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button mvx:Bi.nd="Content [Label_CreateDraw], Mode=OneTime; Command CreateDrawCommand"
+                    VerticalAlignment="Center"/>
+            <DatePicker Width="100" FontSize="14"
+                        md:HintAssist.Hint="{Binding [Hint_TrialStartDate]}"
+                        mvx:Bi.nd="SelectedDate TrialStartDate"
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+                        VerticalAlignment="Center" Margin="16,0"/>
+            <DatePicker Width="100" FontSize="14"
+                        md:HintAssist.Hint="{Binding [Hint_TrialEndDate]}"
+                        mvx:Bi.nd="SelectedDate TrialEndDate"
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
+                        VerticalAlignment="Center" Margin="16,0"/>
+
+            <md:TimePicker Width="100" FontSize="14"
+                           md:HintAssist.Hint="{Binding [Hint_TrialStartTime]}"
+                           mvx:Bi.nd="SelectedTime TrialStartDate"
+                           Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
+                           VerticalAlignment="Center" Margin="16,0"/>
+            <md:TimePicker Width="100" FontSize="14"
+                           md:HintAssist.Hint="{Binding [Hint_TrialEndTime]}"
+                           mvx:Bi.nd="SelectedTime TrialEndDate"
+                           Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
+                           VerticalAlignment="Center" Margin="16,0"/>
+
+            <Button Content="{md:PackIcon Kind=Undo}"
+                    mvx:Bi.nd="Command ResetTrialDatesCommand; ToolTip [ToolTip_ResetTrialDates]"
+                    VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+            <Border.Effect>
+                <BlurEffect Radius="5" KernelType="Gaussian"/>
+            </Border.Effect>
+        </Border>-->
+        
+        <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}"
+                     Value="0" IsIndeterminate="True"
+                     Height="100" Width="100"
+                     HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1"
+                     mvx:Bi.nd="Visibility Visibility(ShowProgress)"/>
     </Grid>
 </views:MvxWpfView>
