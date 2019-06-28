@@ -245,6 +245,9 @@
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="NativeConverters.cs" />
     <Compile Include="Setup.cs" />
+    <Compile Include="TimeSpanSelector.xaml.cs">
+      <DependentUpon>TimeSpanSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CreateDrawView.xaml.cs">
       <DependentUpon>CreateDrawView.xaml</DependentUpon>
     </Compile>
@@ -266,6 +269,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="TimeSpanSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CreateDrawView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

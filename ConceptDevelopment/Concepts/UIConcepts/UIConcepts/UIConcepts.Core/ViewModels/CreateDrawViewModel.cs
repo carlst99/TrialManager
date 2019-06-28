@@ -23,7 +23,7 @@ namespace UIConcepts.Core.ViewModels
         private bool _showProgress;
         private TimeSpan _timePerRun;
         private DateTime _trialStartDate = DateTime.Now;
-        private DateTime _trialEndDate = DateTime.Now.AddDays(1);
+        private DateTime _trialEndDate = DateTime.Now.AddDays(1).AddHours(6);
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace UIConcepts.Core.ViewModels
         public IMvxCommand ResetTrialDatesCommand => new MvxCommand(() =>
         {
             TrialStartDate = DateTime.Now;
-            TrialEndDate = DateTime.Now.AddDays(1);
+            TrialEndDate = DateTime.Now.AddDays(1).AddHours(6);
         });
 
         #endregion

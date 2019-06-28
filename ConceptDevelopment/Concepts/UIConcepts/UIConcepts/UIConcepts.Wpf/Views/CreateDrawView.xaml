@@ -9,7 +9,7 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -44,6 +44,12 @@
             <Button Content="{md:PackIcon Kind=Undo}"
                     mvx:Bi.nd="Command ResetTrialDatesCommand; ToolTip [ToolTip_ResetTrialDates]"
                     VerticalAlignment="Center"/>
+
+            <md:TimePicker Width="100" FontSize="14"
+                           md:HintAssist.Hint="{Binding [Hint_TimePerRun]}"
+                           mvx:Bi.nd="SelectedTime TimePerRun"
+                           Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
+                           VerticalAlignment="Center" Margin="16,0"/>
         </StackPanel>
 
         <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
@@ -51,7 +57,7 @@
                 <BlurEffect Radius="5" KernelType="Gaussian"/>
             </Border.Effect>
         </Border>-->
-        
+
         <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}"
                      Value="0" IsIndeterminate="True"
                      Height="100" Width="100"
