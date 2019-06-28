@@ -242,10 +242,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\IntToStringValueConverter.cs" />
+    <Compile Include="Controls\TimeSpanToStringValueConverter.cs" />
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="NativeConverters.cs" />
     <Compile Include="Setup.cs" />
-    <Compile Include="TimeSpanSelector.xaml.cs">
+    <Compile Include="Controls\TimeSpanSelector.xaml.cs">
       <DependentUpon>TimeSpanSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CreateDrawView.xaml.cs">
@@ -269,7 +271,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="TimeSpanSelector.xaml">
+    <Page Include="Controls\TimeSpanSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
