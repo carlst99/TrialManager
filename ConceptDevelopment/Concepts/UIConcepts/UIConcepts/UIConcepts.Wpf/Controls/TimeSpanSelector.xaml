@@ -19,8 +19,17 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox Text="{Binding SelectedTime, Converter={StaticResource TimeSpanToStringValueConverter}}"
-                 Grid.Column="0" VerticalAlignment="Center"/>
+        <!--<TextBox Text="{Binding SelectedTime, Converter={StaticResource TimeSpanToStringValueConverter}, ConverterParameter=TimeFormat}"
+                 Grid.Column="0" VerticalAlignment="Center"/>-->
+
+        <TextBox Grid.Column="0" VerticalAlignment="Center">
+            <TextBox.Text>
+                <MultiBinding Converter="{StaticResource TimeSpanToStringValueConverter}">
+                    <Binding Path="SelectedTime"/>
+                    <Binding Path="TimeFormat"/>
+                </MultiBinding>
+            </TextBox.Text>
+        </TextBox>
 
         <Button Content="{md:PackIcon Kind=Timelapse}"
                 Grid.Column="1" VerticalAlignment="Center"

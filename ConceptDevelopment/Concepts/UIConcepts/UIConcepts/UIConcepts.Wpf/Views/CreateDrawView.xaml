@@ -52,7 +52,7 @@
                            Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
                            VerticalAlignment="Center" Margin="16,0"/>-->
 
-            <controls:TimeSpanSelector mvx:Bi.nd="SelectedTime TimePerRun"/>
+            <controls:TimeSpanSelector mvx:Bi.nd="SelectedTime TimePerRun" TimeFormat="hh\:mm"/>
         </StackPanel>
 
         <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">

@@ -12,10 +12,19 @@ namespace UIConcepts.Wpf.Controls
         public static readonly DependencyProperty SelectedTimeProperty 
             = DependencyProperty.Register("SelectedTime", typeof(TimeSpan), typeof(TimeSpanSelector));
 
+        public static readonly DependencyProperty TimeFormatProperty
+            = DependencyProperty.Register("TimeFormat", typeof(string), typeof(TimeSpanSelector));
+
         public TimeSpan SelectedTime
         {
             get => (TimeSpan)GetValue(SelectedTimeProperty);
             set => SetValue(SelectedTimeProperty, value);
+        }
+
+        public string TimeFormat
+        {
+            get => (string)GetValue(TimeFormatProperty);
+            set => SetValue(TimeFormatProperty, value);
         }
 
         public int Hours
