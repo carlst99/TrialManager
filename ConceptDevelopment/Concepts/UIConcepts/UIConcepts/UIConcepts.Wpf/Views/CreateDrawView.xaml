@@ -4,7 +4,6 @@
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                   xmlns:local="clr-namespace:UIConcepts.Wpf.Views"
-                  xmlns:controls="clr-namespace:UIConcepts.Wpf.Controls" 
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -46,13 +45,12 @@
                     mvx:Bi.nd="Command ResetTrialDatesCommand; ToolTip [ToolTip_ResetTrialDates]"
                     VerticalAlignment="Center"/>
 
-            <!--<md:TimePicker Width="100" FontSize="14"
+            <md:TimePicker Width="100" FontSize="14"
                            md:HintAssist.Hint="{Binding [Hint_TimePerRun]}"
                            mvx:Bi.nd="SelectedTime TimePerRun"
                            Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
-                           VerticalAlignment="Center" Margin="16,0"/>-->
-
-            <controls:TimeSpanSelector mvx:Bi.nd="SelectedTime TimePerRun" TimeFormat="hh\:mm"/>
+                           VerticalAlignment="Center" Margin="16,0"
+                           Is24Hours="True"/>
         </StackPanel>
 
         <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">

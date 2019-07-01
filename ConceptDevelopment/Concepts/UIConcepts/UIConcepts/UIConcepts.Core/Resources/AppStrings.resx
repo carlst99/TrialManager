@@ -149,6 +149,10 @@
     <value>Surname</value>
     <comment>This header appears above a list of surnames</comment>
   </data>
+  <data name="Hint_TimePerRun" xml:space="preserve">
+    <value>Time Per Run</value>
+    <comment>This hint appears on a timespan picking control allowing the user to pick the time per trial run</comment>
+  </data>
   <data name="Hint_TrialEndDate" xml:space="preserve">
     <value>Trial End Date</value>
     <comment>This hint appears on a datepicker control allowing the end date of the trial to be selected</comment>

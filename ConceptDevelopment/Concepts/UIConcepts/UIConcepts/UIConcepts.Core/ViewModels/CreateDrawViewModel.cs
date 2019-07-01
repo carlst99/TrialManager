@@ -21,7 +21,7 @@ namespace UIConcepts.Core.ViewModels
 
         private List<Trialist> _trialists;
         private bool _showProgress;
-        private TimeSpan _timePerRun;
+        private TimeSpan _timePerRun = new TimeSpan(0, 45, 0);
         private DateTime _trialStartDate = DateTime.Now;
         private DateTime _trialEndDate = DateTime.Now.AddDays(1).AddHours(6);
 
@@ -50,10 +50,10 @@ namespace UIConcepts.Core.ViewModels
         /// <summary>
         /// Gets or sets a value indicating the approximate length of each run
         /// </summary>
-        public TimeSpan TimePerRun
+        public DateTime TimePerRun
         {
-            get => _timePerRun;
-            set => SetProperty(ref _timePerRun, value);
+            get => DateTime.MinValue + _timePerRun;
+            set => SetProperty(ref _timePerRun, value - DateTime.MinValue);
         }
 
         /// <summary>
