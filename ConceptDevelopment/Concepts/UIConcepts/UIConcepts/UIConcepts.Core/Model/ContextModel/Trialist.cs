@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UIConcepts.Core.Model.ContextModel
 {
@@ -85,16 +86,33 @@ namespace UIConcepts.Core.Model.ContextModel
             set => SetProperty(ref _status, value, nameof(Status));
         }
 
+        [NotMapped]
+        public string FullName => GetFullName();
+
+        /// <summary>
+        /// Gets or sets the dogs that belong to this <see cref="Trialist"/>
+        /// </summary>
+        [Required]
         public ObservableCollection<Dog> Dogs { get; set; } = new ObservableCollection<Dog>();
 
         #endregion
 
+        /// <summary>
+        /// Removes a dog, ensuring that one still remains in the list
+        /// </summary>
+        /// <param name="dog">The dog to remove</param>
         public void SafeRemoveDog(Dog dog)
         {
             Dogs.Remove(dog);
             if (Dogs.Count <= 0)
                 Dogs.Add(Dog.Default);
         }
+
+        /// <summary>
+        /// Gets the full name of the <see cref="Trialist"/>
+        /// </summary>
+        /// <returns></returns>
+        public string GetFullName() => FirstName + " " + Surname;
 
         #region Object Overrides
 

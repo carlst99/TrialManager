@@ -137,6 +137,10 @@
     <value>First Name</value>
     <comment>This header appears above a list of first names</comment>
   </data>
+  <data name="Header_FullName" xml:space="preserve">
+    <value>Name</value>
+    <comment>This header appears above a list of full names</comment>
+  </data>
   <data name="Header_PhoneNumber" xml:space="preserve">
     <value>Phone Number</value>
     <comment>This header appears above a list of phone numbers</comment>

@@ -3,7 +3,9 @@ using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using UIConcepts.Core.Model;
 using UIConcepts.Core.Model.Context;
 using UIConcepts.Core.Model.ContextModel;
 using UIConcepts.Core.Model.Messages;
@@ -19,7 +21,7 @@ namespace UIConcepts.Core.ViewModels
         private readonly ManagerContext _managerContext;
         private readonly IIntraMessenger _messenger;
 
-        private List<Trialist> _trialists;
+        private ObservableCollection<TrialistDrawEntry> _trialists;
         private bool _showProgress;
         private TimeSpan _timePerRun = new TimeSpan(0, 45, 0);
         private DateTime _trialStartDate = DateTime.Now;
@@ -32,7 +34,7 @@ namespace UIConcepts.Core.ViewModels
         /// <summary>
         /// Gets the list of trialists to use in the draw
         /// </summary>
-        public List<Trialist> Trialists
+        public ObservableCollection<TrialistDrawEntry> Trialists
         {
             get => _trialists;
             private set => SetProperty(ref _trialists, value);
@@ -101,7 +103,11 @@ namespace UIConcepts.Core.ViewModels
 
             if (_managerContext.Trialists.Any())
             {
-                Trialists = new List<Trialist>(_managerContext.Trialists.ToList());
+                Trialists = new ObservableCollection<TrialistDrawEntry>();
+                foreach (Trialist element in _managerContext.Trialists.ToList())
+                {
+                    Trialists.Add(new TrialistDrawEntry(element, element.Dogs.First(), DateTime.Now));
+                }
             }
             else
             {

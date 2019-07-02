@@ -4,6 +4,7 @@
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                   xmlns:local="clr-namespace:UIConcepts.Wpf.Views"
+                  xmlns:model="clr-namespace:UIConcepts.Core.Model;assembly=UIConcepts.Core"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -64,5 +65,26 @@
                      Height="100" Width="100"
                      HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1"
                      mvx:Bi.nd="Visibility Visibility(ShowProgress)"/>
+
+        <ListView Grid.Row="1"
+                  mvx:Bi.nd="Visibility InvertedVisibility(ShowProgress); ItemsSource Trialists">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="{Binding DataContext.[Header_FullName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
+                                        Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:TrialistDrawEntry}">
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="Person"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,4,0"/>
+                                    <TextBlock Text="{Binding Trialist.FullName}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </views:MvxWpfView>
