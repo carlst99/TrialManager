@@ -26,7 +26,7 @@ namespace UIConcepts.Core.ViewModels
         private bool _showProgress;
         private TimeSpan _timePerRun = new TimeSpan(0, 45, 0);
         private DateTime _trialStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
-        private DateTime _trialEndDate = DateTime.Now.AddDays(1).AddHours(6);
+        private DateTime _trialEndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 15, 0, 0);
 
         #endregion
 
