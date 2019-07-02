@@ -9,7 +9,7 @@ namespace UIConcepts.Core.Model.ContextModel
         public static Trialist Default => new Trialist
         {
             Surname = "Surname",
-            FirstName = "First Name",
+            FirstName = "FirstName",
             Status = EntityStatus.Maiden,
             PhoneNumber = "012 345 6789",
             Email = "email@email.com",

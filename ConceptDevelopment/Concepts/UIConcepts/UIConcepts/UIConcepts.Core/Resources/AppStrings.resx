@@ -121,6 +121,10 @@
     <value>TrialManager UI Concepts</value>
     <comment>This is the title of the application</comment>
   </data>
+  <data name="Header_Dog" xml:space="preserve">
+    <value>Dog</value>
+    <comment>This header appears above a list of dogs, in the context of which dog a trialist is assigned for their run</comment>
+  </data>
   <data name="Header_Dogs" xml:space="preserve">
     <value>Dogs</value>
     <comment>This header appears above a list of dogs</comment>
@@ -153,6 +157,10 @@
     <value>Surname</value>
     <comment>This header appears above a list of surnames</comment>
   </data>
+  <data name="Header_Time" xml:space="preserve">
+    <value>Run Time</value>
+    <comment>This header appears above a list of times indicating when a trialist's run starts</comment>
+  </data>
   <data name="Hint_TimePerRun" xml:space="preserve">
     <value>Time Per Run</value>
     <comment>This hint appears on a timespan picking control allowing the user to pick the time per trial run</comment>
@@ -174,7 +182,7 @@
     <comment>This hint appears on a timepicker control allowing the starting time of the trial to be selected</comment>
   </data>
   <data name="Label_CreateDraw" xml:space="preserve">
-    <value>Create Draw</value>
+    <value>Refresh Draw</value>
     <comment>This label appears on a control which initiates the draw creation sequence</comment>
   </data>
   <data name="Label_Done" xml:space="preserve">

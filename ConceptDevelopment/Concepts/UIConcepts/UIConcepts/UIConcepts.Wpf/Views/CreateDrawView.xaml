@@ -67,11 +67,27 @@
                      mvx:Bi.nd="Visibility Visibility(ShowProgress)"/>
 
         <ListView Grid.Row="1"
-                  mvx:Bi.nd="Visibility InvertedVisibility(ShowProgress); ItemsSource Trialists">
+                  mvx:Bi.nd="Visibility InvertedVisibility(ShowProgress); ItemsSource Trialists"
+                  AllowDrop="True">
             <ListView.View>
                 <GridView>
+                    <!-- Start time -->
+                    <GridViewColumn Header="{Binding DataContext.[Header_Time], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
+                                    Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:TrialistDrawEntry}">
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="Clock"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,4,0"/>
+                                    <TextBlock Text="{Binding RunStartStringFormatted}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!-- Full name -->
                     <GridViewColumn Header="{Binding DataContext.[Header_FullName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                        Width="100">
+                                    Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:TrialistDrawEntry}">
                                 <StackPanel Orientation="Horizontal">
@@ -79,6 +95,20 @@
                                                  VerticalAlignment="Center"
                                                  Margin="0,0,4,0"/>
                                     <TextBlock Text="{Binding Trialist.FullName}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <!-- Dog -->
+                    <GridViewColumn Header="{Binding DataContext.[Header_Dog], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
+                                    Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:TrialistDrawEntry}">
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Kind="DogSide"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,4,0"/>
+                                    <TextBlock Text="{Binding CompetingDog}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using UIConcepts.Core.Model;
 using UIConcepts.Core.Model.Context;
 using UIConcepts.Core.Model.ContextModel;
@@ -24,7 +25,7 @@ namespace UIConcepts.Core.ViewModels
         private ObservableCollection<TrialistDrawEntry> _trialists;
         private bool _showProgress;
         private TimeSpan _timePerRun = new TimeSpan(0, 45, 0);
-        private DateTime _trialStartDate = DateTime.Now;
+        private DateTime _trialStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
         private DateTime _trialEndDate = DateTime.Now.AddDays(1).AddHours(6);
 
         #endregion
@@ -80,7 +81,7 @@ namespace UIConcepts.Core.ViewModels
 
         #region Commands
 
-        public IMvxCommand CreateDrawCommand => new MvxCommand(CreateDraw);
+        public IMvxCommand CreateDrawCommand => new MvxCommand(OnCreateDraw);
 
         public IMvxCommand ResetTrialDatesCommand => new MvxCommand(() =>
         {
@@ -95,19 +96,16 @@ namespace UIConcepts.Core.ViewModels
         {
             _managerContext = (ManagerContext)managerContext;
             _messenger = messenger;
+            OnCreateDraw();
         }
 
-        private void CreateDraw()
+        private async void OnCreateDraw()
         {
             ShowProgress = true;
 
             if (_managerContext.Trialists.Any())
             {
-                Trialists = new ObservableCollection<TrialistDrawEntry>();
-                foreach (Trialist element in _managerContext.Trialists.ToList())
-                {
-                    Trialists.Add(new TrialistDrawEntry(element, element.Dogs.First(), DateTime.Now));
-                }
+                await GenerateDraw();
             }
             else
             {
@@ -128,6 +126,24 @@ namespace UIConcepts.Core.ViewModels
             }
 
             ShowProgress = false;
+        }
+
+        private async Task GenerateDraw()
+        {
+            Trialists = new ObservableCollection<TrialistDrawEntry>();
+
+            await Task.Factory.StartNew(async () =>
+            {
+                DateTime startTime = TrialStartDate;
+
+                foreach (Trialist element in _managerContext.Trialists.ToList())
+                {
+                    TrialistDrawEntry entry = new TrialistDrawEntry(element, element.Dogs.First(), startTime);
+                    startTime = startTime.AddHours(_timePerRun.Hours);
+                    startTime = startTime.AddMinutes(_timePerRun.Minutes);
+                    await AsyncDispatcher.ExecuteOnMainThreadAsync(() => Trialists.Add(entry));
+                }
+            });
         }
     }
 }
