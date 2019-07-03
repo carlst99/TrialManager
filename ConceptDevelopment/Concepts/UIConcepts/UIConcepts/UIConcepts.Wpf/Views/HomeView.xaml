@@ -8,7 +8,7 @@
                   xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                  xmlns:mdx="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+                  xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
                   mc:Ignorable="d" 
                   d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -20,34 +20,34 @@
 
         <md:ColorZone Mode="PrimaryMid"
                       md:ShadowAssist.ShadowDepth="Depth2"
-                      Padding="16">
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
-                       Style="{DynamicResource MaterialDesignTitleTextBlock}"
-                       Margin="0,4"
-                       mvx:Bi.nd="Text [App_Title], Mode=OneTime"/>
+                      Padding="0,16,0,0">
+            <StackPanel>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                           Style="{DynamicResource MaterialDesignTitleTextBlock}"
+                           Margin="0,4"
+                           mvx:Bi.nd="Text [App_Title], Mode=OneTime"/>
+
+                <dragablz:TabablzControl mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
+                                         x:Name="TblzNavigation"
+                                         SelectedIndex="0">
+                    <dragablz:TabablzControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Value}"/>
+                        </DataTemplate>
+                    </dragablz:TabablzControl.ItemTemplate>
+
+                    <dragablz:TabablzControl.ContentTemplate>
+                        <DataTemplate/>
+                    </dragablz:TabablzControl.ContentTemplate>
+                </dragablz:TabablzControl>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding OnNavigateRequestedCommand}" CommandParameter="{Binding ElementName=TblzNavigation, Path=SelectedItem.Key}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </StackPanel>
         </md:ColorZone>
-
-        <TabControl mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
-                    x:Name="TbCtrlNavigation"
-                    Grid.Row="1"
-                    Style="{DynamicResource MaterialDesignTabControl}"
-                    SelectedIndex="0">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Value}"/>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-
-            <TabControl.ContentTemplate>
-                <DataTemplate/>
-            </TabControl.ContentTemplate>
-
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction Command="{Binding OnNavigateRequestedCommand}" CommandParameter="{Binding ElementName=TbCtrlNavigation, Path=SelectedItem.Key}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </TabControl>
 
         <Frame mvx:Bi.nd="Content DetailView, Mode=OneWay"
                Margin="0,4,0,0" Grid.Row="2"
