@@ -89,6 +89,8 @@ namespace UIConcepts.Core.ViewModels
             TrialEndDate = DateTime.Now.AddDays(1).AddHours(6);
         });
 
+        public IMvxCommand PrintDrawCommand => new MvxCommand(OnPrintDraw);
+
         #endregion
 
         public CreateDrawViewModel(IMvxNavigationService navigationService, IManagerContext managerContext, IIntraMessenger messenger)
@@ -105,7 +107,7 @@ namespace UIConcepts.Core.ViewModels
 
             if (_managerContext.Trialists.Any())
             {
-                await GenerateDraw();
+                await GenerateDraw().ConfigureAwait(false);
             }
             else
             {
@@ -141,9 +143,14 @@ namespace UIConcepts.Core.ViewModels
                     TrialistDrawEntry entry = new TrialistDrawEntry(element, element.Dogs.First(), startTime);
                     startTime = startTime.AddHours(_timePerRun.Hours);
                     startTime = startTime.AddMinutes(_timePerRun.Minutes);
-                    await AsyncDispatcher.ExecuteOnMainThreadAsync(() => Trialists.Add(entry));
+                    await AsyncDispatcher.ExecuteOnMainThreadAsync(() => Trialists.Add(entry)).ConfigureAwait(false);
                 }
-            });
+            }).ConfigureAwait(false);
+        }
+
+        private void OnPrintDraw()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -52,6 +52,10 @@
                            Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
                            VerticalAlignment="Center" Margin="16,0"
                            Is24Hours="True"/>
+
+            <Button Content="{md:PackIcon Kind=Printer}"
+                    mvx:Bi.nd="Command PrintDrawCommand; ToolTip [ToolTip_PrintDraw]"
+                    VerticalAlignment="Center"/>
         </StackPanel>
 
         <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">

@@ -209,6 +209,10 @@
     <value>Right click to edit entry</value>
     <comment>This tooltip appears on an editable data entry which can be edited by right clicking</comment>
   </data>
+  <data name="ToolTip_PrintDraw" xml:space="preserve">
+    <value>Print Draw</value>
+    <comment>This tooltip appears on a control allowing the draw to be printed</comment>
+  </data>
   <data name="ToolTip_ResetTrialDates" xml:space="preserve">
     <value>Reset Dates/Times</value>
     <comment>This tooltip appears on a control allowing the start/end dates and times of a trial to be reset to default</comment>
