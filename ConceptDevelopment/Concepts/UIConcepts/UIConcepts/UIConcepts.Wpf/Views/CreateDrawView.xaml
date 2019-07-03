@@ -21,40 +21,40 @@
             <Button mvx:Bi.nd="Content [Label_CreateDraw], Mode=OneTime; Command CreateDrawCommand"
                     VerticalAlignment="Center"/>
             <DatePicker Width="100" FontSize="14"
-                        md:HintAssist.Hint="{Binding [Hint_TrialStartDate]}"
+                        md:HintAssist.Hint="{Binding [Hint_TrialStartDate], Mode=OneTime}"
                         mvx:Bi.nd="SelectedDate TrialStartDate"
                         Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
                         VerticalAlignment="Center" Margin="16,0"/>
             <DatePicker Width="100" FontSize="14"
-                        md:HintAssist.Hint="{Binding [Hint_TrialEndDate]}"
+                        md:HintAssist.Hint="{Binding [Hint_TrialEndDate], Mode=OneTime}"
                         mvx:Bi.nd="SelectedDate TrialEndDate"
                         Style="{StaticResource MaterialDesignFloatingHintDatePicker}"
                         VerticalAlignment="Center" Margin="16,0"/>
 
             <md:TimePicker Width="100" FontSize="14"
-                           md:HintAssist.Hint="{Binding [Hint_TrialStartTime]}"
+                           md:HintAssist.Hint="{Binding [Hint_TrialStartTime], Mode=OneTime}"
                            mvx:Bi.nd="SelectedTime TrialStartDate"
                            Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
                            VerticalAlignment="Center" Margin="16,0"/>
             <md:TimePicker Width="100" FontSize="14"
-                           md:HintAssist.Hint="{Binding [Hint_TrialEndTime]}"
+                           md:HintAssist.Hint="{Binding [Hint_TrialEndTime], Mode=OneTime}"
                            mvx:Bi.nd="SelectedTime TrialEndDate"
                            Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
                            VerticalAlignment="Center" Margin="16,0"/>
 
             <Button Content="{md:PackIcon Kind=Undo}"
-                    mvx:Bi.nd="Command ResetTrialDatesCommand; ToolTip [ToolTip_ResetTrialDates]"
+                    mvx:Bi.nd="Command ResetTrialDatesCommand; ToolTip [ToolTip_ResetTrialDates], Mode=OneTime"
                     VerticalAlignment="Center"/>
 
             <md:TimePicker Width="100" FontSize="14"
-                           md:HintAssist.Hint="{Binding [Hint_TimePerRun]}"
+                           md:HintAssist.Hint="{Binding [Hint_TimePerRun], Mode=OneTime}"
                            mvx:Bi.nd="SelectedTime TimePerRun"
                            Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
                            VerticalAlignment="Center" Margin="16,0"
                            Is24Hours="True"/>
 
             <Button Content="{md:PackIcon Kind=Printer}"
-                    mvx:Bi.nd="Command PrintDrawCommand; ToolTip [ToolTip_PrintDraw]"
+                    mvx:Bi.nd="Command PrintDrawCommand; ToolTip [ToolTip_PrintDraw], Mode=OneTime"
                     VerticalAlignment="Center"/>
         </StackPanel>
 

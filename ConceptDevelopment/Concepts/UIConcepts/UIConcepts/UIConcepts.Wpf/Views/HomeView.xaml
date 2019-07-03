@@ -14,63 +14,43 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <md:DrawerHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                       BorderThickness="2" BorderBrush="{DynamicResource MaterialDesignDivider}"
-                       mvx:Bi.nd="IsLeftDrawerOpen IsDrawerOpen"
-                       Grid.Row="1">
-            <md:DrawerHost.LeftDrawerContent>
-                <StackPanel MinWidth="150">
-                    <md:ColorZone Mode="Standard"
-                                  Padding="16">
-                        <ToggleButton Style="{DynamicResource MaterialDesignHamburgerToggleButton}"
-                                      mvx:Bi.nd="IsChecked IsDrawerOpen"
-                                      HorizontalAlignment="Right"/>
-                    </md:ColorZone>
-                    <ListView mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
-                              x:Name="LstVwNavigation"
-                              HorizontalContentAlignment="Center">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Value}"/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
+        <md:ColorZone Mode="PrimaryMid"
+                      md:ShadowAssist.ShadowDepth="Depth2"
+                      Padding="16">
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                       Style="{DynamicResource MaterialDesignTitleTextBlock}"
+                       Margin="0,4"
+                       mvx:Bi.nd="Text [App_Title], Mode=OneTime"/>
+        </md:ColorZone>
 
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding OnNavigateRequestedCommand}" CommandParameter="{Binding ElementName=LstVwNavigation, Path=SelectedItem.Key}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </ListView>
-                </StackPanel>
-            </md:DrawerHost.LeftDrawerContent>
+        <TabControl mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
+                    x:Name="TbCtrlNavigation"
+                    Grid.Row="1"
+                    Style="{DynamicResource MaterialDesignTabControl}"
+                    SelectedIndex="0">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Value}"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <TabControl.ContentTemplate>
+                <DataTemplate/>
+            </TabControl.ContentTemplate>
 
-                <md:ColorZone Mode="PrimaryMid"
-                              md:ShadowAssist.ShadowDepth="Depth2"
-                              Padding="16">
-                    <Grid>
-                        <ToggleButton Style="{DynamicResource MaterialDesignHamburgerToggleButton}"
-                                      mvx:Bi.nd="IsChecked IsDrawerOpen"
-                                      HorizontalAlignment="Left"/>
-                        <TextBlock VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   Style="{DynamicResource MaterialDesignTitleTextBlock}"
-                                   Margin="16 0 0 0"
-                                   mvx:Bi.nd="Text [App_Title], Mode=OneTime"/>
-                    </Grid>
-                </md:ColorZone>
-                <Frame mvx:Bi.nd="Content DetailView, Mode=OneWay"
-                       Margin="0,4,0,0" Grid.Row="1"
-                       NavigationUIVisibility="Hidden"/>
-            </Grid>
-        </md:DrawerHost>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding OnNavigateRequestedCommand}" CommandParameter="{Binding ElementName=TbCtrlNavigation, Path=SelectedItem.Key}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TabControl>
+
+        <Frame mvx:Bi.nd="Content DetailView, Mode=OneWay"
+               Margin="0,4,0,0" Grid.Row="2"
+               NavigationUIVisibility="Hidden"/>
     </Grid>
 </views:MvxWpfView>
