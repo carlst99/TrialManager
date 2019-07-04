@@ -27,7 +27,7 @@
                            Margin="0,4"
                            mvx:Bi.nd="Text [App_Title], Mode=OneTime"/>
 
-                <dragablz:TabablzControl mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
+                <!--<dragablz:TabablzControl mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
                                          x:Name="TblzNavigation"
                                          SelectedIndex="0">
                     <dragablz:TabablzControl.ItemTemplate>
@@ -39,13 +39,32 @@
                     <dragablz:TabablzControl.ContentTemplate>
                         <DataTemplate/>
                     </dragablz:TabablzControl.ContentTemplate>
-                </dragablz:TabablzControl>
 
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding OnNavigateRequestedCommand}" CommandParameter="{Binding ElementName=TblzNavigation, Path=SelectedItem.Key}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding OnNavigateRequestedCommand}" CommandParameter="{Binding ElementName=TblzNavigation, Path=SelectedItem.Key}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </dragablz:TabablzControl>-->
+                <TabControl mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
+                            x:Name="TbCtrlNavigation"
+                            SelectedIndex="0">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Value}"/>
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+
+                    <TabControl.ContentTemplate>
+                        <DataTemplate/>
+                    </TabControl.ContentTemplate>
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding OnNavigateRequestedCommand}" CommandParameter="{Binding ElementName=TbCtrlNavigation, Path=SelectedItem.Key}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TabControl>
             </StackPanel>
         </md:ColorZone>
 
