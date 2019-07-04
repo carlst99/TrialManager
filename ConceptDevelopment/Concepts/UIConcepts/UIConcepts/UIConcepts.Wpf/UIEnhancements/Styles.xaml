@@ -7,7 +7,7 @@
     
     <Style x:Key="MaterialDesignTabControl" TargetType="{x:Type TabControl}">
         <Setter Property="local:TabControlAssist.TabHeaderAlignment" Value="Left" />
-        <Setter Property="local:TabControlAssist.TabHeaderHighlightBrush" Value="{DynamicResource PrimaryHueMidBrush}" />
+        <Setter Property="local:TabControlAssist.TabHeaderHighlightBrush" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
         <Setter Property="local:TabControlAssist.TabHeaderInactiveBrush" Value="{DynamicResource MaterialDesignBodyLight}" />
         <Setter Property="local:TabControlAssist.TabHeaderInactiveOpacity" Value="1" />
         <Setter Property="Background" Value="Transparent" />
@@ -72,10 +72,11 @@
                                                     </TransformGroup>
                                                 </Border.RenderTransform>
                                             </Border>
+                                            <!-- TextBlock.Foreground="{Binding Path=(local:TabControlAssist.TabHeaderForeground), RelativeSource={RelativeSource TemplatedParent}}" -->
                                             <ContentPresenter x:Name="headerContent" ContentSource="Header" RecognizesAccessKey="True"
                                                               Margin="24,12,24,12" HorizontalAlignment="Center" VerticalAlignment="Center"
                                                               TextBlock.FontSize="14" TextBlock.FontWeight="Medium"
-                                                              TextBlock.Foreground="{Binding Path=(local:TabControlAssist.TabHeaderForeground), RelativeSource={RelativeSource TemplatedParent}}">
+                                                              TextBlock.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
                                                 <ContentPresenter.Style>
                                                     <Style TargetType="ContentPresenter">
                                                         <Style.Triggers>
