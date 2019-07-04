@@ -7,8 +7,9 @@
     
     <Style x:Key="MaterialDesignTabControl" TargetType="{x:Type TabControl}">
         <Setter Property="local:TabControlAssist.TabHeaderAlignment" Value="Left" />
-        <Setter Property="local:TabControlAssist.TabHeaderHighlightBrush" Value="{DynamicResource PrimaryHueMidForegroundBrush}" />
-        <Setter Property="local:TabControlAssist.TabHeaderInactiveBrush" Value="{DynamicResource MaterialDesignBodyLight}" />
+        <Setter Property="local:TabControlAssist.TabHeaderHighlightBrush" Value="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+        <Setter Property="local:TabControlAssist.TabHeaderForeground" Value="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+        <Setter Property="local:TabControlAssist.TabHeaderInactiveBrush" Value="{DynamicResource MaterialDesignBodyLight}"/>
         <Setter Property="local:TabControlAssist.TabHeaderInactiveOpacity" Value="1" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
@@ -72,6 +73,7 @@
                                                     </TransformGroup>
                                                 </Border.RenderTransform>
                                             </Border>
+                                            <!-- TextBlock.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" -->
                                             <!-- TextBlock.Foreground="{Binding Path=(local:TabControlAssist.TabHeaderForeground), RelativeSource={RelativeSource TemplatedParent}}" -->
                                             <ContentPresenter x:Name="headerContent" ContentSource="Header" RecognizesAccessKey="True"
                                                               Margin="24,12,24,12" HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -90,7 +92,8 @@
                                                     </Style>
                                                 </ContentPresenter.Style>
                                             </ContentPresenter>
-                                            <Border x:Name="border" Background="{Binding Path=(local:TabControlAssist.TabHeaderHighlightBrush), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TabControl}}}"
+                                            <!-- Background="{Binding Path=(local:TabControlAssist.TabHeaderHighlightBrush), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TabControl}}}" -->
+                                            <Border x:Name="border" Background="{DynamicResource PrimaryHueMidForegroundBrush}"
                                                     RenderTransformOrigin="0.5,0.5"
                                                     Padding="8" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
                                                 <Border.RenderTransform>
