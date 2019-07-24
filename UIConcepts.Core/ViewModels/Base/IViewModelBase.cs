@@ -1,7 +1,6 @@
 ﻿using MvvmCross.Navigation;
-using MvvmCross.ViewModels;
 
-namespace TrialManager.Core.ViewModels.Base
+namespace UIConcepts.Core.ViewModels.Base
 {
     public interface IViewModelBase
     {

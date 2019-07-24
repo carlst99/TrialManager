@@ -1,9 +1,9 @@
-﻿using TrialManager.Core.Resources;
+﻿using UIConcepts.Core.Resources;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using Serilog;
 
-namespace TrialManager.Core.ViewModels.Base
+namespace UIConcepts.Core.ViewModels.Base
 {
     public abstract class ViewModelBase<T> : MvxViewModel<T>, IViewModelBase
     {

@@ -1,20 +1,24 @@
-﻿using TrialManager.Core.ViewModels;
+﻿using MvvmCross;
 using MvvmCross.IoC;
 using MvvmCross.ViewModels;
+using UIConcepts.Core.ViewModels;
 using Plugin.DeviceInfo;
 using Plugin.DeviceInfo.Abstractions;
 using Serilog;
 using Serilog.Events;
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 
-namespace TrialManager.Core
+[assembly: InternalsVisibleTo("MvvmCrossCoreTestProject")]
+
+namespace UIConcepts.Core
 {
     public class App : MvxApplication
     {
         public const string LOG_FILE_NAME = "log.log";
 
-        public override void Initialize()
+        public async override void Initialize()
         {
             CreatableTypes()
                 .EndingWith("Service")
@@ -23,13 +27,20 @@ namespace TrialManager.Core
 
             RegisterAppStart<HomeViewModel>();
 
+            Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
+            Mvx.IoCProvider.RegisterSingleton(Plugin.Settings.CrossSettings.Current);
+            Mvx.IoCProvider.RegisterSingleton<IntraMessaging.IIntraMessenger>(IntraMessaging.IntraMessenger.Instance);
+
+            var context = new Model.Context.ManagerContext(Mvx.IoCProvider.Resolve<Plugin.Settings.Abstractions.ISettings>());
+            //await context.Database.EnsureDeletedAsync().ConfigureAwait(false);
+            await context.Database.EnsureCreatedAsync().ConfigureAwait(false);
+            Mvx.IoCProvider.RegisterSingleton<Model.Context.IManagerContext>(context);
+
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .WriteTo.Debug()
                 .WriteTo.File(GetAppdataFilePath(LOG_FILE_NAME))
                 .CreateLogger();
-
-            Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
 
             if (CrossDeviceInfo.IsSupported)
             {
