@@ -25,7 +25,10 @@
                            Style="{DynamicResource MaterialDesignTitleTextBlock}"
                            Margin="0,4"
                            mvx:Bi.nd="Text [App_Title], Mode=OneTime"/>
-                
+
+                <Border BorderBrush="#CCDFDFDF" BorderThickness="0,2,0,0"
+                        HorizontalAlignment="Center" Width="300" Margin="0,4"/>
+
                 <TabControl mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
                             x:Name="TbCtrlNavigation"
                             SelectedIndex="0">

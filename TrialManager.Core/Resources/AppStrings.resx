@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="App_Title" xml:space="preserve">
-    <value>TrialManager UI Concepts</value>
+    <value>TrialManager</value>
     <comment>This is the title of the application</comment>
   </data>
   <data name="Command_CreateDraw" xml:space="preserve">
