@@ -3,13 +3,17 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                  xmlns:local="clr-namespace:TrialManager.Wpf.Views"
+                  xmlns:local="clr-namespace:TrialManager.Wpf"
                   xmlns:model="clr-namespace:TrialManager.Core.Model;assembly=TrialManager.Core"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
-                  xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                   mc:Ignorable="d" FontSize="13"
                   d:DesignHeight="450" d:DesignWidth="800">
+
+    <views:MvxWpfView.Resources>
+        <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter"/>
+        <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter"/>
+    </views:MvxWpfView.Resources>
 
     <Grid Margin="16">
         <Grid.RowDefinitions>
@@ -27,13 +31,13 @@
 
             <md:TimePicker Width="100" FontSize="14"
                            md:HintAssist.Hint="{Binding [Hint_TrialStartTime], Mode=OneTime}"
-                           mvx:Bi.nd="SelectedTime TrialStartDate"
+                           SelectedTime="{Binding TrialStartDate}"
                            Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
                            VerticalAlignment="Center" Margin="16,0"/>
         </StackPanel>
 
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button mvx:Bi.nd="Command CreateDrawCommand"
+            <Button Command="{Binding CreateDrawCommand}"
                     VerticalAlignment="Center">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
@@ -44,7 +48,7 @@
                 </Button.Content>
             </Button>
             
-            <Button mvx:Bi.nd="Command PrintDrawCommand"
+            <Button Command="{Binding PrintDrawCommand}"
                     VerticalAlignment="Center"
                     Margin="8,0,0,0">
                 <Button.Content>
@@ -67,10 +71,11 @@
                      Value="0" IsIndeterminate="True"
                      Height="100" Width="100"
                      HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1"
-                     mvx:Bi.nd="Visibility Visibility(ShowProgress)"/>
+                     Visibility="{Binding ShowProgress, Converter={StaticResource VisibilityConverter}}"/>
 
         <ListView Grid.Row="1"
-                  mvx:Bi.nd="Visibility InvertedVisibility(ShowProgress); ItemsSource Trialists"
+                  Visibility="{Binding ShowProgress, Converter={StaticResource InvertedVisibilityConverter}}"
+                  ItemsSource="{Binding Trialists}"
                   AllowDrop="True">
             <ListView.View>
                 <GridView>
