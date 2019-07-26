@@ -6,7 +6,6 @@
                   xmlns:model="clr-namespace:TrialManager.Core.Model.ContextModel;assembly=TrialManager.Core"
                   xmlns:sys="clr-namespace:System;assembly=mscorlib"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
-                  xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                   xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                   mc:Ignorable="d"
@@ -43,7 +42,7 @@
 
                 <!-- Header -->
                 <md:ColorZone Mode="Dark" Grid.ColumnSpan="2" Padding="12">
-                    <TextBlock mvx:Bi.nd="Text [Header_EditTrialist]" Margin="4,4,4,0"
+                    <TextBlock Text="{Binding [Header_EditTrialist], Mode=OneTime}" Margin="4,4,4,0"
                                Style="{DynamicResource MaterialDesignSubheadingTextBlock}"/>
                 </md:ColorZone>
 
@@ -128,7 +127,8 @@
                 <!-- Close button -->
                 <Button Grid.ColumnSpan="2" Grid.Row="5"
                         HorizontalAlignment="Stretch"
-                        mvx:Bi.nd="Command CloseEditDialogCommand; Content [Label_Done], Mode=OneTime"/>
+                        Command="{Binding CloseEditDialogCommand}"
+                        Content="{Binding [Label_Done], Mode=OneTime}"/>
             </Grid>
         </md:DialogHost.DialogContent>
 
@@ -139,7 +139,8 @@
             </Grid.RowDefinitions>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button mvx:Bi.nd="Content [Label_ImportData], Mode=OneTime; Command ImportDataCommand"/>
+                <Button Content="{Binding [Label_ImportData], Mode=OneTime}"
+                        Command="{Binding ImportDataCommand}"/>
                 <TextBlock Text="Hint: Right-click an entry to edit it!"
                            Margin="16,0,0,0" VerticalAlignment="Center"
                            x:Name="TxtBxHint"
@@ -160,26 +161,31 @@
 
             <!-- Data modification controls -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button mvx:Bi.nd="ToolTip [ToolTip_AddItem], Mode=OneTime; Command AddTrialistCommand" 
-                    HorizontalAlignment="Right"
-                    Content="{md:PackIcon Kind=Add}"
-                    Margin="0,0,8,0"/>
-                <Button mvx:Bi.nd="ToolTip [ToolTip_EditItem], Mode=OneTime; Command EditDataEntryCommand; IsEnabled CanEditDataEntry, Mode=OneWay"
-                    CommandParameter="{Binding SelectedItem, ElementName=LstVwTrialists}"
-                    HorizontalAlignment="Right"
-                    Content="{md:PackIcon Kind=Edit}"
-                    Margin="0,0,8,0"/>
-                <Button mvx:Bi.nd="ToolTip [ToolTip_DeleteItem], Mode=OneTime; Command DeleteTrialistCommand; IsEnabled CanDeleteDataEntries, Mode=OneWay" 
-                    HorizontalAlignment="Right"
-                    Content="{md:PackIcon Kind=Trash}"/>
+                <Button ToolTip="{Binding [ToolTip_AddItem], Mode=OneTime}"
+                        Command="{Binding AddTrialistCommand}"
+                        HorizontalAlignment="Right"
+                        Content="{md:PackIcon Kind=Add}"
+                        Margin="0,0,8,0"/>
+                <Button ToolTip="{Binding [ToolTip_EditItem], Mode=OneTime}"
+                        Command="{Binding EditDataEntryCommand}"
+                        IsEnabled="{Binding CanEditDataEntry, Mode=OneWay}"
+                        CommandParameter="{Binding SelectedItem, ElementName=LstVwTrialists}"
+                        HorizontalAlignment="Right"
+                        Content="{md:PackIcon Kind=Edit}"
+                        Margin="0,0,8,0"/>
+                <Button ToolTip="{Binding [ToolTip_DeleteItem], Mode=OneTime}"
+                        Command="{Binding DeleteTrialistCommand}"
+                        IsEnabled="{Binding CanDeleteDataEntries, Mode=OneWay}"
+                        HorizontalAlignment="Right"
+                        Content="{md:PackIcon Kind=Trash}"/>
             </StackPanel>
             
             <!-- Data list -->
-            <ListView mvx:Bi.nd="ItemsSource Trialists"
-                  x:Name="LstVwTrialists"
-                  SelectionMode="Extended"
-                  Grid.Row="1" 
-                  Margin="0,8,0,0">
+            <ListView ItemsSource="{Binding Trialists}"
+                      x:Name="LstVwTrialists"
+                      SelectionMode="Extended"
+                      Grid.Row="1" 
+                      Margin="0,8,0,0">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding TrialistSelectionChangedCommand}"
