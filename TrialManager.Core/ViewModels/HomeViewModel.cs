@@ -55,12 +55,10 @@ namespace TrialManager.Core.ViewModels
 
         #endregion
 
-        public HomeViewModel(IMvxNavigationService navigationService, IIntraMessenger messagingService)
+        public HomeViewModel(IMvxNavigationService navigationService)
             : base (navigationService)
         {
             NavigatableViewModels = new Dictionary<Type, string>();
-            _messagingService = messagingService;
-            _messagingService.Subscribe(OnMessageReceived);
         }
 
         public override void Prepare()
@@ -95,14 +93,6 @@ namespace TrialManager.Core.ViewModels
             {
                 DisplayNavigationAttribute attribute = type.GetCustomAttribute<DisplayNavigationAttribute>();
                 NavigatableViewModels.Add(type, attribute.DisplayName);
-            }
-        }
-
-        private void OnMessageReceived(IMessage message)
-        {
-            if (message is MessageDialogMessage mdMessage)
-            {
-                mdMessage.Callback?.Invoke(DialogAction.Yes);
             }
         }
     }

@@ -153,17 +153,17 @@ namespace TrialManager.Core.ViewModels
         {
             if (_trialists?.Count != 0)
             {
-                async void ResultCallback(DialogAction d)
+                async void ResultCallback(DialogMessage.DialogButton d)
                 {
-                    if (d.HasFlag(DialogAction.Yes))
+                    if (d.HasFlag(DialogMessage.DialogButton.Yes))
                         await ImportData(true).ConfigureAwait(false);
                     else
                         await ImportData(false).ConfigureAwait(false);
                 }
 
-                MessageDialogMessage dialogRequest = new MessageDialogMessage
+                DialogMessage dialogRequest = new DialogMessage
                 {
-                    Actions = DialogAction.Yes | DialogAction.No,
+                    Buttons = DialogMessage.DialogButton.Yes | DialogMessage.DialogButton.No,
                     Title = "Warning",
                     Content = "Do you wish to merge the import with the current data?",
                     Callback = ResultCallback

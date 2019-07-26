@@ -103,15 +103,15 @@ namespace TrialManager.Core.ViewModels
             }
             else
             {
-                void ResultCallback(DialogAction d)
+                void ResultCallback(DialogMessage.DialogButton d)
                 {
-                    if (d.HasFlag(DialogAction.Yes))
+                    if (d.HasFlag(DialogMessage.DialogButton.Yes))
                         NavigationService.Navigate<DataDisplayViewModel>();
                 }
 
-                MessageDialogMessage dialogRequest = new MessageDialogMessage
+                DialogMessage dialogRequest = new DialogMessage
                 {
-                    Actions = DialogAction.Yes | DialogAction.No,
+                    Buttons = DialogMessage.DialogButton.Yes | DialogMessage.DialogButton.No,
                     Title = "No data found",
                     Content = "Do you wish to import some data?",
                     Callback = ResultCallback
