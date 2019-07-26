@@ -15,7 +15,12 @@ namespace TrialManager.Wpf
         {
             InitializeComponent();
 
-            _messageBox = new AmRoMessageBox();
+            _messageBox = new AmRoMessageBox()
+            {
+                ShowMessageWithEffect = true,
+                EffectArea = this,
+                ParentWindow = this,
+            };
 
             IIntraMessenger messenger = Mvx.IoCProvider.Resolve<IIntraMessenger>();
             messenger.Subscribe(OnMessage, new Type[] { typeof(DialogMessage) });
