@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using TrialManager.Core.Model.Messages;
 using TrialManager.Core.ViewModels.Base;
 
 namespace TrialManager.Core.ViewModels
