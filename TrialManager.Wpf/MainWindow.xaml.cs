@@ -19,7 +19,7 @@ namespace TrialManager.Wpf
             {
                 ShowMessageWithEffect = true,
                 EffectArea = this,
-                ParentWindow = this,
+                ParentWindow = this
             };
 
             IIntraMessenger messenger = Mvx.IoCProvider.Resolve<IIntraMessenger>();
