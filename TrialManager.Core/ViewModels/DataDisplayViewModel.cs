@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TrialManager.Core.Model.Context;
@@ -155,7 +156,7 @@ namespace TrialManager.Core.ViewModels
             {
                 async void ResultCallback(DialogMessage.DialogButton d)
                 {
-                    if (d.HasFlag(DialogMessage.DialogButton.Yes))
+                    if ((d & DialogMessage.DialogButton.Yes) != 0)
                         await ImportData(true).ConfigureAwait(false);
                     else
                         await ImportData(false).ConfigureAwait(false);
@@ -178,7 +179,33 @@ namespace TrialManager.Core.ViewModels
 
         private async Task ImportData(bool merge)
         {
-            throw new NotImplementedException();
+            void callback(FileDialogMessage.DialogResult result, string path)
+            {
+                if (result == FileDialogMessage.DialogResult.Failed)
+                    return;
+
+                if (!File.Exists(path))
+                {
+                    _messagingService.Send(new DialogMessage
+                    {
+                        Title = "Error",
+                        Content = "Could not locate that file. Please try again",
+                        Buttons = DialogMessage.DialogButton.Ok
+                    });
+                    return;
+                }
+
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
+                    // TODO act on file
+                }
+            }
+
+            _messagingService.Send(new FileDialogMessage
+            {
+                Title = "Import data file",
+                Callback = callback
+            });
         }
 
         private IList<T> ConvertToList<T>(IList list)

@@ -24,7 +24,7 @@ namespace TrialManager.Wpf
             };
 
             IIntraMessenger messenger = Mvx.IoCProvider.Resolve<IIntraMessenger>();
-            messenger.Subscribe(OnMessage, new Type[] { typeof(DialogMessage) });
+            messenger.Subscribe(OnMessage, new Type[] { typeof(DialogMessage), typeof(FileDialogMessage) });
         }
 
         private void OnMessage(IMessage message)
