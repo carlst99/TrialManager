@@ -92,7 +92,12 @@ namespace TrialManager.Core.ViewModels
         {
             _managerContext = (ManagerContext)managerContext;
             _messenger = messenger;
+        }
+
+        public override void ViewAppearing()
+        {
             OnCreateDraw();
+            base.ViewAppearing();
         }
 
         private async void OnCreateDraw()
@@ -103,15 +108,27 @@ namespace TrialManager.Core.ViewModels
             }
             else
             {
-                void ResultCallback(DialogAction d)
+                void ResultCallback(DialogMessage.DialogButton d)
                 {
-                    if (d.HasFlag(DialogAction.Yes))
+                    if ((d & DialogMessage.DialogButton.Yes) != 0)
+                    {
                         NavigationService.Navigate<DataDisplayViewModel>();
+                        _messenger.Send(new PageNavigationMessage
+                        {
+                            PageType = typeof(DataDisplayViewModel)
+                        });
+                    } else
+                    {
+                        _messenger.Send(new PageNavigationMessage
+                        {
+                            PageType = typeof(CreateDrawViewModel)
+                        });
+                    }
                 }
 
-                MessageDialogMessage dialogRequest = new MessageDialogMessage
+                DialogMessage dialogRequest = new DialogMessage
                 {
-                    Actions = DialogAction.Yes | DialogAction.No,
+                    Buttons = DialogMessage.DialogButton.Yes | DialogMessage.DialogButton.No,
                     Title = "No data found",
                     Content = "Do you wish to import some data?",
                     Callback = ResultCallback

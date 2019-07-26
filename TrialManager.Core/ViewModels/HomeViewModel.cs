@@ -16,9 +16,8 @@ namespace TrialManager.Core.ViewModels
     {
         #region Fields
 
-        private readonly IIntraMessenger _messagingService;
-        private bool _drawerStatus;
         private object _detailView;
+        private int _selectedPageIndex;
 
         #endregion
 
@@ -36,15 +35,6 @@ namespace TrialManager.Core.ViewModels
         public Dictionary<Type, string> NavigatableViewModels { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the side drawer is open
-        /// </summary>
-        public bool IsDrawerOpen
-        {
-            get => _drawerStatus;
-            set => SetProperty(ref _drawerStatus, value);
-        }
-
-        /// <summary>
         /// Gets or sets the detail view of this <see cref="IMasterPresentationViewModel"/>
         /// </summary>
         public object DetailView
@@ -53,20 +43,28 @@ namespace TrialManager.Core.ViewModels
             set => SetProperty(ref _detailView, value);
         }
 
-        #endregion
-
-        public HomeViewModel(IMvxNavigationService navigationService, IIntraMessenger messagingService)
-            : base (navigationService)
+        /// <summary>
+        /// Gets or sets the index of the selected page
+        /// </summary>
+        public int SelectedPageIndex
         {
-            NavigatableViewModels = new Dictionary<Type, string>();
-            _messagingService = messagingService;
-            _messagingService.Subscribe(OnMessageReceived);
+            get => _selectedPageIndex;
+            set => SetProperty(ref _selectedPageIndex, value);
         }
 
-        public override void Prepare()
+        #endregion
+
+        public HomeViewModel(IMvxNavigationService navigationService, IIntraMessenger messenger)
+            : base (navigationService)
+        {
+            messenger.Subscribe(OnMessage, new Type[] { typeof(PageNavigationMessage) });
+            NavigatableViewModels = new Dictionary<Type, string>();
+        }
+
+        public override Task Initialize()
         {
             QueryNavigatableTypes();
-            base.Prepare();
+            return base.Initialize();
         }
 
         public override void ViewAppearing()
@@ -79,7 +77,6 @@ namespace TrialManager.Core.ViewModels
         private void OnNavigateRequested(Type navigationItem)
         {
             NavigationService.Navigate(navigationItem);
-            IsDrawerOpen = false;
         }
 
         /// <summary>
@@ -98,11 +95,11 @@ namespace TrialManager.Core.ViewModels
             }
         }
 
-        private void OnMessageReceived(IMessage message)
+        private void OnMessage(IMessage message)
         {
-            if (message is MessageDialogMessage mdMessage)
+            if (message is PageNavigationMessage pMessage)
             {
-                mdMessage.Callback?.Invoke(DialogAction.Yes);
+                SelectedPageIndex = NavigatableViewModels.Keys.ToList().IndexOf(pMessage.PageType);
             }
         }
     }

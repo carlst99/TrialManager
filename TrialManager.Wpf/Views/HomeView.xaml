@@ -31,7 +31,7 @@
 
                 <TabControl mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
                             x:Name="TbCtrlNavigation"
-                            SelectedIndex="0">
+                            SelectedIndex="{Binding SelectedPageIndex}">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Value}"/>
