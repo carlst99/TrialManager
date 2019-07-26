@@ -9,6 +9,7 @@ using Serilog.Events;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 
 [assembly: InternalsVisibleTo("MvvmCrossCoreTestProject")]
 
@@ -28,12 +29,10 @@ namespace TrialManager.Core
             RegisterAppStart<HomeViewModel>();
 
             Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
-            Mvx.IoCProvider.RegisterSingleton(Plugin.Settings.CrossSettings.Current);
             Mvx.IoCProvider.RegisterSingleton<IntraMessaging.IIntraMessenger>(IntraMessaging.IntraMessenger.Instance);
 
-            var context = new Model.Context.ManagerContext(Mvx.IoCProvider.Resolve<Plugin.Settings.Abstractions.ISettings>());
-            //await context.Database.EnsureDeletedAsync().ConfigureAwait(false);
-            await context.Database.EnsureCreatedAsync().ConfigureAwait(false);
+            var context = new Model.Context.ManagerContext();
+            await context.Database.MigrateAsync();
             Mvx.IoCProvider.RegisterSingleton<Model.Context.IManagerContext>(context);
 
             Log.Logger = new LoggerConfiguration()
