@@ -43,7 +43,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AmRoMessageDialog, Version=1.1.8.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\packages\AmRoMessageBox.1.1.8\lib\net45\AmRoMessageDialog.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libraries\AmRoMessageDialog.dll</HintPath>
     </Reference>
     <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
       <HintPath>..\packages\gong-wpf-dragdrop.2.0.3\lib\net46\GongSolutions.WPF.DragDrop.dll</HintPath>
