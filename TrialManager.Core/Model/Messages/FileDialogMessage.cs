@@ -10,8 +10,13 @@ namespace TrialManager.Core.Model.Messages
             File, Folder
         }
 
+        public enum DialogResult
+        {
+            Failed, Succeeded
+        }
+
         public DialogType Type { get; set; }
         public string Title { get; set; }
-        public Action<string> Callback { get; set; }
+        public Action<DialogResult, string> Callback { get; set; }
     }
 }

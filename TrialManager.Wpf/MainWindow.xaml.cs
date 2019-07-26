@@ -1,5 +1,6 @@
 ﻿using AmRoMessageDialog;
 using IntraMessaging;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using MvvmCross;
 using MvvmCross.Platforms.Wpf.Views;
 using System;
@@ -62,6 +63,25 @@ namespace TrialManager.Wpf
                     case AmRoMessageBoxResult.Yes:
                         dMessage.Callback?.Invoke(DialogMessage.DialogButton.Yes);
                         break;
+                }
+            }
+            else if (message is FileDialogMessage fMessage)
+            {
+                if (fMessage.Type == FileDialogMessage.DialogType.File)
+                {
+                    CommonOpenFileDialog cofd = new CommonOpenFileDialog
+                    {
+                        Title = fMessage.Title,
+                        EnsurePathExists = true,
+                        Multiselect = false
+                    };
+                    cofd.Filters.Add(new CommonFileDialogFilter("CSV Files", ".csv"));
+
+                    CommonFileDialogResult result = cofd.ShowDialog();
+                    if (result == CommonFileDialogResult.Ok)
+                        fMessage.Callback?.Invoke(FileDialogMessage.DialogResult.Succeeded, cofd.FileName);
+                    else
+                        fMessage.Callback?.Invoke(FileDialogMessage.DialogResult.Failed, null);
                 }
             }
         }
