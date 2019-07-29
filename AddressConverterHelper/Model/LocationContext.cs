@@ -4,8 +4,8 @@ namespace AddressConverterHelper.Model
 {
     public class LocationContext : DbContext
     {
-        public DbSet<TownCityLocation> TownCities { get; set; }
-        public DbSet<SuburbLocalityLocation> SuburbLocalities { get; set; }
+        public DbSet<TownCityLocation> TownsCities { get; set; }
+        public DbSet<SuburbLocalityLocation> SuburbsLocalities { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
