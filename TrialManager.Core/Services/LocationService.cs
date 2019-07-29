@@ -21,12 +21,15 @@ namespace TrialManager.Core.Services
         /// <param name="maxCount">The maximum number of suggestions to return</param>
         public List<string> GetAutoCompleteSuggestions(string text, int maxCount = 5)
         {
+            text.ToLower();
+            if (string.IsNullOrEmpty(text))
+                return null;
             List<string> locations = new List<string>();
 
             // Get all matching suburbs
             foreach (SuburbLocalityLocation sLoc in _locations.SuburbsLocalities)
             {
-                if (sLoc.FullName.StartsWith(text))
+                if (sLoc.FullName.ToLower().StartsWith(text))
                     locations.Add(sLoc.FullName);
 
                 if (locations.Count == maxCount)
@@ -37,7 +40,7 @@ namespace TrialManager.Core.Services
             // As such, now search through towns/cities
             foreach (TownCityLocation tLoc in _locations.TownsCities)
             {
-                if (tLoc.Name.StartsWith(text))
+                if (tLoc.Name.ToLower().StartsWith(text))
                     locations.Add(tLoc.Name);
 
                 if (locations.Count == maxCount)

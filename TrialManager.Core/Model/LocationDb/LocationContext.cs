@@ -9,7 +9,11 @@ namespace TrialManager.Core.Model.LocationDb
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+#if TEST
+            optionsBuilder.UseInMemoryDatabase("LocationsDatabase");
+#else
             optionsBuilder.UseSqlite("Data Source=Resources\\locations.db");
+#endif
         }
     }
 }
