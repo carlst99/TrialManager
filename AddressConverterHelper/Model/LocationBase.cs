@@ -5,7 +5,7 @@
         /// <summary>
         /// Gets or sets the primary DB key
         /// </summary>
-        public int Key { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the location
