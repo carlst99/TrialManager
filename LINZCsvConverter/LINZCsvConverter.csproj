@@ -5,7 +5,7 @@
     <Description>Helper project to convert LINZ AIMS street address CSV data to the DB format used by TrialManager</Description>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
-    <StartupObject>AddressConverterHelper.Program</StartupObject>
+    <StartupObject></StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

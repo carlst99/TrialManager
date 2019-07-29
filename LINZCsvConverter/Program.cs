@@ -1,10 +1,10 @@
-﻿using AddressConverterHelper.Model;
+﻿using LINZCsvConverter.Model;
 using CsvHelper;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace AddressConverterHelper
+namespace LINZCsvConverter
 {
     public static class Program
     {

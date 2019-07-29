@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace AddressConverterHelper.Model
+namespace LINZCsvConverter.Model
 {
     public abstract class LocationBase
     {

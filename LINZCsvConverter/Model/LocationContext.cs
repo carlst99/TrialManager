@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace AddressConverterHelper.Model
+namespace LINZCsvConverter.Model
 {
     public class LocationContext : DbContext
     {

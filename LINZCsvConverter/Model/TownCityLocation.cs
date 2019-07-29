@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace AddressConverterHelper.Model
+namespace LINZCsvConverter.Model
 {
     public class TownCityLocation : LocationBase
     {
