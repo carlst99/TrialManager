@@ -1,5 +1,6 @@
 ﻿using AddressConverterHelper.Model;
 using System;
+using System.IO;
 
 namespace AddressConverterHelper
 {
@@ -14,6 +15,10 @@ namespace AddressConverterHelper
             Console.WriteLine("Creating new database...");
             locations.Database.EnsureCreated();
             Console.WriteLine("New database created");
+
+            using (StreamReader reader = new StreamReader("Resources\\nz-street-address.csv"))
+            {
+            }
 		}
     }
 }
