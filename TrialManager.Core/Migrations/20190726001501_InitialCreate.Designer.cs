@@ -16,7 +16,7 @@ namespace TrialManager.Core.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
-            modelBuilder.Entity("TrialManager.Core.Model.ContextModel.Trialist", b =>
+            modelBuilder.Entity("TrialManager.Core.Model.TrialistDb.Trialist", b =>
                 {
                     b.Property<int>("TrialistId")
                         .ValueGeneratedOnAdd();
