@@ -31,9 +31,9 @@ namespace TrialManager.Core
             Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
             Mvx.IoCProvider.RegisterSingleton<IntraMessaging.IIntraMessenger>(IntraMessaging.IntraMessenger.Instance);
 
-            var context = new Model.Context.ManagerContext();
+            var context = new Model.TrialistDb.TrialistContext();
             await context.Database.MigrateAsync().ConfigureAwait(false);
-            Mvx.IoCProvider.RegisterSingleton<Model.Context.IManagerContext>(context);
+            Mvx.IoCProvider.RegisterSingleton<Model.TrialistDb.ITrialistContext>(context);
             Mvx.IoCProvider.RegisterSingleton<Model.LocationDb.ILocationContext>(new Model.LocationDb.LocationContext());
 
             Log.Logger = new LoggerConfiguration()

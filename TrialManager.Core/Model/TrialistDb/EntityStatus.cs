@@ -1,4 +1,4 @@
-﻿namespace TrialManager.Core.Model.ContextModel
+﻿namespace TrialManager.Core.Model.TrialistDb
 {
     /// <summary>
     /// Describes the status of a trialist/dog

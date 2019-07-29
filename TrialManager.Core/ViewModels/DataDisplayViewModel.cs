@@ -1,16 +1,14 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using TrialManager.Core.Model.Context;
-using TrialManager.Core.Model.ContextModel;
 using TrialManager.Core.Model.Messages;
+using TrialManager.Core.Model.TrialistDb;
 using TrialManager.Core.ViewModels.Base;
 
 namespace TrialManager.Core.ViewModels
@@ -20,7 +18,7 @@ namespace TrialManager.Core.ViewModels
     {
         #region Fields
 
-        private readonly ManagerContext _managerContext;
+        private readonly TrialistContext _managerContext;
         private readonly IIntraMessenger _messagingService;
 
         private ObservableCollection<Trialist> _trialists;
@@ -138,10 +136,10 @@ namespace TrialManager.Core.ViewModels
 
         #endregion
 
-        public DataDisplayViewModel(IMvxNavigationService navigationService, IManagerContext managerContext, IIntraMessenger messagingService)
+        public DataDisplayViewModel(IMvxNavigationService navigationService, ITrialistContext managerContext, IIntraMessenger messagingService)
             : base(navigationService)
         {
-            _managerContext = (ManagerContext)managerContext;
+            _managerContext = (TrialistContext)managerContext;
             _messagingService = messagingService;
 
             if (_managerContext.Trialists.Any())

@@ -3,7 +3,7 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                  xmlns:model="clr-namespace:TrialManager.Core.Model.ContextModel;assembly=TrialManager.Core"
+                  xmlns:model="clr-namespace:TrialManager.Core.Model.TrialistDb;assembly=TrialManager.Core"
                   xmlns:sys="clr-namespace:System;assembly=mscorlib"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"

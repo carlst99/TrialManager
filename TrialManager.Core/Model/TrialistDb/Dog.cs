@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace TrialManager.Core.Model.ContextModel
+namespace TrialManager.Core.Model.TrialistDb
 {
     [MessagePackObject]
     public class Dog : ContextItem
