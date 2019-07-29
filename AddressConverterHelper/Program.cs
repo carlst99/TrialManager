@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AddressConverterHelper.Model;
+using System;
 
 namespace AddressConverterHelper
 {
@@ -6,7 +7,13 @@ namespace AddressConverterHelper
     {
         public static void Main(string[] args) 
 		{
-            Console.Read();
+            LocationContext locations = new LocationContext();
+            Console.WriteLine("Deleting previous database...");
+            locations.Database.EnsureDeleted();
+            Console.WriteLine("Previous database delected");
+            Console.WriteLine("Creating new database...");
+            locations.Database.EnsureCreated();
+            Console.WriteLine("New database created");
 		}
     }
 }
