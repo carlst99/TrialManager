@@ -6,6 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\locations.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\locations.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="IntraMessaging" Version="1.0.3" />
     <PackageReference Include="MessagePack" Version="1.7.3.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
