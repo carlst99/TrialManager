@@ -76,18 +76,39 @@ namespace TrialManager.Core.Tests.Services
         public void TestResolveCity()
         {
             LocationService lService = GetLocationService();
-            bool result = lService.TryResolve("Hamilton", out LocationBase tLoc);
+            bool result = lService.TryResolve("Auckland", out LocationBase tLoc);
 
             Assert.True(result);
             Assert.NotNull(tLoc);
             Assert.IsType<TownCityLocation>(tLoc);
-            Assert.Equal("Hamilton", tLoc.Name);
+            Assert.Equal("Auckland", tLoc.Name);
 
             result = lService.TryResolve("32 Knightsmead Place, Hamilton, Waikato", out tLoc);
             Assert.True(result);
             Assert.NotNull(tLoc);
             Assert.IsType<TownCityLocation>(tLoc);
             Assert.Equal("Hamilton", tLoc.Name);
+        }
+
+        /// <summary>
+        /// Tests that the resolver method returns the correct suburb/locality, given valid inputs
+        /// </summary>
+        [Fact]
+        public void TestResolveSuburbLocality()
+        {
+            LocationService lService = GetLocationService();
+            bool result = lService.TryResolve("Waikato", out LocationBase sLoc);
+
+            Assert.True(result);
+            Assert.NotNull(sLoc);
+            Assert.IsType<SuburbLocalityLocation>(sLoc);
+            Assert.Equal("Waikato", sLoc.Name);
+
+            result = lService.TryResolve("Parnell, Auckland", out sLoc);
+            Assert.True(result);
+            Assert.NotNull(sLoc);
+            Assert.IsType<SuburbLocalityLocation>(sLoc);
+            Assert.Equal("Parnell", sLoc.Name);
         }
 
         #endregion
@@ -102,6 +123,14 @@ namespace TrialManager.Core.Tests.Services
                 context.TownsCities.Add(new TownCityLocation { Name = "Hamilton" });
                 context.TownsCities.Add(new TownCityLocation { Name = "Whangarei" });
                 context.TownsCities.Add(new TownCityLocation { Name = "Wanganui" });
+                context.TownsCities.Add(new TownCityLocation
+                {
+                    Name = "Auckland",
+                    Suburbs = new List<SuburbLocalityLocation>()
+                    {
+                        new SuburbLocalityLocation { Name = "Parnell", TownCityName = "Auckland" }
+                    }
+                });
 
                 context.SuburbsLocalities.Add(new SuburbLocalityLocation { Name = "Waikato" });
                 context.SuburbsLocalities.Add(new SuburbLocalityLocation { Name = "King Country" });
