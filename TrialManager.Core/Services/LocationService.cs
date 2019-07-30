@@ -90,31 +90,6 @@ namespace TrialManager.Core.Services
             // If we are here the search failed to find any towns/cities
             location = null;
             return false;
-
-            //// Check first for a combined address
-            //if (text.Contains(SEPARATOR_CHAR.ToString()))
-            //{
-            //    string[] components = text.Split(SEPARATOR_CHAR);
-            //    TownCityLocation tLoc = MatchTownCity(components[0].Trim());
-            //} else
-            //{
-            //    TownCityLocation tLoc = MatchTownCity(text.Trim());
-            //    if (tLoc != null)
-            //    {
-            //        location = tLoc;
-            //        return true;
-            //    }
-
-            //    SuburbLocalityLocation sLoc = MatchSuburbLocality(text.Trim());
-            //    if (sLoc != null)
-            //    {
-            //        location = sLoc;
-            //        return true;
-            //    }
-
-            //    location = null;
-            //    return false;
-            //}
         }
 
         private TownCityLocation MatchTownCity(string text)
