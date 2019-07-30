@@ -8,6 +8,8 @@ namespace TrialManager.Core.Tests.Services
 {
     public class LocationServiceTests
     {
+        #region AutoComplete tests
+
         /// <summary>
         /// This tests that the autocomplete method returns the correct amount
         /// </summary>
@@ -49,6 +51,46 @@ namespace TrialManager.Core.Tests.Services
             suggestions = lService.GetAutoCompleteSuggestions("Parnell, A");
             Assert.Equal("Parnell, Auckland", suggestions[0]);
         }
+
+        #endregion
+
+        #region Resolver tests
+
+        /// <summary>
+        /// Tests that the resolver method correctly handles a non-existent location input
+        /// </summary>
+        [Fact]
+        public void TestResolveInvalid()
+        {
+            LocationService lService = GetLocationService();
+            bool result = lService.TryResolve("Rainbow's End", out LocationBase tLoc);
+
+            Assert.False(result);
+            Assert.Null(tLoc);
+        }
+
+        /// <summary>
+        /// Tests that the resolver method returns the correct city, given valid inputs
+        /// </summary>
+        [Fact]
+        public void TestResolveCity()
+        {
+            LocationService lService = GetLocationService();
+            bool result = lService.TryResolve("Hamilton", out LocationBase tLoc);
+
+            Assert.True(result);
+            Assert.NotNull(tLoc);
+            Assert.IsType<TownCityLocation>(tLoc);
+            Assert.Equal("Hamilton", tLoc.Name);
+
+            result = lService.TryResolve("32 Knightsmead Place, Hamilton, Waikato", out tLoc);
+            Assert.True(result);
+            Assert.NotNull(tLoc);
+            Assert.IsType<TownCityLocation>(tLoc);
+            Assert.Equal("Hamilton", tLoc.Name);
+        }
+
+        #endregion
 
         private LocationService GetLocationService()
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TrialManager.Core.Model.LocationDb;
 
 namespace TrialManager.Core.Services
@@ -58,7 +59,8 @@ namespace TrialManager.Core.Services
             // Look first through the smaller towns/cities list
             foreach (TownCityLocation tLoc in _locations.TownsCities)
             {
-                if (text.Contains(tLoc.Name.ToLower()))
+                string tLocName = tLoc.Name.ToLower();
+                if (text.Contains(tLocName) || text.Equals(tLocName, StringComparison.OrdinalIgnoreCase))
                 {
                     foreach (SuburbLocalityLocation sLoc in tLoc.Suburbs)
                     {
@@ -66,19 +68,19 @@ namespace TrialManager.Core.Services
                         {
                             location = sLoc;
                             return true;
-                        } else
-                        {
-                            location = tLoc;
-                            return true;
                         }
                     }
-                }
+
+                    location = tLoc;
+                    return true;
+                } 
             }
 
             // If no town/city could be found, check through suburbs
             foreach (SuburbLocalityLocation sLoc in _locations.SuburbsLocalities)
             {
-                if (text.Contains(sLoc.Name.ToLower()))
+                string sLocName = sLoc.Name.ToLower();
+                if (text.Contains(sLocName) || text.Equals(sLocName, StringComparison.OrdinalIgnoreCase))
                 {
                     location = sLoc;
                     return true;
