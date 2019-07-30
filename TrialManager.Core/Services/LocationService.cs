@@ -53,7 +53,7 @@ namespace TrialManager.Core.Services
 
         public bool TryResolve(string text, out LocationBase location)
         {
-            text.ToLower();
+            text = text.ToLower();
 
             // Look first through the smaller towns/cities list
             foreach (TownCityLocation tLoc in _locations.TownsCities)

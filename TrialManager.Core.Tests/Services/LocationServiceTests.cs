@@ -37,9 +37,17 @@ namespace TrialManager.Core.Tests.Services
         /// This tests that the autocomplete method returns the correct suggestions
         /// </summary>
         [Fact]
-        public void TestAutoComlpeteReturn()
+        public void TestAutoCompleteReturn()
         {
+            LocationService lService = GetLocationService();
+            List<string> suggestions = lService.GetAutoCompleteSuggestions("k");
+            Assert.Equal("King Country", suggestions[0]);
 
+            suggestions = lService.GetAutoCompleteSuggestions("hamil");
+            Assert.Equal("Hamilton", suggestions[0]);
+
+            suggestions = lService.GetAutoCompleteSuggestions("Parnell, A");
+            Assert.Equal("Parnell, Auckland", suggestions[0]);
         }
 
         private LocationService GetLocationService()
