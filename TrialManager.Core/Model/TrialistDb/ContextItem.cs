@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace TrialManager.Core.Model.ContextModel
+namespace TrialManager.Core.Model.TrialistDb
 {
     public abstract class ContextItem : INotifyPropertyChanged
     {

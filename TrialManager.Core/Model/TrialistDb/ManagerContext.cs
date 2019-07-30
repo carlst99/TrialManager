@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-using TrialManager.Core.Model.ContextModel;
 
-namespace TrialManager.Core.Model.Context
+namespace TrialManager.Core.Model.TrialistDb
 {
-    public sealed class ManagerContext : DbContext, IManagerContext
+    public sealed class TrialistContext : DbContext, ITrialistContext
     {
         public DbSet<Trialist> Trialists { get; set; }
 

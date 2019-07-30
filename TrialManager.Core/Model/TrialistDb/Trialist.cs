@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TrialManager.Core.Model.ContextModel
+namespace TrialManager.Core.Model.TrialistDb
 {
     public class Trialist : ContextItem
     {

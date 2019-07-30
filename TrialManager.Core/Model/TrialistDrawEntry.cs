@@ -1,5 +1,5 @@
 ﻿using System;
-using TrialManager.Core.Model.ContextModel;
+using TrialManager.Core.Model.TrialistDb;
 
 namespace TrialManager.Core.Model
 {
