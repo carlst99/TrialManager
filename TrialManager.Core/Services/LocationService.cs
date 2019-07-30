@@ -21,9 +21,10 @@ namespace TrialManager.Core.Services
         /// <param name="maxCount">The maximum number of suggestions to return</param>
         public List<string> GetAutoCompleteSuggestions(string text, int maxCount = 5)
         {
-            text.ToLower();
             if (string.IsNullOrEmpty(text))
                 return null;
+            text = text.ToLower();
+
             List<string> locations = new List<string>();
 
             // Get all matching suburbs
