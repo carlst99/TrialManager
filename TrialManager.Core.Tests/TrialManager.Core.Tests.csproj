@@ -6,10 +6,16 @@
     <IsPackable>false</IsPackable>
 
     <Description>Provides the structure for the testing of an MvvmCross Core project</Description>
+
+    <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
+    <DefineConstants>TRACE;TEST</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup>

@@ -8,21 +8,46 @@ namespace TrialManager.Core.Tests.Services
 {
     public class LocationServiceTests
     {
+        /// <summary>
+        /// This tests that the autocomplete method returns the correct amount
+        /// </summary>
         [Fact]
-        public void TestAutoComplete()
+        public void TestAutoCompleteReturnCount()
         {
-            LocationService lService = new LocationService(GetLocationContext());
+            LocationService lService = GetLocationService();
             List<string> suggestions = lService.GetAutoCompleteSuggestions("w");
-
             Assert.Equal(3, suggestions.Count);
         }
 
-        private ILocationContext GetLocationContext()
+        /// <summary>
+        /// This tests that the autocomplete method ignores case
+        /// </summary>
+        [Fact]
+        public void TestAutoCompleteInputCase()
+        {
+            LocationService lService = GetLocationService();
+            List<string> suggestions = lService.GetAutoCompleteSuggestions("h");
+            Assert.Single(suggestions);
+
+            suggestions = lService.GetAutoCompleteSuggestions("H");
+            Assert.Single(suggestions);
+        }
+
+        /// <summary>
+        /// This tests that the autocomplete method returns the correct suggestions
+        /// </summary>
+        [Fact]
+        public void TestAutoComlpeteReturn()
+        {
+
+        }
+
+        private LocationService GetLocationService()
         {
             using (LocationContext context = new LocationContext())
             {
                 if (context.TownsCities.AnyAsync().Result)
-                    return new LocationContext();
+                    return new LocationService(new LocationContext());
 
                 context.TownsCities.Add(new TownCityLocation { Name = "Hamilton" });
                 context.TownsCities.Add(new TownCityLocation { Name = "Whangarei" });
@@ -30,11 +55,11 @@ namespace TrialManager.Core.Tests.Services
 
                 context.SuburbsLocalities.Add(new SuburbLocalityLocation { Name = "Waikato" });
                 context.SuburbsLocalities.Add(new SuburbLocalityLocation { Name = "King Country" });
-                context.SuburbsLocalities.Add(new SuburbLocalityLocation { Name = "Parnell" });
+                context.SuburbsLocalities.Add(new SuburbLocalityLocation { Name = "Parnell", TownCityName = "Auckland" });
 
                 context.SaveChanges();
             }
-            return new LocationContext();
+            return new LocationService(new LocationContext());
         }
     }
 }
