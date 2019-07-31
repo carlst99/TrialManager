@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MessagePack;
+using Microsoft.EntityFrameworkCore;
 
 namespace TrialManager.Core.Model.LocationDb
 {
@@ -14,6 +15,16 @@ namespace TrialManager.Core.Model.LocationDb
 #else
             optionsBuilder.UseSqlite("Data Source=Resources\\locations.db");
 #endif
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<LocationBase>()
+                        .Property(l => l.Location)
+                        .HasConversion(
+                            f => MessagePackSerializer.Serialize(f),
+                            b => MessagePackSerializer.Deserialize<Location>(b));
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

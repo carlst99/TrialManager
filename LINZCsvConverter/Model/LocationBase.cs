@@ -31,7 +31,17 @@ namespace LINZCsvConverter.Model
         /// </summary>
         [Name("gd2000_ycoord")]
         [Required]
-        public double Gd2000Y { get; set; }
+        public double Gd2000Y
+        {
+            get => Location.Gd2000Y;
+            set => Location.Gd2000Y = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the NZ Geodetic Datum 2000 (NZGD2000) coordinate point for this location
+        /// </summary>
+        [Required]
+        public Location Location { get; set; }
 
         #endregion
 

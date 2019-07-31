@@ -24,20 +24,6 @@ namespace TrialManager.Core.Model.LocationDb
         [Required]
         public Location Location { get; set; }
 
-        /// <summary>
-        /// Gets or sets the GD2000 X coordinate of this location
-        /// </summary>
-        [Required]
-        [Obsolete]
-        public double Gd2000X { get; set; }
-
-        /// <summary>
-        /// Gets or sets the GD2000 Y coordinate of this location
-        /// </summary>
-        [Required]
-        [Obsolete]
-        public double Gd2000Y { get; set; }
-
         #endregion
 
         #region Object overrides
