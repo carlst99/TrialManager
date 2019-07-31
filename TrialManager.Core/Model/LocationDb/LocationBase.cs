@@ -31,6 +31,12 @@ namespace TrialManager.Core.Model.LocationDb
 
         #endregion
 
+        /// <summary>
+        /// Returns the location of this object in a <see cref="Location"/> object
+        /// </summary>
+        /// <returns></returns>
+        public Location GetLocation() => new Location(Gd2000X, Gd2000Y);
+
         #region Object overrides
 
         public override string ToString() => Name;
