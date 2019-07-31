@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace TrialManager.Core.Model.LocationDb
 {
@@ -18,24 +19,26 @@ namespace TrialManager.Core.Model.LocationDb
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the NZ Geodetic Datum 2000 (NZGD2000) coordinate point for this location
+        /// </summary>
+        [Required]
+        public Location Location { get; set; }
+
+        /// <summary>
         /// Gets or sets the GD2000 X coordinate of this location
         /// </summary>
         [Required]
+        [Obsolete]
         public double Gd2000X { get; set; }
 
         /// <summary>
         /// Gets or sets the GD2000 Y coordinate of this location
         /// </summary>
         [Required]
+        [Obsolete]
         public double Gd2000Y { get; set; }
 
         #endregion
-
-        /// <summary>
-        /// Returns the location of this object in a <see cref="Location"/> object
-        /// </summary>
-        /// <returns></returns>
-        public Location GetLocation() => new Location(Gd2000X, Gd2000Y);
 
         #region Object overrides
 
