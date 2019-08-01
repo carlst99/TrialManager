@@ -10,13 +10,13 @@ namespace TrialManager.Core.Model.LocationDb
         /// Gets the X coordinate of this location point
         /// </summary>
         [Key(0)]
-        public double Gd2000X { get; private set; }
+        public double Gd2000X { get; set; }
 
         /// <summary>
         /// Gets the Y coordinate of this location point
         /// </summary>
         [Key(1)]
-        public double Gd2000Y { get; private set; }
+        public double Gd2000Y { get; set; }
 
         public Location(double gd2000X, double gd2000Y)
         {

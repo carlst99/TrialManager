@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MessagePack;
+using Microsoft.EntityFrameworkCore;
 
 namespace LINZCsvConverter.Model
 {
@@ -10,6 +11,16 @@ namespace LINZCsvConverter.Model
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=locations.db");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<LocationBase>()
+                        .Property(l => l.Location)
+                        .HasConversion(
+                            f => MessagePackSerializer.Serialize(f),
+                            b => MessagePackSerializer.Deserialize<Location>(b));
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

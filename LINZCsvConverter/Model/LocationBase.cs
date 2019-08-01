@@ -1,5 +1,6 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LINZCsvConverter.Model
 {
@@ -23,14 +24,18 @@ namespace LINZCsvConverter.Model
         /// Gets or sets the GD2000 X coordinate of this location
         /// </summary>
         [Name("gd2000_xcoord")]
-        [Required]
-        public double Gd2000X { get; set; }
+        [NotMapped]
+        public double Gd2000X
+        {
+            get => Location.Gd2000X;
+            set => Location.Gd2000X = value;
+        }
 
         /// <summary>
         /// Gets or sets the GD2000 Y coordinate of this location
         /// </summary>
         [Name("gd2000_ycoord")]
-        [Required]
+        [NotMapped]
         public double Gd2000Y
         {
             get => Location.Gd2000Y;
@@ -41,7 +46,7 @@ namespace LINZCsvConverter.Model
         /// Gets or sets the NZ Geodetic Datum 2000 (NZGD2000) coordinate point for this location
         /// </summary>
         [Required]
-        public Location Location { get; set; }
+        public Location Location;
 
         #endregion
 
