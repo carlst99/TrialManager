@@ -6,6 +6,8 @@ namespace LINZCsvConverter.Model
 {
     public abstract class LocationBase
     {
+        private Location _location;
+
         #region Properties
 
         /// <summary>
@@ -27,8 +29,8 @@ namespace LINZCsvConverter.Model
         [NotMapped]
         public double Gd2000X
         {
-            get => Location.Gd2000X;
-            set => Location.Gd2000X = value;
+            get => _location.Gd2000X;
+            set => _location.Gd2000X = value;
         }
 
         /// <summary>
@@ -38,15 +40,19 @@ namespace LINZCsvConverter.Model
         [NotMapped]
         public double Gd2000Y
         {
-            get => Location.Gd2000Y;
-            set => Location.Gd2000Y = value;
+            get => _location.Gd2000Y;
+            set => _location.Gd2000Y = value;
         }
 
         /// <summary>
         /// Gets or sets the NZ Geodetic Datum 2000 (NZGD2000) coordinate point for this location
         /// </summary>
         [Required]
-        public Location Location;
+        public Location Location
+        {
+            get => _location;
+            set => _location = value;
+        }
 
         #endregion
 
