@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TrialManager.Core.Model.LocationDb;
 
 namespace TrialManager.Core.Model.TrialistDb
 {
@@ -13,7 +14,8 @@ namespace TrialManager.Core.Model.TrialistDb
             Status = EntityStatus.Maiden,
             PhoneNumber = "012 345 6789",
             Email = "email@email.com",
-            Dogs = { Dog.Default }
+            Dogs = { Dog.Default },
+            Location = new Location()
         };
 
         #region Fields
@@ -24,6 +26,7 @@ namespace TrialManager.Core.Model.TrialistDb
         private string _phoneNumber;
         private string _email;
         private EntityStatus _status;
+        private Location _location;
 
         #endregion
 
@@ -94,6 +97,15 @@ namespace TrialManager.Core.Model.TrialistDb
         /// </summary>
         [Required]
         public ObservableCollection<Dog> Dogs { get; set; } = new ObservableCollection<Dog>();
+
+        /// <summary>
+        /// Gets or sets the location of this <see cref="Trialist"/>
+        /// </summary>
+        public Location Location
+        {
+            get => _location;
+            set => SetProperty(ref _location, value, nameof(Location));
+        }
 
         #endregion
 
