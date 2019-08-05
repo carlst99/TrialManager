@@ -1,6 +1,7 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
+using MvvmCross.UI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -25,6 +26,8 @@ namespace TrialManager.Core.ViewModels
         private DateTime _trialStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
         private string _trialName;
         private string _trialNotes;
+        private string _trialAddress;
+        private MvxColor _addressValidationColor; 
 
         #endregion
 

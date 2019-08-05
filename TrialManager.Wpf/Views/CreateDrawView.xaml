@@ -7,16 +7,19 @@
                   xmlns:model="clr-namespace:TrialManager.Core.Model;assembly=TrialManager.Core"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                  xmlns:color="clr-namespace:MvvmCross.Plugin.Color;assembly=MvvmCross.Plugin.Color"
                   mc:Ignorable="d" FontSize="13"
                   d:DesignHeight="450" d:DesignWidth="800">
 
     <views:MvxWpfView.Resources>
         <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter"/>
         <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter"/>
+        <color:MvxNativeColorValueConverter x:Key="ColorConverter"/>
     </views:MvxWpfView.Resources>
 
     <Grid Margin="16">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -61,6 +64,10 @@
             </Button>
         </StackPanel>
 
+        <TextBox Grid.Row="1" 
+                 Text="{Binding TrialAddress, UpdateSourceTrigger=PropertyChanged}"
+                 BorderBrush="{Binding AddressValidationColor, Converter={StaticResource ColorConverter}, Mode=OneWay}"/>
+
         <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
             <Border.Effect>
                 <BlurEffect Radius="5" KernelType="Gaussian"/>
@@ -70,10 +77,10 @@
         <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}"
                      Value="0" IsIndeterminate="True"
                      Height="100" Width="100"
-                     HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1"
+                     HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2"
                      Visibility="{Binding ShowProgress, Converter={StaticResource VisibilityConverter}}"/>
 
-        <ListView Grid.Row="1"
+        <ListView Grid.Row="2"
                   Visibility="{Binding ShowProgress, Converter={StaticResource InvertedVisibilityConverter}}"
                   ItemsSource="{Binding Trialists}"
                   AllowDrop="True">
