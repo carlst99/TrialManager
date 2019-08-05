@@ -14,6 +14,7 @@ namespace TrialManager.Core.Model.TrialistDb
             Status = EntityStatus.Maiden,
             PhoneNumber = "012 345 6789",
             Email = "email@email.com",
+            Address = "32 Hopeful Lane, Tamahere, Waikato",
             Dogs = { Dog.Default },
             Location = new Location()
         };
@@ -25,6 +26,7 @@ namespace TrialManager.Core.Model.TrialistDb
         private string _surname;
         private string _phoneNumber;
         private string _email;
+        private string _address;
         private EntityStatus _status;
         private Location _location;
 
@@ -73,10 +75,20 @@ namespace TrialManager.Core.Model.TrialistDb
         /// <summary>
         /// Gets or sets the email of the trialist
         /// </summary>
+        [Required]
         public string Email
         {
             get => _email;
             set => SetProperty(ref _email, value, nameof(Email));
+        }
+
+        /// <summary>
+        /// Gets or sets the home address of the trialist
+        /// </summary>
+        public string Address
+        {
+            get => _address;
+            set => SetProperty(ref _address, value, nameof(Address));
         }
 
         /// <summary>
@@ -88,9 +100,6 @@ namespace TrialManager.Core.Model.TrialistDb
             get => _status;
             set => SetProperty(ref _status, value, nameof(Status));
         }
-
-        [NotMapped]
-        public string FullName => GetFullName();
 
         /// <summary>
         /// Gets or sets the dogs that belong to this <see cref="Trialist"/>
@@ -106,6 +115,9 @@ namespace TrialManager.Core.Model.TrialistDb
             get => _location;
             set => SetProperty(ref _location, value, nameof(Location));
         }
+
+        [NotMapped]
+        public string FullName => GetFullName();
 
         #endregion
 
