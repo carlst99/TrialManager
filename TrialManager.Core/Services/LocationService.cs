@@ -92,11 +92,6 @@ namespace TrialManager.Core.Services
             return false;
         }
 
-        public string GetLocationName(Location location)
-        {
-
-        }
-
         private TownCityLocation MatchTownCity(string text)
         {
             foreach (TownCityLocation tLoc in _locations.TownsCities)
