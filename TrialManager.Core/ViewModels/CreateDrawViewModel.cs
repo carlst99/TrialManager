@@ -78,6 +78,24 @@ namespace TrialManager.Core.ViewModels
             set => SetProperty(ref _trialNotes, value);
         }
 
+        /// <summary>
+        /// Gets or sets the address of the trial
+        /// </summary>
+        public string TrialAddress
+        {
+            get => _trialAddress;
+            set => SetProperty(ref _trialAddress, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the color used to notify the user when a trial address has not validated properly
+        /// </summary>
+        public MvxColor AddressValidationColor
+        {
+            get => _addressValidationColor;
+            set => SetProperty(ref _addressValidationColor, value);
+        }
+
         #endregion
 
         #region Commands
@@ -161,6 +179,11 @@ namespace TrialManager.Core.ViewModels
         private void OnPrintDraw()
         {
             throw new NotImplementedException();
+        }
+
+        private void ValidateAddress()
+        {
+
         }
     }
 }
