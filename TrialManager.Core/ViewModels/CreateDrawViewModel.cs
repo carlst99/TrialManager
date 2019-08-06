@@ -27,7 +27,7 @@ namespace TrialManager.Core.ViewModels
         private string _trialName;
         private string _trialNotes;
         private string _trialAddress;
-        private MvxColor _addressValidationColor; 
+        private MvxColor _addressValidationColor;
 
         #endregion
 
@@ -183,7 +183,6 @@ namespace TrialManager.Core.ViewModels
 
         private void ValidateAddress()
         {
-
         }
     }
 }

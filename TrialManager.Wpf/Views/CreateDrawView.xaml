@@ -8,8 +8,10 @@
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                   xmlns:color="clr-namespace:MvvmCross.Plugin.Color;assembly=MvvmCross.Plugin.Color"
+                  xmlns:controls="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
                   mc:Ignorable="d" FontSize="13"
-                  d:DesignHeight="450" d:DesignWidth="800">
+                  d:DesignHeight="450" d:DesignWidth="800"
+                  Loaded="MvxWpfView_Loaded">
 
     <views:MvxWpfView.Resources>
         <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter"/>
@@ -64,9 +66,22 @@
             </Button>
         </StackPanel>
 
-        <TextBox Grid.Row="1" 
+        <!--<TextBox Grid.Row="1" 
                  Text="{Binding TrialAddress, UpdateSourceTrigger=PropertyChanged}"
-                 BorderBrush="{Binding AddressValidationColor, Converter={StaticResource ColorConverter}, Mode=OneWay}"/>
+                 BorderBrush="{Binding AddressValidationColor, Converter={StaticResource ColorConverter}, Mode=OneWay}"/>-->
+        <controls:Autocomplete x:Name="AddressAutocompleter"
+                               Grid.Row="1"
+                               SelectedItem="{Binding TrialAddress, Mode=TwoWay}">
+            <controls:Autocomplete.Hint>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                    <md:PackIcon Kind="AddressMarker"
+                                 VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding [Hint_SearchAddress]}"
+                               FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
+                               Margin="16,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </controls:Autocomplete.Hint>
+        </controls:Autocomplete>
 
         <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
             <Border.Effect>

@@ -169,6 +169,10 @@
     <value>Surname</value>
     <comment>This header appears above a list of surnames</comment>
   </data>
+  <data name="Hint_SearchAddress" xml:space="preserve">
+    <value>Search Locations</value>
+    <comment>This hint appears on a control allowing the user to search for locations</comment>
+  </data>
   <data name="Hint_TrialName" xml:space="preserve">
     <value>Trial Name</value>
     <comment>This hint appears on a control allowing the user to add a name to the trial</comment>

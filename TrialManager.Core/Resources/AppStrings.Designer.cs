@@ -178,6 +178,15 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search Locations.
+        /// </summary>
+        public static string Hint_SearchAddress {
+            get {
+                return ResourceManager.GetString("Hint_SearchAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trial Name.
         /// </summary>
         public static string Hint_TrialName {
