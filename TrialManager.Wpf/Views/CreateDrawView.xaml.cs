@@ -23,7 +23,7 @@ namespace TrialManager.Wpf.Views
 
     public class LocationAutocompleteSource : IAutocompleteSource
     {
-        private ILocationService _locationService;
+        private readonly ILocationService _locationService;
 
         public LocationAutocompleteSource()
         {
