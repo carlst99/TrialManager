@@ -27,7 +27,7 @@ namespace TrialManager.Core.ViewModels
         private string _trialName;
         private string _trialNotes;
         private string _trialAddress;
-        private MvxColor _addressValidationColor; 
+        private MvxColor _addressValidationColor = new MvxColor(255, 0, 0, 0);
 
         #endregion
 
@@ -76,6 +76,24 @@ namespace TrialManager.Core.ViewModels
         {
             get => _trialNotes;
             set => SetProperty(ref _trialNotes, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the address of the trial
+        /// </summary>
+        public string TrialAddress
+        {
+            get => _trialAddress;
+            set => SetProperty(ref _trialAddress, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the color used to notify the user when a trial address has not validated properly
+        /// </summary>
+        public MvxColor AddressValidationColor
+        {
+            get => _addressValidationColor;
+            set => SetProperty(ref _addressValidationColor, value);
         }
 
         #endregion

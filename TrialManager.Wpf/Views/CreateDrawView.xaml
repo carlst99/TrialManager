@@ -7,14 +7,13 @@
                   xmlns:model="clr-namespace:TrialManager.Core.Model;assembly=TrialManager.Core"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                  xmlns:color="clr-namespace:MvvmCross.Plugin.Color;assembly=MvvmCross.Plugin.Color"
                   mc:Ignorable="d" FontSize="13"
                   d:DesignHeight="450" d:DesignWidth="800">
 
     <views:MvxWpfView.Resources>
         <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter"/>
         <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter"/>
-        <color:MvxNativeColorValueConverter x:Key="ColorConverter"/>
+        <local:NativeMvxColorConverter x:Key="ColorConverter"/>
     </views:MvxWpfView.Resources>
 
     <Grid Margin="16">
