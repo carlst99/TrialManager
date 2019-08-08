@@ -1,10 +1,7 @@
-﻿using MaterialDesignExtensions.Model;
-using MvvmCross;
-using MvvmCross.Platforms.Wpf.Views;
+﻿using MvvmCross.Platforms.Wpf.Views;
 using MvvmCrossExtensions.Wpf.Presenters.MasterDetail;
-using System.Collections;
 using System.Text.RegularExpressions;
-using TrialManager.Core.Services;
+using TrialManager.Wpf.Helpers;
 
 namespace TrialManager.Wpf.Views
 {
@@ -25,21 +22,6 @@ namespace TrialManager.Wpf.Views
         {
             if (!Regex.Match(e.Text, "[0-9]").Success)
                 e.Handled = true;
-        }
-    }
-
-    public class LocationAutocompleteSource : IAutocompleteSource
-    {
-        private readonly ILocationService _locationService;
-
-        public LocationAutocompleteSource()
-        {
-            _locationService = Mvx.IoCProvider.Resolve<ILocationService>();
-        }
-
-        public IEnumerable Search(string searchTerm)
-        {
-            return _locationService.GetAutoCompleteSuggestions(searchTerm);
         }
     }
 }
