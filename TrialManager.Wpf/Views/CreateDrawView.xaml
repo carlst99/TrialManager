@@ -16,6 +16,7 @@
         <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter"/>
         <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter"/>
         <local:NativeMvxColorConverter x:Key="ColorConverter"/>
+        <local:NativeIntToStringConverter x:Key="IntToStringConverter"/>
     </views:MvxWpfView.Resources>
 
     <Grid Margin="16">
@@ -28,10 +29,20 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <TextBox md:HintAssist.Hint="{Binding [Hint_TrialName], Mode=OneTime}"
                      Width="200" VerticalAlignment="Center" Margin="8,0"
-                     Text="{Binding TrialName, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding TrialName, UpdateSourceTrigger=PropertyChanged}"
+                     md:HintAssist.IsFloating="True"/>
+            
             <TextBox md:HintAssist.Hint="{Binding [Hint_TrialNotes], Mode=OneTime}"
                      Width="200" VerticalAlignment="Center" Margin="8,0"
-                     Text="{Binding TrialNotes, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding TrialNotes, UpdateSourceTrigger=PropertyChanged}"
+                     md:HintAssist.IsFloating="True"/>
+
+            <TextBox x:Name="TxtBxRunCount"
+                     PreviewTextInput="TxtBxRunCount_PreviewTextInput"
+                     Text="{Binding RunsPerDay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IntToStringConverter}}"
+                     md:HintAssist.Hint="{Binding [Hint_RunsPerDay], Mode=OneTime}"
+                     md:HintAssist.IsFloating="True"
+                     Width="75"/>
 
             <md:TimePicker Width="100" FontSize="14"
                            md:HintAssist.Hint="{Binding [Hint_TrialStartTime], Mode=OneTime}"
@@ -66,19 +77,19 @@
         </StackPanel>
 
         <controls:Autocomplete x:Name="AddressAutocompleter"
-                               Grid.Row="1" Margin="0,4,0,0"
-                               SelectedItem="{Binding TrialAddress, Mode=TwoWay}">
-            <controls:Autocomplete.Hint>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                    <md:PackIcon Kind="AddressMarker" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding [Hint_TrialLocation], Mode=OneTime}"
-                               FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
-                               Margin="16,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-            </controls:Autocomplete.Hint>
-        </controls:Autocomplete>
+                               SelectedItem="{Binding TrialAddress, Mode=TwoWay}"
+                               Grid.Row="1" Margin="0,4,0,0">
+                <controls:Autocomplete.Hint>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        <md:PackIcon Kind="AddressMarker" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding [Hint_TrialLocation], Mode=OneTime}"
+                                   FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
+                                   Margin="16,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </controls:Autocomplete.Hint>
+            </controls:Autocomplete>
 
-        <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+            <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
             <Border.Effect>
                 <BlurEffect Radius="5" KernelType="Gaussian"/>
             </Border.Effect>

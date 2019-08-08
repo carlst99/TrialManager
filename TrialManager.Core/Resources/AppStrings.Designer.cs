@@ -178,6 +178,15 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Runs Per Day.
+        /// </summary>
+        public static string Hint_RunsPerDay {
+            get {
+                return ResourceManager.GetString("Hint_RunsPerDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set Trial Location.
         /// </summary>
         public static string Hint_TrialLocation {
