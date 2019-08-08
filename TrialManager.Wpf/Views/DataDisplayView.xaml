@@ -8,8 +8,10 @@
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                   xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                  xmlns:controls="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
                   mc:Ignorable="d"
-                  d:DesignHeight="450" d:DesignWidth="800">
+                  d:DesignHeight="450" d:DesignWidth="800"
+                  Loaded="MvxWpfView_Loaded">
 
     <views:MvxWpfView.Resources>
         <ObjectDataProvider x:Key="EnumValueResolver" MethodName="GetValues"
@@ -32,6 +34,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -65,32 +68,58 @@
                               SelectedItem="{Binding Status}"
                               Padding="0,6"/>
                 </StackPanel>
-
-                <!-- Phone number -->
-                <md:PackIcon Kind="Phone" Grid.Row="2" Margin="{StaticResource EditDialogIconMargin}"/>
+                
+                <!-- Address -->
+                <md:PackIcon Kind="Location" Grid.Row="2" Margin="{StaticResource EditDialogIconMargin}"/>
                 <StackPanel DataContext="{Binding TrialistToEdit}"
                             Margin="{StaticResource EditDialogContentMargin}"
                             Grid.Column="1" Grid.Row="2">
+                    <TextBlock Text="{Binding DataContext.[Header_Address], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                               Foreground="Gray"/>
+                    <controls:Autocomplete x:Name="AddressAutocompleter"
+                                           SelectedItem="{Binding Address, Mode=TwoWay}"
+                                           Margin="{StaticResource EditDialogContentMargin}"
+                                           Grid.Column="1" Grid.Row="2"
+                                           Style="{StaticResource MaterialDesignAutocompleteDense}">
+                        <controls:Autocomplete.Hint>
+                            <TextBlock Text="{Binding [Hint_TrialLocation], Mode=OneTime}"
+                                       FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
+                                       VerticalAlignment="Center"/>
+                        </controls:Autocomplete.Hint>
+
+                        <controls:Autocomplete.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" VerticalAlignment="Center" Margin="0"/>
+                            </DataTemplate>
+                        </controls:Autocomplete.ItemTemplate>
+                    </controls:Autocomplete>
+                </StackPanel>
+
+                <!-- Phone number -->
+                <md:PackIcon Kind="Phone" Grid.Row="3" Margin="{StaticResource EditDialogIconMargin}"/>
+                <StackPanel DataContext="{Binding TrialistToEdit}"
+                            Margin="{StaticResource EditDialogContentMargin}"
+                            Grid.Column="1" Grid.Row="3">
                     <TextBlock Text="{Binding DataContext.[Header_PhoneNumber], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
                                Foreground="Gray"/>
                     <TextBox Text="{Binding PhoneNumber}"/>
                 </StackPanel>
 
                 <!-- Email -->
-                <md:PackIcon Kind="Email" Grid.Row="3" Margin="{StaticResource EditDialogIconMargin}"/>
+                <md:PackIcon Kind="Email" Grid.Row="4" Margin="{StaticResource EditDialogIconMargin}"/>
                 <StackPanel DataContext="{Binding TrialistToEdit}"
                             Margin="{StaticResource EditDialogContentMargin}"
-                            Grid.Column="1" Grid.Row="3">
+                            Grid.Column="1" Grid.Row="4">
                     <TextBlock Text="{Binding DataContext.[Header_Email], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
                                Foreground="Gray"/>
                     <TextBox Text="{Binding Email}"/>
                 </StackPanel>
 
                 <!-- Dogs -->
-                <md:PackIcon Kind="DogSide" Grid.Row="4" Margin="{StaticResource EditDialogIconMargin}"/>
+                <md:PackIcon Kind="DogSide" Grid.Row="5" Margin="{StaticResource EditDialogIconMargin}"/>
                 <StackPanel DataContext="{Binding TrialistToEdit}"
                             Margin="{StaticResource EditDialogContentMargin}"
-                            Grid.Column="1" Grid.Row="4">
+                            Grid.Column="1" Grid.Row="5">
                     <TextBlock Text="{Binding DataContext.[Header_Dogs], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
                                Foreground="Gray"/>
                     <ItemsControl ItemsSource="{Binding Dogs}">
@@ -125,7 +154,7 @@
                 </StackPanel>
 
                 <!-- Close button -->
-                <Button Grid.ColumnSpan="2" Grid.Row="5"
+                <Button Grid.ColumnSpan="2" Grid.Row="6"
                         HorizontalAlignment="Stretch"
                         Command="{Binding CloseEditDialogCommand}"
                         Content="{Binding [Label_Done], Mode=OneTime}"/>

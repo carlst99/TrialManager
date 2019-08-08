@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MessagePack;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using TrialManager.Core.Model.LocationDb;
 
 namespace TrialManager.Core.Model.TrialistDb
 {
@@ -17,8 +19,14 @@ namespace TrialManager.Core.Model.TrialistDb
             modelBuilder.Entity<Trialist>()
                         .Property(t => t.Dogs)
                         .HasConversion(
-                            f => MessagePack.MessagePackSerializer.Serialize(f),
-                            b => MessagePack.MessagePackSerializer.Deserialize<ObservableCollection<Dog>>(b));
+                            f => MessagePackSerializer.Serialize(f),
+                            b => MessagePackSerializer.Deserialize<ObservableCollection<Dog>>(b));
+
+            modelBuilder.Entity<Trialist>()
+                        .Property(l => l.Location)
+                        .HasConversion(
+                            f => MessagePackSerializer.Serialize(f),
+                            b => MessagePackSerializer.Deserialize<Location>(b));
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -14,6 +14,9 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Yellow.xaml"/>
                 <!-- Custom themes -->
                 <ResourceDictionary Source="pack://application:,,,/TrialManager.Wpf;component/UIEnhancements/Styles.xaml"/>
+                <!-- Material Design Extensions -->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/MaterialDesignLightTheme.xaml" />
 
                 <ResourceDictionary>
                     <!--<SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#26C6DA"/>-->

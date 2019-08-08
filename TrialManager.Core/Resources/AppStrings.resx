@@ -129,6 +129,10 @@
     <value>Print Draw</value>
     <comment>This label appears on a control allowing the draw to be printed</comment>
   </data>
+  <data name="Header_Address" xml:space="preserve">
+    <value>Address</value>
+    <comment>This header appears above a address</comment>
+  </data>
   <data name="Header_Dog" xml:space="preserve">
     <value>Dog</value>
     <comment>This header appears above a list of dogs, in the context of which dog a trialist is assigned for their run</comment>
@@ -168,6 +172,14 @@
   <data name="Header_Surname" xml:space="preserve">
     <value>Surname</value>
     <comment>This header appears above a list of surnames</comment>
+  </data>
+  <data name="Hint_RunsPerDay" xml:space="preserve">
+    <value>Runs Per Day</value>
+    <comment>This hint appears on a textbox allowing the user to set the number of runs per day in the trial</comment>
+  </data>
+  <data name="Hint_TrialLocation" xml:space="preserve">
+    <value>Set Trial Location</value>
+    <comment>This hint appears on the autocomplete box allowing the user to set the trial location</comment>
   </data>
   <data name="Hint_TrialName" xml:space="preserve">
     <value>Trial Name</value>

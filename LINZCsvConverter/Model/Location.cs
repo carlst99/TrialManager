@@ -1,7 +1,7 @@
 ﻿using MessagePack;
 using System;
 
-namespace TrialManager.Core.Model.LocationDb
+namespace LINZCsvConverter.Model
 {
     [MessagePackObject]
     public struct Location
@@ -17,12 +17,6 @@ namespace TrialManager.Core.Model.LocationDb
         /// </summary>
         [Key(1)]
         public double Gd2000Y { get; set; }
-
-        public Location(double gd2000X, double gd2000Y)
-        {
-            Gd2000X = gd2000X;
-            Gd2000Y = gd2000Y;
-        }
 
         #region Object overrides
 

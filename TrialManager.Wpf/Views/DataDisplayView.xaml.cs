@@ -1,5 +1,6 @@
 ﻿using MvvmCross.Platforms.Wpf.Views;
 using MvvmCrossExtensions.Wpf.Presenters.MasterDetail;
+using TrialManager.Wpf.Helpers;
 
 namespace TrialManager.Wpf.Views
 {
@@ -9,6 +10,11 @@ namespace TrialManager.Wpf.Views
         public DataDisplayView()
         {
             InitializeComponent();
+        }
+
+        private void MvxWpfView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            AddressAutocompleter.AutocompleteSource = new LocationAutocompleteSource();
         }
     }
 }

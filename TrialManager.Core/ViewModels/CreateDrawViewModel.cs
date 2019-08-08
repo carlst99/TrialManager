@@ -1,6 +1,7 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
+using MvvmCross.UI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -22,9 +23,11 @@ namespace TrialManager.Core.ViewModels
 
         private ObservableCollection<TrialistDrawEntry> _trialists;
         private bool _showProgress;
-        private DateTime _trialStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
+        private DateTime _trialStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0);
         private string _trialName;
         private string _trialNotes;
+        private string _trialAddress;
+        private int _runsPerDay = 100;
 
         #endregion
 
@@ -73,6 +76,24 @@ namespace TrialManager.Core.ViewModels
         {
             get => _trialNotes;
             set => SetProperty(ref _trialNotes, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the address of the trial
+        /// </summary>
+        public string TrialAddress
+        {
+            get => _trialAddress;
+            set => SetProperty(ref _trialAddress, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the number of runs per day in the trial
+        /// </summary>
+        public int RunsPerDay
+        {
+            get => _runsPerDay;
+            set => SetProperty(ref _runsPerDay, value);
         }
 
         #endregion
