@@ -129,6 +129,10 @@
     <value>Print Draw</value>
     <comment>This label appears on a control allowing the draw to be printed</comment>
   </data>
+  <data name="Header_Address" xml:space="preserve">
+    <value>Address</value>
+    <comment>This header appears above a address</comment>
+  </data>
   <data name="Header_Dog" xml:space="preserve">
     <value>Dog</value>
     <comment>This header appears above a list of dogs, in the context of which dog a trialist is assigned for their run</comment>

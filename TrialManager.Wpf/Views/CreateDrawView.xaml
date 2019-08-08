@@ -79,15 +79,15 @@
         <controls:Autocomplete x:Name="AddressAutocompleter"
                                SelectedItem="{Binding TrialAddress, Mode=TwoWay}"
                                Grid.Row="1" Margin="0,4,0,0">
-                <controls:Autocomplete.Hint>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                        <md:PackIcon Kind="AddressMarker" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding [Hint_TrialLocation], Mode=OneTime}"
-                                   FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
-                                   Margin="16,0,0,0" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </controls:Autocomplete.Hint>
-            </controls:Autocomplete>
+            <controls:Autocomplete.Hint>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                    <md:PackIcon Kind="AddressMarker" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding [Hint_TrialLocation], Mode=OneTime}"
+                                FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
+                                Margin="16,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </controls:Autocomplete.Hint>
+        </controls:Autocomplete>
 
             <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
             <Border.Effect>

@@ -88,6 +88,15 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Address.
+        /// </summary>
+        public static string Header_Address {
+            get {
+                return ResourceManager.GetString("Header_Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dog.
         /// </summary>
         public static string Header_Dog {
