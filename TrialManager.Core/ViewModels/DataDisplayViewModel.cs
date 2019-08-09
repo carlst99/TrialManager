@@ -18,7 +18,7 @@ namespace TrialManager.Core.ViewModels
     {
         #region Fields
 
-        private readonly TrialistContext _managerContext;
+        private readonly TrialistContext _trialistContext;
         private readonly IIntraMessenger _messagingService;
 
         private ObservableCollection<Trialist> _trialists;
@@ -48,8 +48,8 @@ namespace TrialManager.Core.ViewModels
         public IMvxCommand AddTrialistCommand => new MvxCommand(async () =>
         {
             Trialist trialist = Trialist.Default;
-            _managerContext.Add(trialist);
-            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
+            _trialistContext.Add(trialist);
+            await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
             Trialists.Add(trialist);
         });
 
@@ -58,8 +58,8 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand DeleteTrialistCommand => new MvxCommand(async () =>
         {
-            _managerContext.RemoveRange(_selectedTrialists);
-            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
+            _trialistContext.RemoveRange(_selectedTrialists);
+            await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
             foreach (Trialist t in _selectedTrialists)
                 Trialists.Remove(t);
         });
@@ -70,7 +70,7 @@ namespace TrialManager.Core.ViewModels
         public IMvxCommand EditDataEntryCommand => new MvxCommand<Trialist>((t) =>
         {
             TrialistToEdit = t;
-            _managerContext.Update(t);
+            _trialistContext.Update(t);
             IsEditDialogOpen = true;
         });
 
@@ -80,7 +80,7 @@ namespace TrialManager.Core.ViewModels
         public IMvxCommand CloseEditDialogCommand => new MvxCommand(async () =>
         {
             IsEditDialogOpen = false;
-            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
+            await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
         });
 
         /// <summary>
@@ -139,11 +139,11 @@ namespace TrialManager.Core.ViewModels
         public DataDisplayViewModel(IMvxNavigationService navigationService, ITrialistContext managerContext, IIntraMessenger messagingService)
             : base(navigationService)
         {
-            _managerContext = (TrialistContext)managerContext;
+            _trialistContext = (TrialistContext)managerContext;
             _messagingService = messagingService;
 
-            if (_managerContext.Trialists.Any())
-                Trialists = new ObservableCollection<Trialist>(_managerContext.Trialists.ToList());
+            if (_trialistContext.Trialists.Any())
+                Trialists = new ObservableCollection<Trialist>(_trialistContext.Trialists.ToList());
             else
                 Trialists = new ObservableCollection<Trialist>();
         }
@@ -182,6 +182,7 @@ namespace TrialManager.Core.ViewModels
                 if (result == FileDialogMessage.DialogResult.Failed)
                     return;
 
+                // Tell the user if they've selected a file that does not exist
                 if (!File.Exists(path))
                 {
                     _messagingService.Send(new DialogMessage
@@ -192,6 +193,10 @@ namespace TrialManager.Core.ViewModels
                     });
                     return;
                 }
+
+                // Delete existing data if not merging
+                if (!merge)
+                    Trialists.Clear();
 
                 using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
