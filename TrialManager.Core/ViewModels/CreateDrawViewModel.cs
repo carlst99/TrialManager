@@ -167,9 +167,12 @@ namespace TrialManager.Core.ViewModels
 
                 foreach (Trialist element in _managerContext.Trialists.ToList())
                 {
-                    TrialistDrawEntry entry = new TrialistDrawEntry(element, element.Dogs.First(), count);
-                    count++;
-                    await AsyncDispatcher.ExecuteOnMainThreadAsync(() => Trialists.Add(entry)).ConfigureAwait(false);
+                    foreach (Dog dog in element.Dogs)
+                    {
+                        TrialistDrawEntry entry = new TrialistDrawEntry(element, dog, count);
+                        count++;
+                        await AsyncDispatcher.ExecuteOnMainThreadAsync(() => Trialists.Add(entry)).ConfigureAwait(false);
+                    }
                 }
             }).ConfigureAwait(false);
 

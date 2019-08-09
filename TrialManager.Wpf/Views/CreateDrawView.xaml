@@ -28,27 +28,27 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <TextBox md:HintAssist.Hint="{Binding [Hint_TrialName], Mode=OneTime}"
-                     Width="200" VerticalAlignment="Center" Margin="8,0"
+                     Width="200" VerticalAlignment="Center" Margin="8,0" FontSize="14"
                      Text="{Binding TrialName, UpdateSourceTrigger=PropertyChanged}"
                      md:HintAssist.IsFloating="True"/>
             
             <TextBox md:HintAssist.Hint="{Binding [Hint_TrialNotes], Mode=OneTime}"
-                     Width="200" VerticalAlignment="Center" Margin="8,0"
+                     Width="200" VerticalAlignment="Center" Margin="8,0" FontSize="14"
                      Text="{Binding TrialNotes, UpdateSourceTrigger=PropertyChanged}"
                      md:HintAssist.IsFloating="True"/>
 
-            <TextBox x:Name="TxtBxRunCount"
+            <TextBox x:Name="TxtBxRunCount" FontSize="14"
                      PreviewTextInput="TxtBxRunCount_PreviewTextInput"
                      Text="{Binding RunsPerDay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IntToStringConverter}}"
                      md:HintAssist.Hint="{Binding [Hint_RunsPerDay], Mode=OneTime}"
                      md:HintAssist.IsFloating="True"
-                     Width="75"/>
+                     Width="75" VerticalAlignment="Center" Margin="8,0"/>
 
             <md:TimePicker Width="100" FontSize="14"
                            md:HintAssist.Hint="{Binding [Hint_TrialStartTime], Mode=OneTime}"
                            SelectedTime="{Binding TrialStartDate}"
                            Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
-                           VerticalAlignment="Center" Margin="16,0"/>
+                           VerticalAlignment="Center" Margin="8,0"/>
         </StackPanel>
 
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
