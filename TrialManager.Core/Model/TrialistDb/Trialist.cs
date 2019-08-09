@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using CsvHelper.Configuration.Attributes;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TrialManager.Core.Model.LocationDb;

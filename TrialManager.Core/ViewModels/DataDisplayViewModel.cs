@@ -1,4 +1,5 @@
-﻿using IntraMessaging;
+﻿using CsvHelper;
+using IntraMessaging;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
@@ -189,9 +190,14 @@ namespace TrialManager.Core.ViewModels
                     await _trialistContext.SaveChangesAsync();
                 }
 
-                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                //using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                //{
+                //    // TODO act on file
+                //}
+                using (StreamReader reader = new StreamReader(path))
+                using (CsvReader csv = new CsvReader(reader))
                 {
-                    // TODO act on file
+                    IEnumerable<Trialist> records = csv.GetRecords<Trialist>();
                 }
             }
 
