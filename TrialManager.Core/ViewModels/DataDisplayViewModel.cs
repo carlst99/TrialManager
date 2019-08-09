@@ -187,7 +187,7 @@ namespace TrialManager.Core.ViewModels
                 if (!merge)
                 {
                     _trialistContext.Trialists.RemoveRange(Trialists.ToList());
-                    await _trialistContext.SaveChangesAsync();
+                    await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
                 }
 
                 //using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))

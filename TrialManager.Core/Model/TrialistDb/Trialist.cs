@@ -1,7 +1,5 @@
-﻿using CsvHelper.Configuration.Attributes;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using TrialManager.Core.Model.LocationDb;
 
 namespace TrialManager.Core.Model.TrialistDb
@@ -10,8 +8,7 @@ namespace TrialManager.Core.Model.TrialistDb
     {
         public static Trialist Default => new Trialist
         {
-            Surname = "Surname",
-            FirstName = "FirstName",
+            FullName = "Full Name",
             Status = EntityStatus.Maiden,
             PhoneNumber = "012 345 6789",
             Email = "email@email.com",
@@ -23,8 +20,7 @@ namespace TrialManager.Core.Model.TrialistDb
         #region Fields
 
         private int _trialistId;
-        private string _firstName;
-        private string _surname;
+        private string _fullName;
         private string _phoneNumber;
         private string _email;
         private string _address;
@@ -45,23 +41,13 @@ namespace TrialManager.Core.Model.TrialistDb
         }
 
         /// <summary>
-        /// Gets or sets the first name of the trialist
+        /// Gets or sets the full name of the trialist
         /// </summary>
         [Required]
-        public string FirstName
+        public string FullName
         {
-            get => _firstName;
-            set => SetProperty(ref _firstName, value, nameof(FirstName));
-        }
-
-        /// <summary>
-        /// Gets or sets the surname of the trialist
-        /// </summary>
-        [Required]
-        public string Surname
-        {
-            get => _surname;
-            set => SetProperty(ref _surname, value, nameof(Surname));
+            get => _fullName;
+            set => SetProperty(ref _fullName, value, nameof(FullName));
         }
 
         /// <summary>
@@ -76,7 +62,6 @@ namespace TrialManager.Core.Model.TrialistDb
         /// <summary>
         /// Gets or sets the email of the trialist
         /// </summary>
-        [Required]
         public string Email
         {
             get => _email;
@@ -117,9 +102,6 @@ namespace TrialManager.Core.Model.TrialistDb
             set => SetProperty(ref _location, value, nameof(Location));
         }
 
-        [NotMapped]
-        public string FullName => GetFullName();
-
         #endregion
 
         /// <summary>
@@ -133,25 +115,29 @@ namespace TrialManager.Core.Model.TrialistDb
                 Dogs.Add(Dog.Default);
         }
 
-        /// <summary>
-        /// Gets the full name of the <see cref="Trialist"/>
-        /// </summary>
-        /// <returns></returns>
-        public string GetFullName() => FirstName + " " + Surname;
-
         #region Object Overrides
 
         public override string ToString()
         {
-            return FirstName + " " + Surname;
+            return FullName;
         }
 
         public override bool Equals(object obj)
         {
             return obj is Trialist trialist
-                && trialist.FirstName.Equals(FirstName)
-                && trialist.Surname.Equals(Surname)
                 && trialist.TrialistId.Equals(TrialistId);
+        }
+
+        /// <summary>
+        /// Checks for equality at a content level, unlike <see cref="Equals(object)"/> which checks at DB level
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public bool IsContentEqual(object obj)
+        {
+            return obj is Trialist trialist
+                && trialist.FullName.Equals(FullName)
+                && trialist.Address.Equals(Address);
         }
 
         public override int GetHashCode()

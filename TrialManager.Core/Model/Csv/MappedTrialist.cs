@@ -13,8 +13,6 @@ namespace TrialManager.Core.Model.Csv
         {
             Trialist trialist = new Trialist();
 
-            string[] nameComponents = FullName.Split(' ');
-
             return trialist;
         }
     }
