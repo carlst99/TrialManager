@@ -1,4 +1,5 @@
 ﻿using IntraMessaging;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using System.Collections;
@@ -21,7 +22,6 @@ namespace TrialManager.Core.ViewModels
         private readonly TrialistContext _trialistContext;
         private readonly IIntraMessenger _messagingService;
 
-        private ObservableCollection<Trialist> _trialists;
         private IList<Trialist> _selectedTrialists;
         private Trialist _trialistToEdit;
         private bool _isEditDialogOpen;
@@ -48,9 +48,8 @@ namespace TrialManager.Core.ViewModels
         public IMvxCommand AddTrialistCommand => new MvxCommand(async () =>
         {
             Trialist trialist = Trialist.Default;
-            _trialistContext.Add(trialist);
+            _trialistContext.Trialists.Add(trialist);
             await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-            Trialists.Add(trialist);
         });
 
         /// <summary>
@@ -58,10 +57,8 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand DeleteTrialistCommand => new MvxCommand(async () =>
         {
-            _trialistContext.RemoveRange(_selectedTrialists);
+            _trialistContext.Trialists.RemoveRange(_selectedTrialists);
             await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-            foreach (Trialist t in _selectedTrialists)
-                Trialists.Remove(t);
         });
 
         /// <summary>
@@ -98,13 +95,9 @@ namespace TrialManager.Core.ViewModels
         #region Properties
 
         /// <summary>
-        /// Gets or sets the list of trialists held in the database
+        /// Gets the local view of trialists
         /// </summary>
-        public ObservableCollection<Trialist> Trialists
-        {
-            get => _trialists;
-            set => SetProperty(ref _trialists, value);
-        }
+        public ObservableCollection<Trialist> Trialists => _trialistContext.Trialists.Local.ToObservableCollection();
 
         /// <summary>
         /// Gets a value indicating whether or not a data entry selection can be edited
@@ -141,23 +134,18 @@ namespace TrialManager.Core.ViewModels
         {
             _trialistContext = (TrialistContext)managerContext;
             _messagingService = messagingService;
-
-            if (_trialistContext.Trialists.Any())
-                Trialists = new ObservableCollection<Trialist>(_trialistContext.Trialists.ToList());
-            else
-                Trialists = new ObservableCollection<Trialist>();
         }
 
-        private async void OnImportData()
+        private void OnImportData()
         {
-            if (_trialists?.Count != 0)
+            if (Trialists?.Count != 0)
             {
-                async void ResultCallback(DialogMessage.DialogButton d)
+                void ResultCallback(DialogMessage.DialogButton d)
                 {
                     if ((d & DialogMessage.DialogButton.Yes) != 0)
-                        await ImportData(true).ConfigureAwait(false);
+                        ImportData(true);
                     else
-                        await ImportData(false).ConfigureAwait(false);
+                        ImportData(false);
                 }
 
                 DialogMessage dialogRequest = new DialogMessage
@@ -171,13 +159,13 @@ namespace TrialManager.Core.ViewModels
             }
             else
             {
-                await ImportData(false).ConfigureAwait(false);
+                ImportData(false);
             }
         }
 
-        private async Task ImportData(bool merge)
+        private void ImportData(bool merge)
         {
-            void callback(FileDialogMessage.DialogResult result, string path)
+            async void callback(FileDialogMessage.DialogResult result, string path)
             {
                 if (result == FileDialogMessage.DialogResult.Failed)
                     return;
@@ -196,7 +184,10 @@ namespace TrialManager.Core.ViewModels
 
                 // Delete existing data if not merging
                 if (!merge)
-                    Trialists.Clear();
+                {
+                    _trialistContext.Trialists.RemoveRange(Trialists.ToList());
+                    await _trialistContext.SaveChangesAsync();
+                }
 
                 using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
