@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TrialManager.Core.Model.Csv;
 using TrialManager.Core.Model.Messages;
 using TrialManager.Core.Model.TrialistDb;
 using TrialManager.Core.ViewModels.Base;
@@ -197,6 +198,7 @@ namespace TrialManager.Core.ViewModels
                 using (StreamReader reader = new StreamReader(path))
                 using (CsvReader csv = new CsvReader(reader))
                 {
+                    csv.Configuration.RegisterClassMap<TrialistMapping>();
                     IEnumerable<Trialist> records = csv.GetRecords<Trialist>();
                 }
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using TrialManager.Core.Model.LocationDb;
 
@@ -26,6 +27,8 @@ namespace TrialManager.Core.Model.TrialistDb
         private string _address;
         private EntityStatus _status;
         private Location _location;
+        private DateTime _preferredDay;
+        private Trialist _travellingPartner;
 
         #endregion
 
@@ -100,6 +103,24 @@ namespace TrialManager.Core.Model.TrialistDb
         {
             get => _location;
             set => SetProperty(ref _location, value, nameof(Location));
+        }
+
+        /// <summary>
+        /// Gets or sets the preferred run day
+        /// </summary>
+        public DateTime PreferredDay
+        {
+            get => _preferredDay;
+            set => SetProperty(ref _preferredDay, value, nameof(PreferredDay));
+        }
+
+        /// <summary>
+        /// Gets or sets the travelling partner of this trialist
+        /// </summary>
+        public Trialist TravellingPartner
+        {
+            get => _travellingPartner;
+            set => SetProperty(ref _travellingPartner, value, nameof(TravellingPartner));
         }
 
         #endregion
