@@ -13,20 +13,12 @@ namespace TrialManager.Core.Model.TrialistDb
 
         #region Fields
 
-        private int _dogId;
         private string _name;
         private EntityStatus _status;
 
         #endregion Fields
 
         #region Properties
-
-        [Key(0)]
-        public int DogId
-        {
-            get => _dogId;
-            set => SetProperty(ref _dogId, value, nameof(DogId));
-        }
 
         /// <summary>
         /// Gets or sets the name of the dog
@@ -66,8 +58,12 @@ namespace TrialManager.Core.Model.TrialistDb
 
         public override int GetHashCode()
         {
-            const int hash = 13;
-            return (hash * 7) + DogId;
+            unchecked
+            {
+                int hash = 13;
+                hash = (hash * 7) + Status.GetHashCode();
+                return (hash * 7) + Name.GetHashCode();
+            }
         }
 
         public static bool operator ==(Dog one, Dog two)
