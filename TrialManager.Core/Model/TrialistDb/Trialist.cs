@@ -132,7 +132,7 @@ namespace TrialManager.Core.Model.TrialistDb
         public void SafeRemoveDog(Dog dog)
         {
             Dogs.Remove(dog);
-            if (Dogs.Count <= 0)
+            if (Dogs.Count == 0)
                 Dogs.Add(Dog.Default);
         }
 
