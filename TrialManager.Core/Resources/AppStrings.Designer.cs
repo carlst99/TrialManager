@@ -133,15 +133,6 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to First Name.
-        /// </summary>
-        public static string Header_FirstName {
-            get {
-                return ResourceManager.GetString("Header_FirstName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Competitor.
         /// </summary>
         public static string Header_FullName {
@@ -174,15 +165,6 @@ namespace TrialManager.Core.Resources {
         public static string Header_Status {
             get {
                 return ResourceManager.GetString("Header_Status", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Surname.
-        /// </summary>
-        public static string Header_Surname {
-            get {
-                return ResourceManager.GetString("Header_Surname", resourceCulture);
             }
         }
         

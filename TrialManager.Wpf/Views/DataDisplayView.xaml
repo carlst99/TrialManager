@@ -54,13 +54,9 @@
                 <StackPanel DataContext="{Binding TrialistToEdit}"
                             Margin="0,16,16,16"
                             Grid.Column="1" Grid.Row="1">
-                    <TextBlock Text="{Binding DataContext.[Header_Surname], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                    <TextBlock Text="{Binding DataContext.[Header_FullName], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
                                Foreground="Gray"/>
-                    <TextBox Text="{Binding Surname}"/>
-
-                    <TextBlock Text="{Binding DataContext.[Header_FirstName], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
-                               Foreground="Gray" Margin="0,4,0,0"/>
-                    <TextBox Text="{Binding FirstName}"/>
+                    <TextBox Text="{Binding FullName}"/>
 
                     <TextBlock Text="{Binding DataContext.[Header_Status], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
                                Foreground="Gray" Margin="0,4,0,0"/>
@@ -228,8 +224,8 @@
 
                 <ListView.View>
                     <GridView>
-                        <!-- Surname -->
-                        <GridViewColumn Header="{Binding DataContext.[Header_Surname], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
+                        <!-- Full name -->
+                        <GridViewColumn Header="{Binding DataContext.[Header_FullName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
                                         Width="100">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type model:Trialist}">
@@ -237,17 +233,8 @@
                                         <md:PackIcon Kind="Person"
                                                  VerticalAlignment="Center"
                                                  Margin="0,0,4,0"/>
-                                        <TextBlock Text="{Binding Surname}"/>
+                                        <TextBlock Text="{Binding FullName}"/>
                                     </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <!-- First Name -->
-                        <GridViewColumn Header="{Binding DataContext.[Header_FirstName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="100">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type model:Trialist}">
-                                    <TextBlock Text="{Binding FirstName}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
