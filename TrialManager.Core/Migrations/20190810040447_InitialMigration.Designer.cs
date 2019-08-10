@@ -9,8 +9,8 @@ using TrialManager.Core.Model.TrialistDb;
 namespace TrialManager.Core.Migrations
 {
     [DbContext(typeof(TrialistContext))]
-    [Migration("20190809050539_TrialistFullName")]
-    partial class TrialistFullName
+    [Migration("20190810040447_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

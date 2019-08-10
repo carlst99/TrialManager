@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TrialManager.Core.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,12 +13,13 @@ namespace TrialManager.Core.Migrations
                 {
                     TrialistId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(nullable: false),
-                    Surname = table.Column<string>(nullable: false),
+                    FullName = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
-                    Dogs = table.Column<byte[]>(nullable: false)
+                    Dogs = table.Column<byte[]>(nullable: false),
+                    Location = table.Column<byte[]>(nullable: false)
                 },
                 constraints: table =>
                 {
