@@ -1,6 +1,7 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
+using Serilog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace TrialManager.Core.ViewModels
 
         #region Commands
 
-        public IMvxCommand ImportDataCommand => new MvxCommand(OnImportData);
+        public IMvxCommand ImportDataCommand => new MvxCommand(OnImportDataRequested);
 
         /// <summary>
         /// Updates the list of selected trialists
@@ -141,7 +142,10 @@ namespace TrialManager.Core.ViewModels
             _importService = importService;
         }
 
-        private void OnImportData()
+        /// <summary>
+        /// If required, ask the user if they want to merge data before importing
+        /// </summary>
+        private void OnImportDataRequested()
         {
             if (Trialists?.Count != 0)
             {
@@ -187,19 +191,13 @@ namespace TrialManager.Core.ViewModels
                     return;
                 }
 
-                // Delete existing data if not merging
-                if (!merge)
-                {
-                    _trialistContext.Trialists.RemoveRange(Trialists.ToList());
-                    await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-                }
-
                 try
                 {
-                    _importService.ImportFromCsv(path);
+                    await _importService.ImportFromCsv(path, merge).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
+                    App.LogError("Could not parse CSV file", ex);
                     _messagingService.Send(new DialogMessage
                     {
                         Title = "Error",
