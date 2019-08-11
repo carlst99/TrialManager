@@ -149,6 +149,14 @@ namespace TrialManager.Core.Model.TrialistDb
                 && trialist.TrialistId.Equals(TrialistId);
         }
 
+        public override int GetHashCode()
+        {
+            const int hash = 13;
+            return (hash * 7) + TrialistId;
+        }
+
+        #endregion
+
         /// <summary>
         /// Checks for equality at a content level, unlike <see cref="Equals(object)"/> which checks at DB level
         /// </summary>
@@ -158,15 +166,8 @@ namespace TrialManager.Core.Model.TrialistDb
         {
             return obj is Trialist trialist
                 && trialist.FullName.Equals(FullName)
-                && trialist.Address.Equals(Address);
+                && trialist.Address.Equals(Address)
+                && trialist.Status.Equals(Status);
         }
-
-        public override int GetHashCode()
-        {
-            const int hash = 13;
-            return (hash * 7) + TrialistId;
-        }
-
-        #endregion
     }
 }

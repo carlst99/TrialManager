@@ -42,6 +42,18 @@ namespace TrialManager.Core.Model.TrialistDb
 
         #endregion
 
+        #region Constructors
+
+        public Dog() { }
+
+        public Dog(string name, EntityStatus status)
+        {
+            Name = name;
+            Status = status;
+        }
+
+        #endregion
+
         #region Object Overrides
 
         public override string ToString()

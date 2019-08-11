@@ -6,13 +6,13 @@ namespace TrialManager.Core.Model.Csv
     {
         public TrialistMapping()
         {
-            Map(m => m.FullName).Index(1).Name("Full Name");
-            Map(m => m.Status).Index(2).Name("Status");
-            Map(m => m.Address).Index(3).Name("Address");
-            Map(m => m.PhoneNumber).Index(4).Name("Phone Number");
-            Map(m => m.Email).Index(5).Name("Email");
-            Map(m => m.PreferredDay).Index(6).Name("Preferred Day");
-            Map(m => m.TravellingPartner).Index(7).Name("Travelling Partner");
+            Map(m => m.FullName).Index(1);
+            Map(m => m.Status).Index(2);
+            Map(m => m.Address).Index(3);
+            Map(m => m.PhoneNumber).Index(4);
+            Map(m => m.Email).Index(5);
+            Map(m => m.PreferredDay).Index(6);
+            Map(m => m.TravellingPartner).Index(7);
 
             Map(m => m.DogOneName).Index(8);
             Map(m => m.DogOneStatus).Index(9);

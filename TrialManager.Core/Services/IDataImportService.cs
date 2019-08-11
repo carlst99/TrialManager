@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TrialManager.Core.Services
+﻿namespace TrialManager.Core.Services
 {
     public interface IDataImportService
     {
-
+        void ImportFromCsv(string path);
     }
 }

@@ -1,17 +1,15 @@
-﻿using CsvHelper;
-using IntraMessaging;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using TrialManager.Core.Model.Csv;
 using TrialManager.Core.Model.Messages;
 using TrialManager.Core.Model.TrialistDb;
+using TrialManager.Core.Services;
 using TrialManager.Core.ViewModels.Base;
 
 namespace TrialManager.Core.ViewModels
@@ -23,6 +21,7 @@ namespace TrialManager.Core.ViewModels
 
         private readonly TrialistContext _trialistContext;
         private readonly IIntraMessenger _messagingService;
+        private readonly IDataImportService _importService;
 
         private IList<Trialist> _selectedTrialists;
         private Trialist _trialistToEdit;
@@ -131,11 +130,15 @@ namespace TrialManager.Core.ViewModels
 
         #endregion
 
-        public DataDisplayViewModel(IMvxNavigationService navigationService, ITrialistContext managerContext, IIntraMessenger messagingService)
+        public DataDisplayViewModel(IMvxNavigationService navigationService, 
+            ITrialistContext TrialistContext, 
+            IIntraMessenger messagingService,
+            IDataImportService importService)
             : base(navigationService)
         {
-            _trialistContext = (TrialistContext)managerContext;
+            _trialistContext = (TrialistContext)TrialistContext;
             _messagingService = messagingService;
+            _importService = importService;
         }
 
         private void OnImportData()
@@ -191,15 +194,18 @@ namespace TrialManager.Core.ViewModels
                     await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
                 }
 
-                //using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
-                //{
-                //    // TODO act on file
-                //}
-                using (StreamReader reader = new StreamReader(path))
-                using (CsvReader csv = new CsvReader(reader))
+                try
                 {
-                    csv.Configuration.RegisterClassMap<TrialistMapping>();
-                    IEnumerable<Trialist> records = csv.GetRecords<Trialist>();
+                    _importService.ImportFromCsv(path);
+                }
+                catch (Exception ex)
+                {
+                    _messagingService.Send(new DialogMessage
+                    {
+                        Title = "Error",
+                        Content = "There was a problem opening the file. Please make sure that no other programs are using the file, then try again",
+                        Buttons = DialogMessage.DialogButton.Ok
+                    });
                 }
             }
 
