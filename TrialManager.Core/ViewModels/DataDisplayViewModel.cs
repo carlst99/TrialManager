@@ -131,8 +131,8 @@ namespace TrialManager.Core.ViewModels
 
         #endregion
 
-        public DataDisplayViewModel(IMvxNavigationService navigationService, 
-            ITrialistContext TrialistContext, 
+        public DataDisplayViewModel(IMvxNavigationService navigationService,
+            ITrialistContext TrialistContext,
             IIntraMessenger messagingService,
             IDataImportService importService)
             : base(navigationService)
