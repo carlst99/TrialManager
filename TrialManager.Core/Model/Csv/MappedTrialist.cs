@@ -37,6 +37,7 @@ namespace TrialManager.Core.Model.Csv
             {
                 FullName = FullName,
                 Status = Status,
+                Address = Address,
                 PhoneNumber = PhoneNumber,
                 Email = Email
             };
