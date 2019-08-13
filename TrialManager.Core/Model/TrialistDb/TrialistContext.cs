@@ -11,7 +11,7 @@ namespace TrialManager.Core.Model.TrialistDb
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=TrialManager;Trusted_Connection=True;");
+            optionsBuilder.UseSqlite("Data Source=TrialManager.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
