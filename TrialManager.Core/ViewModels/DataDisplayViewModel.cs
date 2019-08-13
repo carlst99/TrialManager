@@ -1,13 +1,11 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
-using Serilog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using TrialManager.Core.Model.Messages;
 using TrialManager.Core.Model.TrialistDb;
 using TrialManager.Core.Services;
