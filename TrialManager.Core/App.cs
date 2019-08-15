@@ -10,6 +10,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 [assembly: InternalsVisibleTo("MvvmCrossCoreTestProject")]
 
@@ -103,15 +104,21 @@ namespace TrialManager.Core
         /// </returns>
         public static string GetPlatformAppdataPath()
         {
+            string path;
             switch (Mvx.IoCProvider.GetSingleton<IDeviceInfo>().Platform)
             {
                 case Platform.Android:
-                    return Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                    break;
                 case Platform.iOS:
-                    return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    break;
                 default:
-                    return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    break;
             }
+
+			return Path.Combine(path, "TrialManager");
         }
 
         /// <summary>
