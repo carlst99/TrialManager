@@ -30,43 +30,46 @@ namespace TrialManager.Core.Services
         /// <exception cref="IOException"></exception>
         public async Task ImportFromCsv(string path, bool merge)
         {
-            if (!merge)
-                await ClearExistingData().ConfigureAwait(false);
-
-            using (StreamReader reader = new StreamReader(path))
-            using (CsvReader csv = new CsvReader(reader))
+            await Task.Run(() =>
             {
-                csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
-                csv.Configuration.RegisterClassMap<TrialistMapping>();
+                if (!merge)
+                    ClearExistingData().ConfigureAwait(false);
 
-                // First pass, to get trialists
-                foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
-                    await EOMTA(() => _trialistContext.Trialists.Add(mt.ToTrialist())).ConfigureAwait(false);
-                await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-
-                // Second pass, to setup travelling partner
-                foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
+                using (StreamReader reader = new StreamReader(path))
+                using (CsvReader csv = new CsvReader(reader))
                 {
-                    if (string.IsNullOrEmpty(mt.Address))
-                        continue;
+                    csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
+                    csv.Configuration.RegisterClassMap<TrialistMapping>();
 
-                    // Find one potential partner
-                    IEnumerable<Trialist> partners = _trialistContext.Trialists.Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
-                    if (partners.Count() != 1)
-                        continue;
+                    // First pass, to get trialists
+                    foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
+                        EOMTA(() => _trialistContext.Trialists.Add(mt.ToTrialist())).ConfigureAwait(false);
+                    _trialistContext.SaveChangesAsync().ConfigureAwait(false);
 
-                    // Find one original
-                    Trialist trialist = mt.ToTrialist();
-                    IEnumerable<Trialist> trialists = _trialistContext.Trialists.Where(t => t.IsContentEqual(trialist));
-                    if (trialists.Count() != 1)
-                        return;
+                    // Second pass, to setup travelling partner
+                    foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
+                    {
+                        if (string.IsNullOrEmpty(mt.Address))
+                            continue;
 
-                    Trialist toUpdate = trialists.First();
-                    toUpdate.TravellingPartner = partners.First();
-                    await EOMTA(() => _trialistContext.Trialists.Update(toUpdate)).ConfigureAwait(false);
+                        // Find one potential partner
+                        IEnumerable<Trialist> partners = _trialistContext.Trialists.Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
+                        if (partners.Count() != 1)
+                            continue;
+
+                        // Find one original
+                        Trialist trialist = mt.ToTrialist();
+                        IEnumerable<Trialist> trialists = _trialistContext.Trialists.Where(t => t.IsContentEqual(trialist));
+                        if (trialists.Count() != 1)
+                            return;
+
+                        Trialist toUpdate = trialists.First();
+                        toUpdate.TravellingPartner = partners.First();
+                        EOMTA(() => _trialistContext.Trialists.Update(toUpdate)).ConfigureAwait(false);
+                    }
+                    _trialistContext.SaveChangesAsync().ConfigureAwait(false);
                 }
-                await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-            }
+            });
         }
 
         /// <summary>

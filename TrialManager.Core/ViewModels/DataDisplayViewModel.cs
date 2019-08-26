@@ -25,6 +25,7 @@ namespace TrialManager.Core.ViewModels
         private IList<Trialist> _selectedTrialists;
         private Trialist _trialistToEdit;
         private bool _isEditDialogOpen;
+        private bool _canUseEditControls;
 
         #endregion
 
@@ -110,6 +111,15 @@ namespace TrialManager.Core.ViewModels
         public bool CanDeleteDataEntries => _selectedTrialists?.Count > 0;
 
         /// <summary>
+        /// Gets or sets a value indicating whether the user can use the data editing controls
+        /// </summary>
+        public bool CanUseEditControls
+        {
+            get => _canUseEditControls;
+            set => SetProperty(ref _canUseEditControls, value);
+        }
+
+        /// <summary>
         /// Gets or sets the <see cref="Trialist"/> object that should be loaded by the editor
         /// </summary>
         public Trialist TrialistToEdit
@@ -191,6 +201,9 @@ namespace TrialManager.Core.ViewModels
 
                 try
                 {
+                    // Prevent the user from editing/adding data while an import is in progress
+                    CanUseEditControls = false;
+
                     await _importService.ImportFromCsv(path, merge).ConfigureAwait(false);
                 }
                 catch (Exception ex)
@@ -202,6 +215,9 @@ namespace TrialManager.Core.ViewModels
                         Content = "There was a problem opening the file. Please make sure that no other programs are using the file, then try again",
                         Buttons = DialogMessage.DialogButton.Ok
                     });
+                } finally
+                {
+                    CanUseEditControls = true;
                 }
             }
 

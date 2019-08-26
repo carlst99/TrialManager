@@ -185,7 +185,8 @@
             </StackPanel>
 
             <!-- Data modification controls -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                        IsEnabled="{Binding CanUseEditControls, Mode=OneWay}">
                 <Button ToolTip="{Binding [ToolTip_AddItem], Mode=OneTime}"
                         Command="{Binding AddTrialistCommand}"
                         HorizontalAlignment="Right"
