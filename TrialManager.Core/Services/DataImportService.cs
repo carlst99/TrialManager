@@ -80,8 +80,10 @@ namespace TrialManager.Core.Services
         {
             int count = _trialistContext.Trialists.Count();
             for (int i = 0; i < count; i++)
+            {
                 await EOMTA(() => _trialistContext.Trialists.RemoveRange(_trialistContext.Trialists.ToList())).ConfigureAwait(false);
-            await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
+                await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
+            }
         }
 
         private async Task EOMTA(Action action) => await _asyncDispatcher.ExecuteOnMainThreadAsync(action).ConfigureAwait(false);

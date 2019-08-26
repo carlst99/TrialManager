@@ -25,7 +25,8 @@ namespace TrialManager.Core.ViewModels
         private IList<Trialist> _selectedTrialists;
         private Trialist _trialistToEdit;
         private bool _isEditDialogOpen;
-        private bool _canUseEditControls;
+        private bool _canUseEditControls = true;
+        private double _listOpacity = 1;
 
         #endregion
 
@@ -111,12 +112,21 @@ namespace TrialManager.Core.ViewModels
         public bool CanDeleteDataEntries => _selectedTrialists?.Count > 0;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the user can use the data editing controls
+        /// Gets or sets a value indicating whether the user can use the data editing controls. Also controls the visibility of the import progress bar
         /// </summary>
         public bool CanUseEditControls
         {
             get => _canUseEditControls;
             set => SetProperty(ref _canUseEditControls, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the opacity of the data list
+        /// </summary>
+        public double ListOpacity
+        {
+            get => _listOpacity;
+            set => SetProperty(ref _listOpacity, value);
         }
 
         /// <summary>
@@ -201,8 +211,9 @@ namespace TrialManager.Core.ViewModels
 
                 try
                 {
-                    // Prevent the user from editing/adding data while an import is in progress
+                    // Prevent the user from editing/adding data while an import is in progress, and dim list
                     CanUseEditControls = false;
+                    ListOpacity = 0.5;
 
                     await _importService.ImportFromCsv(path, merge).ConfigureAwait(false);
                 }
@@ -218,6 +229,7 @@ namespace TrialManager.Core.ViewModels
                 } finally
                 {
                     CanUseEditControls = true;
+                    ListOpacity = 1;
                 }
             }
 

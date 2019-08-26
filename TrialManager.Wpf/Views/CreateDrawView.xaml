@@ -15,7 +15,6 @@
     <views:MvxWpfView.Resources>
         <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter"/>
         <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter"/>
-        <local:NativeMvxColorConverter x:Key="ColorConverter"/>
         <local:NativeIntToStringConverter x:Key="IntToStringConverter"/>
     </views:MvxWpfView.Resources>
 

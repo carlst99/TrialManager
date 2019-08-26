@@ -6,6 +6,7 @@
                   xmlns:model="clr-namespace:TrialManager.Core.Model.TrialistDb;assembly=TrialManager.Core"
                   xmlns:sys="clr-namespace:System;assembly=mscorlib"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+                  xmlns:local="clr-namespace:TrialManager.Wpf"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                   xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                   xmlns:controls="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
@@ -22,6 +23,9 @@
         </ObjectDataProvider>
         <Thickness x:Key="EditDialogIconMargin" Left="16" Top="0" Right="16" Bottom="16"/>
         <Thickness x:Key="EditDialogContentMargin" Left="0" Top="0" Right="16" Bottom="16"/>
+
+        <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter"/>
+        <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter"/>
     </views:MvxWpfView.Resources>
 
     <md:DialogHost IsOpen="{Binding IsEditDialogOpen}"
@@ -205,13 +209,20 @@
                         HorizontalAlignment="Right"
                         Content="{md:PackIcon Kind=Trash}"/>
             </StackPanel>
-            
+
+            <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}"
+                        Value="0" IsIndeterminate="True"
+                        Height="100" Width="100"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1"
+                        Visibility="{Binding CanUseEditControls, Converter={StaticResource InvertedVisibilityConverter}}"/>
+
             <!-- Data list -->
             <ListView ItemsSource="{Binding Trialists}"
                       x:Name="LstVwTrialists"
                       SelectionMode="Extended"
                       Grid.Row="1" 
-                      Margin="0,8,0,0">
+                      Margin="0,8,0,0"
+                      Opacity="{Binding ListOpacity, Mode=OneWay}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding TrialistSelectionChangedCommand}"
