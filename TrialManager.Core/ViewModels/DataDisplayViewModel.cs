@@ -209,28 +209,22 @@ namespace TrialManager.Core.ViewModels
                     return;
                 }
 
-                try
-                {
-                    // Prevent the user from editing/adding data while an import is in progress, and dim list
-                    CanUseEditControls = false;
-                    ListOpacity = 0.5;
+                // Prevent the user from editing/adding data while an import is in progress, and dim list
+                CanUseEditControls = false;
+                ListOpacity = 0.5;
 
-                    await _importService.ImportFromCsv(path, merge).ConfigureAwait(false);
-                }
-                catch (Exception ex)
+                if (!await _importService.ImportFromCsv(path, merge).ConfigureAwait(false))
                 {
-                    App.LogError("Could not parse CSV file", ex);
                     _messagingService.Send(new DialogMessage
                     {
                         Title = "Error",
                         Content = "There was a problem opening the file. Please make sure that no other programs are using the file, then try again",
                         Buttons = DialogMessage.DialogButton.Ok
                     });
-                } finally
-                {
-                    CanUseEditControls = true;
-                    ListOpacity = 1;
                 }
+
+                CanUseEditControls = true;
+                ListOpacity = 1;
             }
 
             _messagingService.Send(new FileDialogMessage

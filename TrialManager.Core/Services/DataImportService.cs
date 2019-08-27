@@ -28,28 +28,82 @@ namespace TrialManager.Core.Services
         /// <param name="path">The path to the file</param>
         /// <param name="merge">Whether the import should be merged with existing data</param>
         /// <exception cref="IOException"></exception>
-        public async Task ImportFromCsv(string path, bool merge)
+        public async Task<bool> ImportFromCsv(string path, bool merge)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    if (!merge)
+                        ClearExistingData().ConfigureAwait(false);
+
+                    using (StreamReader reader = new StreamReader(path))
+                    using (CsvReader csv = new CsvReader(reader))
+                    {
+                        csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
+                        csv.Configuration.RegisterClassMap<TrialistMapping>();
+
+                        HashSet<int> trialistHashes = new HashSet<int>();
+                        List<MappedTrialist> duplicates = new List<MappedTrialist>();
+
+                        // First pass, to get trialists
+                        foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
+                        {
+                            if (trialistHashes.Add(mt.GetHashCode()))
+                                EOMTA(() => _trialistContext.Trialists.Add(mt.ToTrialist())).ConfigureAwait(false);
+                            else
+                                duplicates.Add(mt);
+                        }
+
+                        _trialistContext.SaveChangesAsync().ConfigureAwait(false);
+
+                        if (duplicates.Count <= 0)
+                        {
+                            SetupTravellingPartners(path).ConfigureAwait(false);
+                        }
+                        else
+                        {
+
+                        }
+                    }
+
+                    return true;
+                } catch (Exception ex)
+                {
+                    App.LogError("Could not import data from CSV", ex);
+                    return false;
+                }
+            });
+        }
+
+        /// <summary>
+        /// Clears existing data in the database
+        /// </summary>
+        /// <returns></returns>
+        public async Task ClearExistingData()
+        {
+            int count = _trialistContext.Trialists.Count();
+            for (int i = 0; i < count; i++)
+            {
+                await EOMTA(() => _trialistContext.Trialists.RemoveRange(_trialistContext.Trialists.ToList())).ConfigureAwait(false);
+                await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async Task SetupTravellingPartners(string path)
         {
             await Task.Run(() =>
             {
-                if (!merge)
-                    ClearExistingData().ConfigureAwait(false);
-
                 using (StreamReader reader = new StreamReader(path))
                 using (CsvReader csv = new CsvReader(reader))
                 {
                     csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
                     csv.Configuration.RegisterClassMap<TrialistMapping>();
 
-                    // First pass, to get trialists
-                    foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
-                        EOMTA(() => _trialistContext.Trialists.Add(mt.ToTrialist())).ConfigureAwait(false);
-                    _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-
                     // Second pass, to setup travelling partner
                     foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
                     {
-                        if (string.IsNullOrEmpty(mt.Address))
+                        if (string.IsNullOrEmpty(mt.TravellingPartner))
                             continue;
 
                         // Find one potential partner
@@ -70,20 +124,6 @@ namespace TrialManager.Core.Services
                     _trialistContext.SaveChangesAsync().ConfigureAwait(false);
                 }
             });
-        }
-
-        /// <summary>
-        /// Clears existing data in the database
-        /// </summary>
-        /// <returns></returns>
-        public async Task ClearExistingData()
-        {
-            int count = _trialistContext.Trialists.Count();
-            for (int i = 0; i < count; i++)
-            {
-                await EOMTA(() => _trialistContext.Trialists.RemoveRange(_trialistContext.Trialists.ToList())).ConfigureAwait(false);
-                await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task EOMTA(Action action) => await _asyncDispatcher.ExecuteOnMainThreadAsync(action).ConfigureAwait(false);
