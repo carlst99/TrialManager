@@ -122,7 +122,7 @@ namespace TrialManager.Core.Services
         /// <summary>
         /// Packages the functionality for mapping and enumerating a CSV file
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">The path to the CSV file</param>
         /// <returns></returns>
         private IEnumerable<MappedTrialist> EnumerateCsv(string path)
         {
