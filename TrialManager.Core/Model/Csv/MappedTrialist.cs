@@ -65,16 +65,5 @@ namespace TrialManager.Core.Model.Csv
 
             return trialist;
         }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 13;
-                hash = (hash * 7) + FullName.GetHashCode();
-                hash = (hash * 7) + Status.GetHashCode();
-                return (hash * 7) + Address.GetHashCode();
-            }
-        }
     }
 }

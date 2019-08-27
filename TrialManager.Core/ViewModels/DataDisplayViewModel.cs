@@ -59,7 +59,8 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand DeleteTrialistCommand => new MvxCommand(async () =>
         {
-            _trialistContext.Trialists.RemoveRange(_selectedTrialists);
+            foreach (Trialist t in _selectedTrialists)
+                _trialistContext.Trialists.Remove(t);
             await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
         });
 

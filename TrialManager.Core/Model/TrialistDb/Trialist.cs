@@ -169,5 +169,20 @@ namespace TrialManager.Core.Model.TrialistDb
                 && trialist.Address.Equals(Address)
                 && trialist.Status.Equals(Status);
         }
+
+        /// <summary>
+        /// Gets a hashcode based on the content of this <see cref="Trialist"/>
+        /// </summary>
+        /// <returns></returns>
+        public int GetContentHashCode()
+        {
+            unchecked
+            {
+                int hash = 13;
+                hash = (hash * 7) + FullName.GetHashCode();
+                hash = (hash * 7) + Status.GetHashCode();
+                return (hash * 7) + Address.GetHashCode();
+            }
+        }
     }
 }

@@ -34,19 +34,27 @@ namespace TrialManager.Core.Services
             {
                 try
                 {
-                    if (!merge)
-                        ClearExistingData().ConfigureAwait(false);
-
                     HashSet<int> trialistHashes = new HashSet<int>();
-                    List<MappedTrialist> duplicates = new List<MappedTrialist>();
+                    List<Trialist> duplicates = new List<Trialist>();
+
+                    if (!merge)
+                    {
+                        ClearExistingData().ConfigureAwait(false);
+                    } else
+                    {
+                        foreach (Trialist t in _trialistContext.Trialists)
+                            trialistHashes.Add(t.GetContentHashCode());
+                    }
 
                     // First pass, to get trialists
                     foreach (MappedTrialist mt in EnumerateCsv(path))
                     {
-                        if (trialistHashes.Add(mt.GetHashCode()))
-                            EOMTA(() => _trialistContext.Trialists.Add(mt.ToTrialist())).ConfigureAwait(false);
+                        Trialist trialist = mt.ToTrialist();
+
+                        if (trialistHashes.Add(trialist.GetContentHashCode()))
+                            EOMTA(() => _trialistContext.Trialists.Add(trialist)).ConfigureAwait(false);
                         else
-                            duplicates.Add(mt);
+                            duplicates.Add(trialist);
                     }
 
                     _trialistContext.SaveChangesAsync().ConfigureAwait(false);
