@@ -37,34 +37,27 @@ namespace TrialManager.Core.Services
                     if (!merge)
                         ClearExistingData().ConfigureAwait(false);
 
-                    using (StreamReader reader = new StreamReader(path))
-                    using (CsvReader csv = new CsvReader(reader))
+                    HashSet<int> trialistHashes = new HashSet<int>();
+                    List<MappedTrialist> duplicates = new List<MappedTrialist>();
+
+                    // First pass, to get trialists
+                    foreach (MappedTrialist mt in EnumerateCsv(path))
                     {
-                        csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
-                        csv.Configuration.RegisterClassMap<TrialistMapping>();
-
-                        HashSet<int> trialistHashes = new HashSet<int>();
-                        List<MappedTrialist> duplicates = new List<MappedTrialist>();
-
-                        // First pass, to get trialists
-                        foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
-                        {
-                            if (trialistHashes.Add(mt.GetHashCode()))
-                                EOMTA(() => _trialistContext.Trialists.Add(mt.ToTrialist())).ConfigureAwait(false);
-                            else
-                                duplicates.Add(mt);
-                        }
-
-                        _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-
-                        if (duplicates.Count <= 0)
-                        {
-                            SetupTravellingPartners(path).ConfigureAwait(false);
-                        }
+                        if (trialistHashes.Add(mt.GetHashCode()))
+                            EOMTA(() => _trialistContext.Trialists.Add(mt.ToTrialist())).ConfigureAwait(false);
                         else
-                        {
+                            duplicates.Add(mt);
+                    }
 
-                        }
+                    _trialistContext.SaveChangesAsync().ConfigureAwait(false);
+
+                    if (duplicates.Count <= 0)
+                    {
+                        SetupTravellingPartnersFromCsv(path).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        // TODO ask user to manage duplicates
                     }
 
                     return true;
@@ -90,42 +83,60 @@ namespace TrialManager.Core.Services
             }
         }
 
-        private async Task SetupTravellingPartners(string path)
+        /// <summary>
+        /// Performs a second pass over the data to setup travelling partners. This method should only be called after <see cref="ImportFromCsv(string, bool)"/>
+        /// </summary>
+        /// <param name="path">The path to the CSV file</param>
+        /// <returns></returns>
+        private async Task SetupTravellingPartnersFromCsv(string path)
         {
             await Task.Run(() =>
             {
-                using (StreamReader reader = new StreamReader(path))
-                using (CsvReader csv = new CsvReader(reader))
+                // Second pass, to setup travelling partner
+                foreach (MappedTrialist mt in EnumerateCsv(path))
                 {
-                    csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
-                    csv.Configuration.RegisterClassMap<TrialistMapping>();
+                    if (string.IsNullOrEmpty(mt.TravellingPartner))
+                        continue;
 
-                    // Second pass, to setup travelling partner
-                    foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
-                    {
-                        if (string.IsNullOrEmpty(mt.TravellingPartner))
-                            continue;
+                    // Find one potential partner
+                    IEnumerable<Trialist> partners = _trialistContext.Trialists.Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
+                    if (partners.Count() != 1)
+                        continue;
 
-                        // Find one potential partner
-                        IEnumerable<Trialist> partners = _trialistContext.Trialists.Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
-                        if (partners.Count() != 1)
-                            continue;
+                    // Find one original
+                    Trialist trialist = mt.ToTrialist();
+                    IEnumerable<Trialist> trialists = _trialistContext.Trialists.Where(t => t.IsContentEqual(trialist));
+                    if (trialists.Count() != 1)
+                        return;
 
-                        // Find one original
-                        Trialist trialist = mt.ToTrialist();
-                        IEnumerable<Trialist> trialists = _trialistContext.Trialists.Where(t => t.IsContentEqual(trialist));
-                        if (trialists.Count() != 1)
-                            return;
-
-                        Trialist toUpdate = trialists.First();
-                        toUpdate.TravellingPartner = partners.First();
-                        EOMTA(() => _trialistContext.Trialists.Update(toUpdate)).ConfigureAwait(false);
-                    }
-                    _trialistContext.SaveChangesAsync().ConfigureAwait(false);
+                    Trialist toUpdate = trialists.First();
+                    toUpdate.TravellingPartner = partners.First();
+                    EOMTA(() => _trialistContext.Trialists.Update(toUpdate)).ConfigureAwait(false);
                 }
+                _trialistContext.SaveChangesAsync().ConfigureAwait(false);
             });
         }
 
         private async Task EOMTA(Action action) => await _asyncDispatcher.ExecuteOnMainThreadAsync(action).ConfigureAwait(false);
+
+        /// <summary>
+        /// Packages the functionality for mapping and enumerating a CSV file
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private IEnumerable<MappedTrialist> EnumerateCsv(string path)
+        {
+            using (StreamReader reader = new StreamReader(path))
+            using (CsvReader csv = new CsvReader(reader))
+            {
+                csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
+                csv.Configuration.RegisterClassMap<TrialistMapping>();
+
+                // Second pass, to setup travelling partner
+                foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
+                    yield return mt;
+
+            }
+        }
     }
 }
