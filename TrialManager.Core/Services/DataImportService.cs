@@ -19,7 +19,6 @@ namespace TrialManager.Core.Services
         {
             _trialistContext = (TrialistContext)tContext;
             _asyncDispatcher = asyncDispatcher;
-
         }
 
         /// <summary>
@@ -59,7 +58,7 @@ namespace TrialManager.Core.Services
 
                     _trialistContext.SaveChangesAsync().ConfigureAwait(false);
 
-                    if (duplicates.Count <= 0)
+                    if (duplicates.Count == 0)
                     {
                         SetupTravellingPartnersFromCsv(path).ConfigureAwait(false);
                     }
@@ -74,7 +73,7 @@ namespace TrialManager.Core.Services
                     App.LogError("Could not import data from CSV", ex);
                     return false;
                 }
-            });
+            }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -122,7 +121,7 @@ namespace TrialManager.Core.Services
                     EOMTA(() => _trialistContext.Trialists.Update(toUpdate)).ConfigureAwait(false);
                 }
                 _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-            });
+            }).ConfigureAwait(false);
         }
 
         private async Task EOMTA(Action action) => await _asyncDispatcher.ExecuteOnMainThreadAsync(action).ConfigureAwait(false);
@@ -143,7 +142,6 @@ namespace TrialManager.Core.Services
                 // Second pass, to setup travelling partner
                 foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
                     yield return mt;
-
             }
         }
     }
