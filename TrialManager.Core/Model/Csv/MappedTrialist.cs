@@ -39,7 +39,8 @@ namespace TrialManager.Core.Model.Csv
                 Status = Status,
                 Address = Address,
                 PhoneNumber = PhoneNumber,
-                Email = Email
+                Email = Email,
+                TravellingPartner = null
             };
 
             // Parse preferred day

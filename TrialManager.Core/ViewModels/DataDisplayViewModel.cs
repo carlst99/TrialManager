@@ -1,6 +1,7 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -225,6 +226,8 @@ namespace TrialManager.Core.ViewModels
 
                 CanUseEditControls = true;
                 ListOpacity = 1;
+
+                //await NavigationService.Navigate<DataImportViewModel, Tuple<string, bool>>(new Tuple<string, bool>(path, merge)).ConfigureAwait(false);
             }
 
             _messagingService.Send(new FileDialogMessage

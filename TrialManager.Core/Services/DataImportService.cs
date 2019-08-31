@@ -56,11 +56,11 @@ namespace TrialManager.Core.Services
                             duplicates.Add(trialist);
                     }
 
-                    _trialistContext.SaveChangesAsync().ConfigureAwait(false);
+                    _trialistContext.SaveChanges();
 
                     if (duplicates.Count == 0)
                     {
-                        SetupTravellingPartnersFromCsv(path).ConfigureAwait(false);
+                        return SetupTravellingPartnersFromCsv(path).Result;
                     }
                     else
                     {
@@ -95,32 +95,40 @@ namespace TrialManager.Core.Services
         /// </summary>
         /// <param name="path">The path to the CSV file</param>
         /// <returns></returns>
-        private async Task SetupTravellingPartnersFromCsv(string path)
+        private async Task<bool> SetupTravellingPartnersFromCsv(string path)
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
-                // Second pass, to setup travelling partner
-                foreach (MappedTrialist mt in EnumerateCsv(path))
+                try
                 {
-                    if (string.IsNullOrEmpty(mt.TravellingPartner))
-                        continue;
+                    // Second pass, to setup travelling partner
+                    foreach (MappedTrialist mt in EnumerateCsv(path))
+                    {
+                        if (string.IsNullOrEmpty(mt.TravellingPartner))
+                            continue;
 
-                    // Find one potential partner
-                    IEnumerable<Trialist> partners = _trialistContext.Trialists.Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
-                    if (partners.Count() != 1)
-                        continue;
+                        // Find one potential partner
+                        IEnumerable<Trialist> partners = _trialistContext.Trialists.Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
+                        if (partners.Count() != 1)
+                            continue;
 
-                    // Find one original
-                    Trialist trialist = mt.ToTrialist();
-                    IEnumerable<Trialist> trialists = _trialistContext.Trialists.Where(t => t.IsContentEqual(trialist));
-                    if (trialists.Count() != 1)
-                        return;
+                        // Find one original
+                        Trialist trialist = mt.ToTrialist();
+                        IEnumerable<Trialist> trialists = _trialistContext.Trialists.Where(t => t.IsContentEqual(trialist));
+                        if (trialists.Count() != 1)
+                            continue;
 
-                    Trialist toUpdate = trialists.First();
-                    toUpdate.TravellingPartner = partners.First();
-                    EOMTA(() => _trialistContext.Trialists.Update(toUpdate)).ConfigureAwait(false);
+                        Trialist toUpdate = trialists.First();
+                        toUpdate.TravellingPartner = partners.First();
+                        EOMTA(() => _trialistContext.Trialists.Update(toUpdate)).ConfigureAwait(false);
+                    }
+                    _trialistContext.SaveChanges();
+                    return true;
+                } catch (Exception ex)
+                {
+                    App.LogError("Import error - could not link travelling partners", ex);
+                    return false;
                 }
-                _trialistContext.SaveChangesAsync().ConfigureAwait(false);
             }).ConfigureAwait(false);
         }
 

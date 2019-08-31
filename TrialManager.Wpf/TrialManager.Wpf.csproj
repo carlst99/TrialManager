@@ -259,6 +259,9 @@
     <Compile Include="NativeConverters.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="UIEnhancements\TabControlAssist.cs" />
+    <Compile Include="Views\DataImportView.xaml.cs">
+      <DependentUpon>DataImportView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CreateDrawView.xaml.cs">
       <DependentUpon>CreateDrawView.xaml</DependentUpon>
     </Compile>
@@ -283,6 +286,10 @@
     <Page Include="UIEnhancements\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DataImportView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\CreateDrawView.xaml">
       <SubType>Designer</SubType>
