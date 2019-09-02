@@ -2,6 +2,7 @@
 using MvvmCross.Base;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace TrialManager.Core.Services
                         Trialist trialist = mt.ToTrialist();
 
                         if (trialistHashes.Add(trialist.GetContentHashCode()))
-                            EOMTA(() => _trialistContext.Trialists.Add(trialist)).ConfigureAwait(false);
+                            EOMTA(() => _trialistContext.Trialists.Add(trialist)).Wait();
                         else
                             duplicates.Add(trialist);
                     }
@@ -119,6 +120,11 @@ namespace TrialManager.Core.Services
                             continue;
 
                         Trialist toUpdate = trialists.First();
+
+                        //  Don't allow circular dependencies
+                        if (toUpdate.IsContentEqual(partners.First()))
+                            continue;
+
                         toUpdate.TravellingPartner = partners.First();
                         EOMTA(() => _trialistContext.Trialists.Update(toUpdate)).ConfigureAwait(false);
                     }
