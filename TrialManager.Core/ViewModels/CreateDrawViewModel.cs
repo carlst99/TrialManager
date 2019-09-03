@@ -166,12 +166,12 @@ namespace TrialManager.Core.ViewModels
             {
                 int count = 1;
 
-                foreach (Trialist element in _realm.All<Trialist>())
+                Realm realm = RealmHelpers.GetRealmInstance();
+                foreach (Trialist element in realm.All<Trialist>())
                 {
                     foreach (Dog dog in element.Dogs)
                     {
-                        TrialistDrawEntry entry = new TrialistDrawEntry(element, dog, count);
-                        count++;
+                        TrialistDrawEntry entry = new TrialistDrawEntry(element, dog, count++);
                         await AsyncDispatcher.ExecuteOnMainThreadAsync(() => Trialists.Add(entry)).ConfigureAwait(false);
                     }
                 }
