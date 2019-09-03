@@ -25,7 +25,7 @@ namespace TrialManager.Core.ViewModels
         private readonly IIntraMessenger _messagingService;
         private readonly IDataImportService _importService;
 
-        private IList<Trialist> _selectedTrialists;
+        private Trialist _selectedTrialist;
         private Trialist _trialistToEdit;
         private Transaction _updateTransaction;
         private bool _isEditDialogOpen;
@@ -41,12 +41,12 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Updates the list of selected trialists
         /// </summary>
-        public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand<IList>((s) =>
-        {
-            _selectedTrialists = ConvertToList<Trialist>(s);
-            RaisePropertyChanged(nameof(CanEditDataEntry));
-            RaisePropertyChanged(nameof(CanDeleteDataEntries));
-        });
+        //public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand<IList>((s) =>
+        //{
+        //    _selectedTrialists = ConvertToList<Trialist>(s);
+        //    RaisePropertyChanged(nameof(CanEditDataEntry));
+        //    RaisePropertyChanged(nameof(CanDeleteDataEntries));
+        //});
 
         /// <summary>
         /// Adds a trialist to the data source and saves the DB
@@ -60,18 +60,17 @@ namespace TrialManager.Core.ViewModels
         {
             _realm.Write(() =>
             {
-                foreach (Trialist t in _selectedTrialists)
-                    _realm.Remove(t);
+                _realm.Remove(SelectedTrialist);
             });
         });
 
         /// <summary>
         /// Invokes the data edit dialog and starts tracking the edited item
         /// </summary>
-        public IMvxCommand EditDataEntryCommand => new MvxCommand<Trialist>((t) =>
+        public IMvxCommand EditDataEntryCommand => new MvxCommand(() =>
         {
             _updateTransaction = _realm.BeginWrite();
-            TrialistToEdit = t;
+            TrialistToEdit = SelectedTrialist;
             IsEditDialogOpen = true;
         });
 
@@ -106,12 +105,23 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Gets a value indicating whether or not a data entry selection can be edited
         /// </summary>
-        public bool CanEditDataEntry => _selectedTrialists?.Count == 1;
+        public bool CanEditDataEntry => _selectedTrialist != null;
 
         /// <summary>
         /// Gets a value indicating whether or not data entries can be deleted
         /// </summary>
-        public bool CanDeleteDataEntries => _selectedTrialists?.Count > 0;
+        public bool CanDeleteDataEntries => _selectedTrialist != null;
+
+        public Trialist SelectedTrialist
+        {
+            get => _selectedTrialist;
+            set
+            {
+                SetProperty(ref _selectedTrialist, value);
+                RaisePropertyChanged(nameof(CanEditDataEntry));
+                RaisePropertyChanged(nameof(CanDeleteDataEntries));
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the user can use the data editing controls. Also controls the visibility of the import progress bar

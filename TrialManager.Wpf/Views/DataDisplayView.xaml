@@ -261,13 +261,11 @@
                       Margin="0,8,0,0"
                       ItemsSource="{Binding Trialists}"
                       Opacity="{Binding ListOpacity, Mode=OneWay}"
-                      SelectionMode="Extended">
+                      SelectionMode="Single"
+                      SelectedItem="{Binding SelectedTrialist}">
                 <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding TrialistSelectionChangedCommand}" CommandParameter="{Binding SelectedItems, ElementName=LstVwTrialists}" />
-                    </i:EventTrigger>
                     <i:EventTrigger EventName="MouseRightButtonUp">
-                        <i:InvokeCommandAction Command="{Binding EditDataEntryCommand}" CommandParameter="{Binding SelectedItem, ElementName=LstVwTrialists}" />
+                        <i:InvokeCommandAction Command="{Binding EditDataEntryCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 
