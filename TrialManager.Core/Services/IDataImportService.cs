@@ -17,6 +17,6 @@ namespace TrialManager.Core.Services
         /// Clears existing data in the database
         /// </summary>
         /// <returns></returns>
-        void ClearExistingData(Realm realm = null);
+        Task ClearExistingData(Realm realm = null);
     }
 }

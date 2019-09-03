@@ -22,7 +22,7 @@ namespace TrialManager.Core.Services
         /// <exception cref="IOException"></exception>
         public async Task<bool> ImportFromCsv(string path, bool merge)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 try
                 {
@@ -33,7 +33,7 @@ namespace TrialManager.Core.Services
 
                     if (!merge)
                     {
-                        ClearExistingData(realm);
+                        await ClearExistingData(realm);
                     } else
                     {
                         foreach (Trialist t in realm.All<Trialist>())
@@ -76,12 +76,13 @@ namespace TrialManager.Core.Services
         /// Clears existing data in the database
         /// </summary>
         /// <returns></returns>
-        public void ClearExistingData(Realm realm = null)
+        public async Task ClearExistingData(Realm realm = null)
         {
             if (realm == null)
                 realm = RealmHelpers.GetRealmInstance();
-            realm.Write(() => realm.RemoveAll<Trialist>());
+
             RealmHelpers.ClearNextIds();
+            await realm.WriteAsync(tempRealm => tempRealm.RemoveAll<Trialist>());
         }
 
         /// <summary>
