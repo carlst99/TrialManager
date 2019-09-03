@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using Realms;
+using System.Collections.Generic;
 
 namespace TrialManager.Core.Model.LocationDb
 {
     public class TownCityLocation : LocationBase
     {
         [Required]
-        public List<SuburbLocalityLocation> Suburbs { get; set; } = new List<SuburbLocalityLocation>();
+        public IList<SuburbLocalityLocation> Suburbs { get; }
     }
 }

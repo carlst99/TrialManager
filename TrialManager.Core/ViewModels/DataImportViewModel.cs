@@ -1,6 +1,7 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
+using Realms;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace TrialManager.Core.ViewModels
     {
         #region Fields
 
-        private readonly TrialistContext _managerContext;
+        private readonly Realm _realm;
         private readonly IIntraMessenger _messenger;
 
         private ObservableCollection<TrialistDrawEntry> _trialists;
@@ -66,10 +67,10 @@ namespace TrialManager.Core.ViewModels
 
         #endregion
 
-        public DataImportViewModel(IMvxNavigationService navigationService, ITrialistContext managerContext, IIntraMessenger messenger)
+        public DataImportViewModel(IMvxNavigationService navigationService, IIntraMessenger messenger)
             : base (navigationService)
         {
-            _managerContext = (TrialistContext)managerContext;
+            _realm = RealmHelpers.GetRealmInstance();
             _messenger = messenger;
         }
 

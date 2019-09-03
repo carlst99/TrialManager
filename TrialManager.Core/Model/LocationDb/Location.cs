@@ -4,7 +4,7 @@ using System;
 namespace TrialManager.Core.Model.LocationDb
 {
     [MessagePackObject]
-    public struct Location
+    public class Location
     {
         /// <summary>
         /// Gets the X coordinate of this location point
@@ -17,6 +17,8 @@ namespace TrialManager.Core.Model.LocationDb
         /// </summary>
         [Key(1)]
         public double Gd2000Y { get; set; }
+
+        public Location() { }
 
         public Location(double gd2000X, double gd2000Y)
         {

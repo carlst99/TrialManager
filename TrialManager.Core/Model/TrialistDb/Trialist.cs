@@ -1,5 +1,6 @@
 ﻿using Realms;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using TrialManager.Core.Model.LocationDb;
 
@@ -86,7 +87,7 @@ namespace TrialManager.Core.Model.TrialistDb
         /// Gets or sets the dogs that belong to this <see cref="Trialist"/>
         /// </summary>
         [Required]
-        public ObservableCollection<Dog> Dogs { get; set; } = new ObservableCollection<Dog>();
+        public IList<Dog> Dogs { get; }
 
         /// <summary>
         /// Gets or sets the location of this <see cref="Trialist"/>

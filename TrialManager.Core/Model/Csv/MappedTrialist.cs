@@ -46,7 +46,7 @@ namespace TrialManager.Core.Model.Csv
             };
 
             // Parse preferred day
-            DateTime.TryParse(PreferredDay, out DateTime preferredDay);
+            DateTimeOffset.TryParse(PreferredDay, out DateTimeOffset preferredDay);
             trialist.PreferredDay = preferredDay;
 
             // Add dogs
@@ -63,7 +63,7 @@ namespace TrialManager.Core.Model.Csv
 
             // Setup location
             ILocationService locService = Mvx.IoCProvider.Resolve<ILocationService>();
-            if (locService.TryResolve(Address, out LocationBase location))
+            if (locService.TryResolve(Address, out LocationBase location, realm))
                 trialist.Location = location.Location;
 
             return trialist;

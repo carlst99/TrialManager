@@ -2,6 +2,7 @@
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCross.UI;
+using Realms;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace TrialManager.Core.ViewModels
     {
         #region Fields
 
-        private readonly TrialistContext _managerContext;
+        private readonly Realm _realm;
         private readonly IIntraMessenger _messenger;
 
         private ObservableCollection<TrialistDrawEntry> _trialists;
@@ -106,10 +107,10 @@ namespace TrialManager.Core.ViewModels
 
         #endregion
 
-        public CreateDrawViewModel(IMvxNavigationService navigationService, ITrialistContext managerContext, IIntraMessenger messenger)
+        public CreateDrawViewModel(IMvxNavigationService navigationService, IIntraMessenger messenger)
             : base (navigationService)
         {
-            _managerContext = (TrialistContext)managerContext;
+            _realm = RealmHelpers.GetRealmInstance();
             _messenger = messenger;
         }
 
@@ -121,7 +122,7 @@ namespace TrialManager.Core.ViewModels
 
         private async void OnCreateDraw()
         {
-            if (_managerContext.Trialists.Any())
+            if (_realm.All<Trialist>().Any())
             {
                 await GenerateDraw().ConfigureAwait(false);
             }
@@ -165,7 +166,7 @@ namespace TrialManager.Core.ViewModels
             {
                 int count = 1;
 
-                foreach (Trialist element in _managerContext.Trialists.ToList())
+                foreach (Trialist element in _realm.All<Trialist>())
                 {
                     foreach (Dog dog in element.Dogs)
                     {

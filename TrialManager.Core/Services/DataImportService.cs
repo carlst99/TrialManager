@@ -14,13 +14,6 @@ namespace TrialManager.Core.Services
 {
     public class DataImportService : IDataImportService
     {
-        private readonly IMvxMainThreadAsyncDispatcher _asyncDispatcher;
-
-        public DataImportService(IMvxMainThreadAsyncDispatcher asyncDispatcher)
-        {
-            _asyncDispatcher = asyncDispatcher;
-        }
-
         /// <summary>
         /// Imports data from a CSV file, loading it to the database
         /// </summary>

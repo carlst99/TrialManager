@@ -50,7 +50,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Adds a trialist to the data source and saves the DB
         /// </summary>
-        public IMvxCommand AddTrialistCommand => new MvxCommand(async () =>
+        public IMvxCommand AddTrialistCommand => new MvxCommand(() =>
         {
             _realm.Write(() => _realm.Add(Trialist.Default));
         });
@@ -58,7 +58,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Removes a trialist from the data source and saves the DB
         /// </summary>
-        public IMvxCommand DeleteTrialistCommand => new MvxCommand(async () =>
+        public IMvxCommand DeleteTrialistCommand => new MvxCommand(() =>
         {
             _realm.Write(() =>
             {
