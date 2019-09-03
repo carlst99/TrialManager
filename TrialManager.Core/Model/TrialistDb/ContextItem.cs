@@ -2,7 +2,7 @@
 
 namespace TrialManager.Core.Model.TrialistDb
 {
-    public abstract class ContextItem : INotifyPropertyChanged
+    public abstract class ContextItem : RealmObject, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

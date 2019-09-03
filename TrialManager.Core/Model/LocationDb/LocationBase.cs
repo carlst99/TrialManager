@@ -2,19 +2,21 @@
 
 namespace TrialManager.Core.Model.LocationDb
 {
-    public abstract class LocationBase
+    public abstract class LocationBase : RealmObject
     {
         #region Properties
 
         /// <summary>
         /// Gets or sets the primary DB key
         /// </summary>
+        [PrimaryKey]
         public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the location
         /// </summary>
         [Required]
+        [Indexed]
         public string Name { get; set; }
 
         /// <summary>

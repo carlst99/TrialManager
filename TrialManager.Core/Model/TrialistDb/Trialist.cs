@@ -27,7 +27,7 @@ namespace TrialManager.Core.Model.TrialistDb
         private string _address;
         private EntityStatus _status;
         private Location _location;
-        private DateTime _preferredDay;
+        private DateTimeOffset _preferredDay;
         private Trialist _travellingPartner;
 
         #endregion
@@ -37,6 +37,7 @@ namespace TrialManager.Core.Model.TrialistDb
         /// <summary>
         /// Gets or sets the database ID of the trialist
         /// </summary>
+        [PrimaryKey]
         public int TrialistId
         {
             get => _trialistId;
@@ -47,6 +48,7 @@ namespace TrialManager.Core.Model.TrialistDb
         /// Gets or sets the full name of the trialist
         /// </summary>
         [Required]
+        [Indexed]
         public string FullName
         {
             get => _fullName;
@@ -108,7 +110,7 @@ namespace TrialManager.Core.Model.TrialistDb
         /// <summary>
         /// Gets or sets the preferred run day
         /// </summary>
-        public DateTime PreferredDay
+        public DateTimeOffset PreferredDay
         {
             get => _preferredDay;
             set => SetProperty(ref _preferredDay, value, nameof(PreferredDay));

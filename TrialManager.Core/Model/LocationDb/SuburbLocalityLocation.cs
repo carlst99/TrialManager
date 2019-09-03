@@ -6,7 +6,7 @@ namespace TrialManager.Core.Model.LocationDb
     {
         public string TownCityName { get; set; }
 
-        [NotMapped]
+        [Ignored]
         public string FullName => string.IsNullOrEmpty(TownCityName) ? Name : Name + ", " + TownCityName;
     }
 }
