@@ -1,12 +1,12 @@
-﻿using Realms;
+﻿using MessagePack;
+using Realms;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using TrialManager.Core.Model.LocationDb;
 
 namespace TrialManager.Core.Model.TrialistDb
 {
-    public class Trialist : ContextItem
+    public class Trialist : RealmObject, IContextItem
     {
         public static Trialist Default => new Trialist
         {
@@ -20,73 +20,51 @@ namespace TrialManager.Core.Model.TrialistDb
             Location = new Location()
         };
 
-        #region Fields
-
-        private string _fullName;
-        private string _phoneNumber;
-        private string _email;
-        private string _address;
-        private EntityStatus _status;
-        private Location _location;
-        private DateTimeOffset _preferredDay;
-        private Trialist _travellingPartner;
-
-        #endregion
+        private int StatusRaw { get; set; }
+        private byte[] LocationRaw { get; set; }
 
         #region Properties
+
+        /// <summary>
+        /// Gets or sets the database ID
+        /// </summary>
+        [PrimaryKey]
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the full name of the trialist
         /// </summary>
         [Required]
         [Indexed]
-        public string FullName
-        {
-            get => _fullName;
-            set => SetProperty(ref _fullName, value, nameof(FullName));
-        }
+        public string FullName { get; set; }
 
         /// <summary>
         /// Gets or sets the phone number of the trialist
         /// </summary>
-        public string PhoneNumber
-        {
-            get => _phoneNumber;
-            set => SetProperty(ref _phoneNumber, value, nameof(PhoneNumber));
-        }
+        public string PhoneNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the email of the trialist
         /// </summary>
-        public string Email
-        {
-            get => _email;
-            set => SetProperty(ref _email, value, nameof(Email));
-        }
+        public string Email { get; set; }
 
         /// <summary>
         /// Gets or sets the home address of the trialist
         /// </summary>
-        public string Address
-        {
-            get => _address;
-            set => SetProperty(ref _address, value, nameof(Address));
-        }
+        public string Address { get; set; }
 
         /// <summary>
         /// Gets or sets the status of the trialist
         /// </summary>
-        [Required]
         public EntityStatus Status
         {
-            get => _status;
-            set => SetProperty(ref _status, value, nameof(Status));
+            get => (EntityStatus)StatusRaw;
+            set => StatusRaw = (int)value;
         }
 
         /// <summary>
         /// Gets or sets the dogs that belong to this <see cref="Trialist"/>
         /// </summary>
-        [Required]
         public IList<Dog> Dogs { get; }
 
         /// <summary>
@@ -94,27 +72,19 @@ namespace TrialManager.Core.Model.TrialistDb
         /// </summary>
         public Location Location
         {
-            get => _location;
-            set => SetProperty(ref _location, value, nameof(Location));
+            get => MessagePackSerializer.Deserialize<Location>(LocationRaw);
+            set => LocationRaw = MessagePackSerializer.Serialize(value);
         }
 
         /// <summary>
         /// Gets or sets the preferred run day
         /// </summary>
-        public DateTimeOffset PreferredDay
-        {
-            get => _preferredDay;
-            set => SetProperty(ref _preferredDay, value, nameof(PreferredDay));
-        }
+        public DateTimeOffset PreferredDay { get; set; }
 
         /// <summary>
         /// Gets or sets the travelling partner of this trialist
         /// </summary>
-        public Trialist TravellingPartner
-        {
-            get => _travellingPartner;
-            set => SetProperty(ref _travellingPartner, value, nameof(TravellingPartner));
-        }
+        public Trialist TravellingPartner { get; set; }
 
         #endregion
 
@@ -159,7 +129,6 @@ namespace TrialManager.Core.Model.TrialistDb
         {
             return obj is Trialist trialist
                 && trialist.FullName.Equals(FullName)
-                && trialist.Address.Equals(Address)
                 && trialist.Status.Equals(Status);
         }
 
@@ -173,8 +142,7 @@ namespace TrialManager.Core.Model.TrialistDb
             {
                 int hash = 13;
                 hash = (hash * 7) + FullName.GetHashCode();
-                hash = (hash * 7) + Status.GetHashCode();
-                return (hash * 7) + Address.GetHashCode();
+                return (hash * 7) + Status.GetHashCode();
             }
         }
     }

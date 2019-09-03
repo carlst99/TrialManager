@@ -63,7 +63,7 @@ namespace TrialManager.Core.Model.Csv
 
             // Setup location
             ILocationService locService = Mvx.IoCProvider.Resolve<ILocationService>();
-            if (locService.TryResolve(Address, out LocationBase location, realm))
+            if (locService.TryResolve(Address, out ILocation location))
                 trialist.Location = location.Location;
 
             return trialist;

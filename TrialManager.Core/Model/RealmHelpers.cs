@@ -15,7 +15,7 @@ namespace TrialManager.Core.Model
             return Realm.GetInstance(new RealmConfiguration("TrialManager.realm"));
         }
 
-        public static int GetNextId<T>(Realm realm = null) where T : ContextItem
+        public static int GetNextId<T>(Realm realm = null) where T : RealmObject, IContextItem
         {
             if (realm == null)
                 realm = GetRealmInstance();
