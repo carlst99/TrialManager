@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Realms;
+using System.Threading.Tasks;
 
 namespace TrialManager.Core.Services
 {
@@ -16,6 +17,6 @@ namespace TrialManager.Core.Services
         /// Clears existing data in the database
         /// </summary>
         /// <returns></returns>
-        Task ClearExistingData();
+        void ClearExistingData(Realm realm = null);
     }
 }

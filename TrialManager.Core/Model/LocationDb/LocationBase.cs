@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Realms;
 
 namespace TrialManager.Core.Model.LocationDb
 {

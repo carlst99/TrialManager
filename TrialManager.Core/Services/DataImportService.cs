@@ -1,8 +1,8 @@
 ﻿using CsvHelper;
 using MvvmCross.Base;
+using Realms;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,12 +13,10 @@ namespace TrialManager.Core.Services
 {
     public class DataImportService : IDataImportService
     {
-        private readonly Realm _realm;
         private readonly IMvxMainThreadAsyncDispatcher _asyncDispatcher;
 
-        public DataImportService(Realm realm, IMvxMainThreadAsyncDispatcher asyncDispatcher)
+        public DataImportService(IMvxMainThreadAsyncDispatcher asyncDispatcher)
         {
-            _realm = realm;
             _asyncDispatcher = asyncDispatcher;
         }
 
@@ -34,28 +32,33 @@ namespace TrialManager.Core.Services
             {
                 try
                 {
+                    Realm realm = App.GetRealmInstance();
+
                     HashSet<int> trialistHashes = new HashSet<int>();
                     List<Trialist> duplicates = new List<Trialist>();
 
                     if (!merge)
                     {
-                        ClearExistingData().ConfigureAwait(false);
+                        ClearExistingData(realm);
                     } else
                     {
-                        foreach (Trialist t in _realm.Trialists)
+                        foreach (Trialist t in realm.All<Trialist>())
                             trialistHashes.Add(t.GetContentHashCode());
                     }
 
                     // First pass, to get trialists
-                    foreach (MappedTrialist mt in EnumerateCsv(path))
+                    realm.Write(() =>
                     {
-                        Trialist trialist = mt.ToTrialist();
+                        foreach (MappedTrialist mt in EnumerateCsv(path))
+                        {
+                            Trialist trialist = mt.ToTrialist();
 
-                        if (trialistHashes.Add(trialist.GetContentHashCode()))
-                            _realm.Write(() =>  _realm.Add(trialist, update:true));
-                        else
-                            duplicates.Add(trialist);
-                    }
+                            if (trialistHashes.Add(trialist.GetContentHashCode()))
+                                realm.Add(trialist, update: true);
+                            else
+                                duplicates.Add(trialist);
+                        }
+                    });
 
                     if (duplicates.Count == 0)
                         return SetupTravellingPartnersFromCsv(path).Result;
@@ -77,16 +80,11 @@ namespace TrialManager.Core.Services
         /// Clears existing data in the database
         /// </summary>
         /// <returns></returns>
-        public async Task ClearExistingData()
+        public void ClearExistingData(Realm realm = null)
         {
-            int count = _realm.All<Trialist>().Count();
-            _realm.Write(() => 
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    await EOMTA(() => _realm.RemoveRange(_realm.All<Trialist>()));
-                }
-            });
+            if (realm == null)
+                realm = App.GetRealmInstance();
+            realm.Write(() => realm.RemoveAll<Trialist>());
         }
 
         /// <summary>
@@ -100,33 +98,36 @@ namespace TrialManager.Core.Services
             {
                 try
                 {
-                    // Second pass, to setup travelling partner
-                    foreach (MappedTrialist mt in EnumerateCsv(path))
+                    Realm realm = App.GetRealmInstance();
+                    realm.Write(() =>
                     {
-                        if (string.IsNullOrEmpty(mt.TravellingPartner))
-                            continue;
+                        // Second pass, to setup travelling partner
+                        foreach (MappedTrialist mt in EnumerateCsv(path))
+                        {
+                            if (string.IsNullOrEmpty(mt.TravellingPartner))
+                                continue;
 
-                        // Find one potential partner
-                        IEnumerable<Trialist> partners = _realm.Trialists.Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
-                        if (partners.Count() != 1)
-                            continue;
+                            // Find one potential partner
+                            IQueryable<Trialist> partners = realm.All<Trialist>().Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
+                            if (partners.Count() != 1)
+                                continue;
 
-                        // Find one original
-                        Trialist trialist = mt.ToTrialist();
-                        IEnumerable<Trialist> trialists = _realm.Trialists.Where(t => t.IsContentEqual(trialist));
-                        if (trialists.Count() != 1)
-                            continue;
+                            // Find one original
+                            Trialist trialist = mt.ToTrialist();
+                            IQueryable<Trialist> trialists = realm.All<Trialist>().Where(t => t.FullName.Equals(mt.FullName, StringComparison.OrdinalIgnoreCase));
+                            if (trialists.Count() != 1)
+                                continue;
 
-                        Trialist toUpdate = trialists.First();
+                            Trialist toUpdate = trialists.First();
+                            Trialist partner = partners.First();
 
-                        //  Don't allow circular dependencies
-                        if (toUpdate.IsContentEqual(partners.First()))
-                            continue;
+                            //  Don't allow circular dependencies
+                            if (toUpdate.IsContentEqual(partner))
+                                continue;
 
-                        toUpdate.TravellingPartner = partners.First();
-                        EOMTA(() => _realm.Trialists.Update(toUpdate)).ConfigureAwait(false);
-                    }
-                    _realm.SaveChanges();
+                            toUpdate.TravellingPartner = partner;
+                        }
+                    });
                     return true;
                 } catch (Exception ex)
                 {
@@ -135,8 +136,6 @@ namespace TrialManager.Core.Services
                 }
             }).ConfigureAwait(false);
         }
-
-        private async Task EOMTA(Action action) => await _asyncDispatcher.ExecuteOnMainThreadAsync(action).ConfigureAwait(false);
 
         /// <summary>
         /// Packages the functionality for mapping and enumerating a CSV file

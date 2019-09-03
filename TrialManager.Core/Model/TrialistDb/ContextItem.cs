@@ -1,14 +1,9 @@
-﻿using System.ComponentModel;
+﻿using Realms;
 
 namespace TrialManager.Core.Model.TrialistDb
 {
-    public abstract class ContextItem : RealmObject, INotifyPropertyChanged
+    public abstract class ContextItem : RealmObject
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void RaisePropertyChanged(string propertyName)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
         protected void SetProperty<T>(ref T container, T value, string propertyName)
         {
             if (container != null && !container.Equals(value))
