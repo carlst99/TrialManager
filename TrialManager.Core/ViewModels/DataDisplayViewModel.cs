@@ -27,6 +27,7 @@ namespace TrialManager.Core.ViewModels
 
         private IList<Trialist> _selectedTrialists;
         private Trialist _trialistToEdit;
+        private Transaction _updateTransaction;
         private bool _isEditDialogOpen;
         private bool _canUseEditControls = true;
         private double _listOpacity = 1;
@@ -50,10 +51,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Adds a trialist to the data source and saves the DB
         /// </summary>
-        public IMvxCommand AddTrialistCommand => new MvxCommand(() =>
-        {
-            _realm.Write(() => _realm.Add(Trialist.Default));
-        });
+        public IMvxCommand AddTrialistCommand => new MvxCommand(() => _realm.Write(() => _realm.Add(Trialist.Default)));
 
         /// <summary>
         /// Removes a trialist from the data source and saves the DB
@@ -72,6 +70,7 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand EditDataEntryCommand => new MvxCommand<Trialist>((t) =>
         {
+            _updateTransaction = _realm.BeginWrite();
             TrialistToEdit = t;
             IsEditDialogOpen = true;
         });
@@ -81,7 +80,7 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand CloseEditDialogCommand => new MvxCommand(() =>
         {
-            _realm.Write(() => _realm.Add(TrialistToEdit, true));
+            _updateTransaction.Commit();
             IsEditDialogOpen = false;
         });
 
