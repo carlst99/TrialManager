@@ -7,6 +7,7 @@ namespace TrialManager.Core.Model.TrialistDb
     {
         public static Dog Default => new Dog
         {
+            Id = RealmHelpers.GetNextId<Dog>(),
             Name = "Dog",
             Status = EntityStatus.Maiden
         };

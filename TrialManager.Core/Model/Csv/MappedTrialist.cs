@@ -1,4 +1,5 @@
 ﻿using MvvmCross;
+using Realms;
 using System;
 using TrialManager.Core.Model.LocationDb;
 using TrialManager.Core.Model.TrialistDb;
@@ -31,10 +32,11 @@ namespace TrialManager.Core.Model.Csv
         /// Converts this <see cref="MappedTrialist"/> to a <see cref="Trialist"/>. Does not fill <see cref="Trialist.TravellingPartner"/>
         /// </summary>
         /// <returns></returns>
-        public Trialist ToTrialist()
+        public Trialist ToTrialist(Realm realm)
         {
             Trialist trialist = new Trialist
             {
+                Id = RealmHelpers.GetNextId<Trialist>(realm),
                 FullName = FullName,
                 Status = Status,
                 Address = Address,

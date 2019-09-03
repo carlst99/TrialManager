@@ -1,11 +1,14 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
+using Realms;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using TrialManager.Core.Model;
 using TrialManager.Core.Model.Messages;
 using TrialManager.Core.Model.TrialistDb;
 using TrialManager.Core.Services;
@@ -18,7 +21,7 @@ namespace TrialManager.Core.ViewModels
     {
         #region Fields
 
-        private readonly TrialistContext _trialistContext;
+        private readonly Realm _realm;
         private readonly IIntraMessenger _messagingService;
         private readonly IDataImportService _importService;
 
@@ -49,9 +52,7 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand AddTrialistCommand => new MvxCommand(async () =>
         {
-            Trialist trialist = Trialist.Default;
-            _trialistContext.Trialists.Add(trialist);
-            await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
+            _realm.Write(() => _realm.Add(Trialist.Default));
         });
 
         /// <summary>
@@ -59,9 +60,11 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand DeleteTrialistCommand => new MvxCommand(async () =>
         {
-            foreach (Trialist t in _selectedTrialists)
-                _trialistContext.Trialists.Remove(t);
-            await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
+            _realm.Write(() =>
+            {
+                foreach (Trialist t in _selectedTrialists)
+                    _realm.Remove(t);
+            });
         });
 
         /// <summary>
@@ -70,17 +73,16 @@ namespace TrialManager.Core.ViewModels
         public IMvxCommand EditDataEntryCommand => new MvxCommand<Trialist>((t) =>
         {
             TrialistToEdit = t;
-            _trialistContext.Update(t);
             IsEditDialogOpen = true;
         });
 
         /// <summary>
         /// Closes the data edit dialog and saves the DB
         /// </summary>
-        public IMvxCommand CloseEditDialogCommand => new MvxCommand(async () =>
+        public IMvxCommand CloseEditDialogCommand => new MvxCommand(() =>
         {
+            _realm.Write(() => _realm.Add(TrialistToEdit, true));
             IsEditDialogOpen = false;
-            await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
         });
 
         /// <summary>
@@ -100,7 +102,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Gets the local view of trialists
         /// </summary>
-        public ObservableCollection<Trialist> Trialists => _trialistContext.Trialists.Local.ToObservableCollection();
+        public IEnumerable<Trialist> Trialists { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not a data entry selection can be edited
@@ -151,12 +153,12 @@ namespace TrialManager.Core.ViewModels
         #endregion
 
         public DataDisplayViewModel(IMvxNavigationService navigationService,
-            ITrialistContext TrialistContext,
             IIntraMessenger messagingService,
             IDataImportService importService)
             : base(navigationService)
         {
-            _trialistContext = (TrialistContext)TrialistContext;
+            _realm = RealmHelpers.GetRealmInstance();
+            Trialists = _realm.All<Trialist>();
             _messagingService = messagingService;
             _importService = importService;
         }
@@ -166,7 +168,7 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         private void OnImportDataRequested()
         {
-            if (Trialists?.Count != 0)
+            if (Trialists.Count() != 0)
             {
                 void ResultCallback(DialogMessage.DialogButton d)
                 {

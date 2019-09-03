@@ -46,11 +46,6 @@ namespace TrialManager.Core
             }
         }
 
-        public static Realm GetRealmInstance()
-        {
-            return Realm.GetInstance(new RealmConfiguration("TrialManager.realm"));
-        }
-
         #region Error Helpers
 
         /// <summary>

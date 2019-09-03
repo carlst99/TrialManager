@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TrialManager.Core.Model;
 using TrialManager.Core.Model.Csv;
 using TrialManager.Core.Model.TrialistDb;
 
@@ -32,7 +33,7 @@ namespace TrialManager.Core.Services
             {
                 try
                 {
-                    Realm realm = App.GetRealmInstance();
+                    Realm realm = RealmHelpers.GetRealmInstance();
 
                     HashSet<int> trialistHashes = new HashSet<int>();
                     List<Trialist> duplicates = new List<Trialist>();
@@ -51,10 +52,10 @@ namespace TrialManager.Core.Services
                     {
                         foreach (MappedTrialist mt in EnumerateCsv(path))
                         {
-                            Trialist trialist = mt.ToTrialist();
+                            Trialist trialist = mt.ToTrialist(realm);
 
                             if (trialistHashes.Add(trialist.GetContentHashCode()))
-                                realm.Add(trialist, update: true);
+                                realm.Add(trialist);
                             else
                                 duplicates.Add(trialist);
                         }
@@ -83,7 +84,7 @@ namespace TrialManager.Core.Services
         public void ClearExistingData(Realm realm = null)
         {
             if (realm == null)
-                realm = App.GetRealmInstance();
+                realm = RealmHelpers.GetRealmInstance();
             realm.Write(() => realm.RemoveAll<Trialist>());
         }
 
@@ -98,7 +99,7 @@ namespace TrialManager.Core.Services
             {
                 try
                 {
-                    Realm realm = App.GetRealmInstance();
+                    Realm realm = RealmHelpers.GetRealmInstance();
                     realm.Write(() =>
                     {
                         // Second pass, to setup travelling partner
@@ -113,7 +114,6 @@ namespace TrialManager.Core.Services
                                 continue;
 
                             // Find one original
-                            Trialist trialist = mt.ToTrialist();
                             IQueryable<Trialist> trialists = realm.All<Trialist>().Where(t => t.FullName.Equals(mt.FullName, StringComparison.OrdinalIgnoreCase));
                             if (trialists.Count() != 1)
                                 continue;
@@ -122,7 +122,7 @@ namespace TrialManager.Core.Services
                             Trialist partner = partners.First();
 
                             //  Don't allow circular dependencies
-                            if (toUpdate.IsContentEqual(partner))
+                            if (toUpdate.Equals(partner))
                                 continue;
 
                             toUpdate.TravellingPartner = partner;

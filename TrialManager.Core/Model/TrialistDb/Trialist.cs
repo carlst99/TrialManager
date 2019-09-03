@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Realms;
+using System;
 using System.Collections.ObjectModel;
 using TrialManager.Core.Model.LocationDb;
 
@@ -8,6 +9,7 @@ namespace TrialManager.Core.Model.TrialistDb
     {
         public static Trialist Default => new Trialist
         {
+            Id = RealmHelpers.GetNextId<Trialist>(),
             FullName = "Full Name",
             Status = EntityStatus.Maiden,
             PhoneNumber = "012 345 6789",
@@ -19,7 +21,6 @@ namespace TrialManager.Core.Model.TrialistDb
 
         #region Fields
 
-        private int _trialistId;
         private string _fullName;
         private string _phoneNumber;
         private string _email;
@@ -32,16 +33,6 @@ namespace TrialManager.Core.Model.TrialistDb
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// Gets or sets the database ID of the trialist
-        /// </summary>
-        [PrimaryKey]
-        public int TrialistId
-        {
-            get => _trialistId;
-            set => SetProperty(ref _trialistId, value, nameof(TrialistId));
-        }
 
         /// <summary>
         /// Gets or sets the full name of the trialist
@@ -147,13 +138,13 @@ namespace TrialManager.Core.Model.TrialistDb
         public override bool Equals(object obj)
         {
             return obj is Trialist trialist
-                && trialist.TrialistId.Equals(TrialistId);
+                && trialist.Id.Equals(Id);
         }
 
         public override int GetHashCode()
         {
             const int hash = 13;
-            return (hash * 7) + TrialistId;
+            return (hash * 7) + Id;
         }
 
         #endregion
