@@ -240,14 +240,13 @@ namespace TrialManager.Core.ViewModels
 
         private IList<T> ConvertToList<T>(IList list)
         {
-            List<T> converted = new List<T>();
+            return list.Cast<T>().ToList();
+            //IList<T> converted = new List<T>();
 
-            for (int i = 0; i < list.Count; i++)
-            {
-                converted.Add((T)list[i]);
-            }
+            //for (int i = 0; i < list.Count; i++)
+            //    converted.Add((T)list[i]);
 
-            return converted;
+            //return converted;
         }
     }
 }
