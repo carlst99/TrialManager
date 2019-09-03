@@ -22,7 +22,6 @@ namespace TrialManager.Core.ViewModels
         private readonly Realm _realm;
         private readonly IIntraMessenger _messenger;
 
-        private ObservableCollection<TrialistDrawEntry> _trialists;
         private bool _showProgress;
         private DateTime _trialStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0);
         private string _trialName;
@@ -37,11 +36,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Gets the list of trialists to use in the draw
         /// </summary>
-        public ObservableCollection<TrialistDrawEntry> Trialists
-        {
-            get => _trialists;
-            private set => SetProperty(ref _trialists, value);
-        }
+        public ObservableCollection<TrialistDrawEntry> RunsEntered { get; } = new ObservableCollection<TrialistDrawEntry>();
 
         /// <summary>
         /// Gets or sets a value indicating whether the loading indicator should be shown
@@ -160,7 +155,7 @@ namespace TrialManager.Core.ViewModels
         private async Task GenerateDraw()
         {
             ShowProgress = true;
-            Trialists = new ObservableCollection<TrialistDrawEntry>();
+            RunsEntered.Clear();
 
             await Task.Factory.StartNew(async () =>
             {
@@ -172,11 +167,10 @@ namespace TrialManager.Core.ViewModels
                     foreach (Dog dog in element.Dogs)
                     {
                         TrialistDrawEntry entry = new TrialistDrawEntry(element, dog, count++);
-                        await AsyncDispatcher.ExecuteOnMainThreadAsync(() => Trialists.Add(entry)).ConfigureAwait(false);
+                        await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(entry)).ConfigureAwait(false);
                     }
                 }
             }).ConfigureAwait(false);
-
             ShowProgress = false;
         }
 
