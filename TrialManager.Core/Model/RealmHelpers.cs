@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using TrialManager.Core.Model.TrialistDb;
 
@@ -10,7 +9,7 @@ namespace TrialManager.Core.Model
 {
     public static class RealmHelpers
     {
-        private static Dictionary<Type, int> _currentIds = new Dictionary<Type, int>();
+        private static readonly Dictionary<Type, int> _currentIds = new Dictionary<Type, int>();
 
         public static Realm GetRealmInstance()
         {
@@ -41,8 +40,9 @@ namespace TrialManager.Core.Model
                 _currentIds.Add(typeof(T), max);
             }
 
-            int id = ++_currentIds[typeof(T)];
-            return id;
+            return ++_currentIds[typeof(T)];
         }
+
+        public static void ClearNextIds() => _currentIds.Clear();
     }
 }

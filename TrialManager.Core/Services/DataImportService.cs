@@ -55,7 +55,9 @@ namespace TrialManager.Core.Services
                     });
 
                     if (duplicates.Count == 0)
+                    {
                         return SetupTravellingPartnersFromCsv(path).Result;
+                    }
                     else
                     {
                         // TODO ask user to manage duplicates
@@ -79,6 +81,7 @@ namespace TrialManager.Core.Services
             if (realm == null)
                 realm = RealmHelpers.GetRealmInstance();
             realm.Write(() => realm.RemoveAll<Trialist>());
+            RealmHelpers.ClearNextIds();
         }
 
         /// <summary>
