@@ -20,8 +20,12 @@ namespace TrialManager.Core.Model.TrialistDb
             Location = new Location()
         };
 
+        #region Fields
+
         private int StatusRaw { get; set; }
         private byte[] LocationRaw { get; set; }
+
+        #endregion
 
         #region Properties
 

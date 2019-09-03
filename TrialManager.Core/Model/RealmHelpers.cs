@@ -1,7 +1,9 @@
 ﻿using Realms;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using TrialManager.Core.Model.TrialistDb;
 
 namespace TrialManager.Core.Model
@@ -12,7 +14,15 @@ namespace TrialManager.Core.Model
 
         public static Realm GetRealmInstance()
         {
-            return Realm.GetInstance(new RealmConfiguration("TrialManager.realm"));
+            string assemPath = Assembly.GetEntryAssembly().Location;
+            assemPath = Path.GetDirectoryName(assemPath);
+            string realmPath = Path.Combine(assemPath, "TrialManager.realm");
+
+            RealmConfiguration config = new RealmConfiguration(realmPath)
+            {
+                ObjectClasses = new[] { typeof(Trialist), typeof(Dog) }
+            };
+            return Realm.GetInstance(config);
         }
 
         public static int GetNextId<T>(Realm realm = null) where T : RealmObject, IContextItem
@@ -21,10 +31,18 @@ namespace TrialManager.Core.Model
                 realm = GetRealmInstance();
 
             if (!_currentIds.ContainsKey(typeof(T)))
-                _currentIds.Add(typeof(T), realm.All<T>().Max(t => t.Id));
+            {
+                int max = 0;
+                foreach (T element in realm.All<T>())
+                {
+                    if (element.Id > max)
+                        max = element.Id;
+                }
+                _currentIds.Add(typeof(T), max);
+            }
 
-            realm.Dispose();
-            return ++_currentIds[typeof(T)];
+            int id = ++_currentIds[typeof(T)];
+            return id;
         }
     }
 }

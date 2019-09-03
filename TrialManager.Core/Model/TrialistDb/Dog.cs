@@ -24,6 +24,7 @@ namespace TrialManager.Core.Model.TrialistDb
         /// Gets or sets the name of the dog
         /// </summary>
         [Key(1)]
+        [Required]
         public string Name { get; set; }
 
         /// <summary>
@@ -46,6 +47,7 @@ namespace TrialManager.Core.Model.TrialistDb
         {
             Name = name;
             Status = status;
+            Id = RealmHelpers.GetNextId<Dog>();
         }
 
         #endregion
