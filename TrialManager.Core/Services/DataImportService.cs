@@ -22,54 +22,51 @@ namespace TrialManager.Core.Services
         /// <exception cref="IOException"></exception>
         public async Task<bool> ImportFromCsv(string path, bool merge)
         {
-            return await Task.Run(async () =>
+            try
             {
-                try
+                Realm realm = RealmHelpers.GetRealmInstance();
+
+                HashSet<int> trialistHashes = new HashSet<int>();
+                List<Trialist> duplicates = new List<Trialist>();
+
+                if (!merge)
                 {
-                    Realm realm = RealmHelpers.GetRealmInstance();
-
-                    HashSet<int> trialistHashes = new HashSet<int>();
-                    List<Trialist> duplicates = new List<Trialist>();
-
-                    if (!merge)
-                    {
-                        await ClearExistingData(realm);
-                    } else
-                    {
-                        foreach (Trialist t in realm.All<Trialist>())
-                            trialistHashes.Add(t.GetContentHashCode());
-                    }
-
-                    // First pass, to get trialists
-                    realm.Write(() =>
-                    {
-                        foreach (MappedTrialist mt in EnumerateCsv(path))
-                        {
-                            Trialist trialist = mt.ToTrialist(realm);
-
-                            if (trialistHashes.Add(trialist.GetContentHashCode()))
-                                realm.Add(trialist);
-                            else
-                                duplicates.Add(trialist);
-                        }
-                    });
-
-                    if (duplicates.Count == 0)
-                    {
-                        return SetupTravellingPartnersFromCsv(path).Result;
-                    }
-                    else
-                    {
-                        // TODO ask user to manage duplicates
-                    }
-
-                    return true;
-                } catch (Exception ex)
+                    await ClearExistingData(realm);
+                } else
                 {
-                    App.LogError("Could not import data from CSV", ex);
-                    return false;
+                    foreach (Trialist t in realm.All<Trialist>())
+                        trialistHashes.Add(t.GetContentHashCode());
                 }
-            }).ConfigureAwait(false);
+
+                // First pass, to get trialists
+                await realm.WriteAsync(tempRealm =>
+                {
+                    foreach (MappedTrialist mt in EnumerateCsv(path))
+                    {
+                        Trialist trialist = mt.ToTrialist(tempRealm);
+
+                        if (trialistHashes.Add(trialist.GetContentHashCode()))
+                            tempRealm.Add(trialist);
+                        else
+                            duplicates.Add(trialist);
+                    }
+                });
+
+                if (duplicates.Count == 0)
+                {
+                    return SetupTravellingPartnersFromCsv(path).Result;
+                }
+                else
+                {
+                    // TODO ask user to manage duplicates
+                }
+
+                return true;
+            } catch (Exception ex)
+            {
+                App.LogError("Could not import data from CSV", ex);
+                return false;
+            }
         }
 
         /// <summary>
