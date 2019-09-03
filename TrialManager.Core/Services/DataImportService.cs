@@ -13,12 +13,12 @@ namespace TrialManager.Core.Services
 {
     public class DataImportService : IDataImportService
     {
-        private readonly TrialistContext _trialistContext;
+        private readonly Realm _realm;
         private readonly IMvxMainThreadAsyncDispatcher _asyncDispatcher;
 
-        public DataImportService(ITrialistContext tContext, IMvxMainThreadAsyncDispatcher asyncDispatcher)
+        public DataImportService(Realm realm, IMvxMainThreadAsyncDispatcher asyncDispatcher)
         {
-            _trialistContext = (TrialistContext)tContext;
+            _realm = realm;
             _asyncDispatcher = asyncDispatcher;
         }
 
@@ -42,7 +42,7 @@ namespace TrialManager.Core.Services
                         ClearExistingData().ConfigureAwait(false);
                     } else
                     {
-                        foreach (Trialist t in _trialistContext.Trialists)
+                        foreach (Trialist t in _realm.Trialists)
                             trialistHashes.Add(t.GetContentHashCode());
                     }
 
@@ -52,17 +52,13 @@ namespace TrialManager.Core.Services
                         Trialist trialist = mt.ToTrialist();
 
                         if (trialistHashes.Add(trialist.GetContentHashCode()))
-                            EOMTA(() => _trialistContext.Trialists.Add(trialist)).Wait();
+                            _realm.Write(() =>  _realm.Add(trialist, update:true));
                         else
                             duplicates.Add(trialist);
                     }
 
-                    _trialistContext.SaveChanges();
-
                     if (duplicates.Count == 0)
-                    {
                         return SetupTravellingPartnersFromCsv(path).Result;
-                    }
                     else
                     {
                         // TODO ask user to manage duplicates
@@ -83,12 +79,14 @@ namespace TrialManager.Core.Services
         /// <returns></returns>
         public async Task ClearExistingData()
         {
-            int count = _trialistContext.Trialists.Count();
-            for (int i = 0; i < count; i++)
+            int count = _realm.All<Trialist>().Count();
+            _realm.Write(() => 
             {
-                await EOMTA(() => _trialistContext.Trialists.RemoveRange(_trialistContext.Trialists.ToList())).ConfigureAwait(false);
-                await _trialistContext.SaveChangesAsync().ConfigureAwait(false);
-            }
+                for (int i = 0; i < count; i++)
+                {
+                    await EOMTA(() => _realm.RemoveRange(_realm.All<Trialist>()));
+                }
+            });
         }
 
         /// <summary>
@@ -109,13 +107,13 @@ namespace TrialManager.Core.Services
                             continue;
 
                         // Find one potential partner
-                        IEnumerable<Trialist> partners = _trialistContext.Trialists.Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
+                        IEnumerable<Trialist> partners = _realm.Trialists.Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
                         if (partners.Count() != 1)
                             continue;
 
                         // Find one original
                         Trialist trialist = mt.ToTrialist();
-                        IEnumerable<Trialist> trialists = _trialistContext.Trialists.Where(t => t.IsContentEqual(trialist));
+                        IEnumerable<Trialist> trialists = _realm.Trialists.Where(t => t.IsContentEqual(trialist));
                         if (trialists.Count() != 1)
                             continue;
 
@@ -126,9 +124,9 @@ namespace TrialManager.Core.Services
                             continue;
 
                         toUpdate.TravellingPartner = partners.First();
-                        EOMTA(() => _trialistContext.Trialists.Update(toUpdate)).ConfigureAwait(false);
+                        EOMTA(() => _realm.Trialists.Update(toUpdate)).ConfigureAwait(false);
                     }
-                    _trialistContext.SaveChanges();
+                    _realm.SaveChanges();
                     return true;
                 } catch (Exception ex)
                 {
