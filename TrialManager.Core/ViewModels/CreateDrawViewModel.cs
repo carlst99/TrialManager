@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TrialManager.Core.Model;
 using TrialManager.Core.Model.Messages;
 using TrialManager.Core.Model.TrialistDb;
+using TrialManager.Core.Services;
 using TrialManager.Core.ViewModels.Base;
 
 namespace TrialManager.Core.ViewModels
@@ -20,6 +21,7 @@ namespace TrialManager.Core.ViewModels
 
         private readonly Realm _realm;
         private readonly IIntraMessenger _messenger;
+        private readonly IDrawCreationService _drawCreationService;
 
         private bool _showProgress;
         private DateTime _trialStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0);
@@ -101,11 +103,12 @@ namespace TrialManager.Core.ViewModels
 
         #endregion
 
-        public CreateDrawViewModel(IMvxNavigationService navigationService, IIntraMessenger messenger)
+        public CreateDrawViewModel(IMvxNavigationService navigationService, IIntraMessenger messenger, IDrawCreationService drawCreationService)
             : base (navigationService)
         {
             _realm = RealmHelpers.GetRealmInstance();
             _messenger = messenger;
+            _drawCreationService = drawCreationService;
         }
 
         public override void ViewAppearing()
@@ -158,17 +161,19 @@ namespace TrialManager.Core.ViewModels
 
             await Task.Factory.StartNew(async () =>
             {
-                int count = 1;
+                foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw())
+                    await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(element)).ConfigureAwait(false);
+                //int count = 1;
 
-                Realm realm = RealmHelpers.GetRealmInstance();
-                foreach (Trialist element in realm.All<Trialist>())
-                {
-                    foreach (Dog dog in element.Dogs)
-                    {
-                        TrialistDrawEntry entry = new TrialistDrawEntry(element, dog, count++);
-                        await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(entry)).ConfigureAwait(false);
-                    }
-                }
+                //Realm realm = RealmHelpers.GetRealmInstance();
+                //foreach (Trialist element in realm.All<Trialist>())
+                //{
+                //    foreach (Dog dog in element.Dogs)
+                //    {
+                //        TrialistDrawEntry entry = new TrialistDrawEntry(element, dog, count++);
+                //        await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(entry)).ConfigureAwait(false);
+                //    }
+                //}
             }).ConfigureAwait(false);
             ShowProgress = false;
         }
