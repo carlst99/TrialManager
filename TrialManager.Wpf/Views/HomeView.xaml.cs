@@ -1,4 +1,5 @@
 ﻿using MvvmCross.Platforms.Wpf.Views;
+using TrialManager.Wpf.Helpers;
 
 namespace TrialManager.Wpf.Views
 {
@@ -7,6 +8,12 @@ namespace TrialManager.Wpf.Views
         public HomeView()
         {
             InitializeComponent();
+        }
+
+        private void MvxWpfView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //AddressAutocompleter1.AutocompleteSource = new LocationAutocompleteSource();
+            //AddressAutocompleter2.AutocompleteSource = new LocationAutocompleteSource();
         }
     }
 }

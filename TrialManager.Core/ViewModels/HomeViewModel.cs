@@ -1,4 +1,5 @@
 ﻿using IntraMessaging;
+using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using MvvmCrossExtensions.Wpf.Presenters.MasterDetail;
@@ -7,7 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using TrialManager.Core.Model.LocationDb;
 using TrialManager.Core.Model.Messages;
+using TrialManager.Core.Services;
 using TrialManager.Core.ViewModels.Base;
 
 namespace TrialManager.Core.ViewModels
@@ -18,6 +21,8 @@ namespace TrialManager.Core.ViewModels
 
         private object _detailView;
         private int _selectedPageIndex;
+        private string _addressOne;
+        private string _addressTwo;
 
         #endregion
 
@@ -51,6 +56,28 @@ namespace TrialManager.Core.ViewModels
             get => _selectedPageIndex;
             set => SetProperty(ref _selectedPageIndex, value);
         }
+
+        public string AddressOne
+        {
+            get => _addressOne;
+            set
+            {
+                _addressOne = value;
+                RaisePropertyChanged(nameof(Distance));
+            }
+        }
+
+        public string AddressTwo
+        {
+            get => _addressTwo;
+            set
+            {
+                _addressTwo = value;
+                RaisePropertyChanged(nameof(Distance));
+            }
+        }
+
+        public double Distance => GetDistance();
 
         #endregion
 
@@ -101,6 +128,16 @@ namespace TrialManager.Core.ViewModels
             {
                 SelectedPageIndex = NavigatableViewModels.Keys.ToList().IndexOf(pMessage.PageType);
             }
+        }
+
+        private double GetDistance()
+        {
+            ILocationService locService = Mvx.IoCProvider.Resolve<ILocationService>();
+            if (!locService.TryResolve(AddressOne, out ILocation locOne))
+                return 0;
+            if (!locService.TryResolve(AddressTwo, out ILocation locTwo))
+                return 0;
+            return Location.DistanceTo(locOne.Location, locTwo.Location);
         }
     }
 }

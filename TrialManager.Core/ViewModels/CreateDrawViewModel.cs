@@ -159,22 +159,14 @@ namespace TrialManager.Core.ViewModels
             ShowProgress = true;
             RunsEntered.Clear();
 
-            await Task.Factory.StartNew(async () =>
-            {
-                foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay))
-                    await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(element)).ConfigureAwait(false);
-                //int count = 1;
+            foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
+                RunsEntered.Add(element);
 
-                //Realm realm = RealmHelpers.GetRealmInstance();
-                //foreach (Trialist element in realm.All<Trialist>())
-                //{
-                //    foreach (Dog dog in element.Dogs)
-                //    {
-                //        TrialistDrawEntry entry = new TrialistDrawEntry(element, dog, count++);
-                //        await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(entry)).ConfigureAwait(false);
-                //    }
-                //}
-            }).ConfigureAwait(false);
+            //await Task.Factory.StartNew(async () =>
+            //{
+            //    foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
+            //        await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(element)).ConfigureAwait(false);
+            //}).ConfigureAwait(false);
             ShowProgress = false;
         }
 

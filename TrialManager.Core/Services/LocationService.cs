@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using TrialManager.Core.Model;
 using TrialManager.Core.Model.LocationDb;
 
 namespace TrialManager.Core.Services
@@ -51,8 +50,13 @@ namespace TrialManager.Core.Services
 
         public bool TryResolve(string text, out ILocation location)
         {
-            Realm realm = GetRealmInstance();
+            if (string.IsNullOrEmpty(text))
+            {
+                location = null;
+                return false;
+            }
 
+            Realm realm = GetRealmInstance();
             text = text.ToLower();
 
             // Look first through the smaller towns/cities list

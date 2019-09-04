@@ -20,22 +20,22 @@
                             MethodName="GetValues"
                             ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="model:EntityStatus" />
+                <x:Type TypeName="model:EntityStatus"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <Thickness x:Key="EditDialogIconMargin"
                    Bottom="16"
                    Left="16"
                    Right="16"
-                   Top="0" />
+                   Top="0"/>
         <Thickness x:Key="EditDialogContentMargin"
                    Bottom="16"
                    Left="0"
                    Right="16"
-                   Top="0" />
+                   Top="0"/>
 
-        <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter" />
-        <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter" />
+        <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter"/>
+        <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter"/>
     </views:MvxWpfView.Resources>
 
     <md:DialogHost CloseOnClickAway="False"
@@ -44,17 +44,17 @@
         <md:DialogHost.DialogContent>
             <Grid MinWidth="400">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- Header -->
@@ -63,37 +63,37 @@
                               Mode="Dark">
                     <TextBlock Margin="4,4,4,0"
                                Style="{DynamicResource MaterialDesignSubheadingTextBlock}"
-                               Text="{Binding [Header_EditTrialist], Mode=OneTime}" />
+                               Text="{Binding [Header_EditTrialist], Mode=OneTime}"/>
                 </md:ColorZone>
 
                 <!-- Name and status -->
                 <md:PackIcon Grid.Row="1"
                              Margin="16"
-                             Kind="Person" />
+                             Kind="Person"/>
                 <StackPanel Grid.Row="1"
                             Grid.Column="1"
                             Margin="0,16,16,16"
-                            DataContext="{Binding TrialistToEdit}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_FullName], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
-                    <TextBox Text="{Binding FullName}" />
+                            DataContext="{Binding SelectedTrialist}">
+                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_FullName], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                    <TextBox Text="{Binding FullName}"/>
 
                     <TextBlock Margin="0,4,0,0"
                                Foreground="Gray"
-                               Text="{Binding DataContext.[Header_Status], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
+                               Text="{Binding DataContext.[Header_Status], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                     <ComboBox Padding="0,6"
                               ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
-                              SelectedItem="{Binding Status}" />
+                              SelectedItem="{Binding Status}"/>
                 </StackPanel>
 
                 <!-- Address -->
                 <md:PackIcon Grid.Row="2"
                              Margin="{StaticResource EditDialogIconMargin}"
-                             Kind="Location" />
+                             Kind="Location"/>
                 <StackPanel Grid.Row="2"
                             Grid.Column="1"
                             Margin="{StaticResource EditDialogContentMargin}"
-                            DataContext="{Binding TrialistToEdit}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_Address], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
+                            DataContext="{Binding SelectedTrialist}">
+                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_Address], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                     <controls:Autocomplete x:Name="AddressAutocompleter"
                                            Grid.Row="2"
                                            Grid.Column="1"
@@ -103,14 +103,14 @@
                         <controls:Autocomplete.Hint>
                             <TextBlock VerticalAlignment="Center"
                                        FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
-                                       Text="{Binding [Hint_TrialLocation], Mode=OneTime}" />
+                                       Text="{Binding [Hint_TrialLocation], Mode=OneTime}"/>
                         </controls:Autocomplete.Hint>
 
                         <controls:Autocomplete.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Margin="0"
                                            VerticalAlignment="Center"
-                                           Text="{Binding}" />
+                                           Text="{Binding}"/>
                             </DataTemplate>
                         </controls:Autocomplete.ItemTemplate>
                     </controls:Autocomplete>
@@ -119,59 +119,59 @@
                 <!-- Phone number -->
                 <md:PackIcon Grid.Row="3"
                              Margin="{StaticResource EditDialogIconMargin}"
-                             Kind="Phone" />
+                             Kind="Phone"/>
                 <StackPanel Grid.Row="3"
                             Grid.Column="1"
                             Margin="{StaticResource EditDialogContentMargin}"
-                            DataContext="{Binding TrialistToEdit}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_PhoneNumber], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
-                    <TextBox Text="{Binding PhoneNumber}" />
+                            DataContext="{Binding SelectedTrialist}">
+                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_PhoneNumber], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                    <TextBox Text="{Binding PhoneNumber}"/>
                 </StackPanel>
 
                 <!-- Email -->
                 <md:PackIcon Grid.Row="4"
                              Margin="{StaticResource EditDialogIconMargin}"
-                             Kind="Email" />
+                             Kind="Email"/>
                 <StackPanel Grid.Row="4"
                             Grid.Column="1"
                             Margin="{StaticResource EditDialogContentMargin}"
-                            DataContext="{Binding TrialistToEdit}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_Email], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
-                    <TextBox Text="{Binding Email}" />
+                            DataContext="{Binding SelectedTrialist}">
+                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_Email], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                    <TextBox Text="{Binding Email}"/>
                 </StackPanel>
 
                 <!-- Dogs -->
                 <md:PackIcon Grid.Row="5"
                              Margin="{StaticResource EditDialogIconMargin}"
-                             Kind="DogSide" />
+                             Kind="DogSide"/>
                 <StackPanel Grid.Row="5"
                             Grid.Column="1"
                             Margin="{StaticResource EditDialogContentMargin}"
-                            DataContext="{Binding TrialistToEdit}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_Dogs], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
+                            DataContext="{Binding SelectedTrialist}">
+                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_Dogs], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                     <ItemsControl ItemsSource="{Binding Dogs}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type model:Dog}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox VerticalAlignment="Bottom" Text="{Binding Name}" />
+                                    <TextBox VerticalAlignment="Bottom" Text="{Binding Name}"/>
                                     <ComboBox Grid.Column="1"
                                               Margin="16,0,0,0"
                                               Padding="0,6"
                                               VerticalAlignment="Bottom"
                                               ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
-                                              SelectedItem="{Binding Status}" />
+                                              SelectedItem="{Binding Status}"/>
                                     <Button Grid.Column="2"
                                             Margin="4,0"
                                             Command="{Binding DataContext.DeleteDogCommand, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
                                             CommandParameter="{Binding}"
                                             Content="{md:PackIcon Kind=Delete}"
                                             Style="{DynamicResource MaterialDesignFlatButton}"
-                                            ToolTip="{Binding DataContext.[ToolTip_DeleteItem], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
+                                            ToolTip="{Binding DataContext.[ToolTip_DeleteItem], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -180,7 +180,7 @@
                             HorizontalAlignment="Left"
                             Command="{Binding DataContext.AddDogCommand, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
                             Content="{md:PackIcon Kind=Add}"
-                            ToolTip="{Binding DataContext.[ToolTip_AddItem], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
+                            ToolTip="{Binding DataContext.[ToolTip_AddItem], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                 </StackPanel>
 
                 <!-- Close button -->
@@ -188,18 +188,18 @@
                         Grid.ColumnSpan="2"
                         HorizontalAlignment="Stretch"
                         Command="{Binding CloseEditDialogCommand}"
-                        Content="{Binding [Label_Done], Mode=OneTime}" />
+                        Content="{Binding [Label_Done], Mode=OneTime}"/>
             </Grid>
         </md:DialogHost.DialogContent>
 
         <Grid Margin="16">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <Button Command="{Binding ImportDataCommand}" Content="{Binding [Label_ImportData], Mode=OneTime}" />
+                <Button Command="{Binding ImportDataCommand}" Content="{Binding [Label_ImportData], Mode=OneTime}"/>
                 <TextBlock x:Name="TxtBxHint"
                            Margin="16,0,0,0"
                            VerticalAlignment="Center"
@@ -214,7 +214,7 @@
                                                      Storyboard.TargetProperty="Opacity"
                                                      From="1.0"
                                                      To="0"
-                                                     Duration="0:0:3" />
+                                                     Duration="0:0:3"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -230,19 +230,19 @@
                         HorizontalAlignment="Right"
                         Command="{Binding AddTrialistCommand}"
                         Content="{md:PackIcon Kind=Add}"
-                        ToolTip="{Binding [ToolTip_AddItem], Mode=OneTime}" />
+                        ToolTip="{Binding [ToolTip_AddItem], Mode=OneTime}"/>
                 <Button Margin="0,0,8,0"
                         HorizontalAlignment="Right"
                         Command="{Binding EditDataEntryCommand}"
                         CommandParameter="{Binding SelectedItem, ElementName=LstVwTrialists}"
                         Content="{md:PackIcon Kind=Edit}"
                         IsEnabled="{Binding CanEditDataEntry, Mode=OneWay}"
-                        ToolTip="{Binding [ToolTip_EditItem], Mode=OneTime}" />
+                        ToolTip="{Binding [ToolTip_EditItem], Mode=OneTime}"/>
                 <Button HorizontalAlignment="Right"
                         Command="{Binding DeleteTrialistCommand}"
                         Content="{md:PackIcon Kind=Trash}"
                         IsEnabled="{Binding CanDeleteDataEntries, Mode=OneWay}"
-                        ToolTip="{Binding [ToolTip_DeleteItem], Mode=OneTime}" />
+                        ToolTip="{Binding [ToolTip_DeleteItem], Mode=OneTime}"/>
             </StackPanel>
 
             <ProgressBar Grid.Row="1"
@@ -253,7 +253,7 @@
                          IsIndeterminate="True"
                          Style="{DynamicResource MaterialDesignCircularProgressBar}"
                          Visibility="{Binding CanUseEditControls, Converter={StaticResource InvertedVisibilityConverter}}"
-                         Value="0" />
+                         Value="0"/>
 
             <!-- Data list -->
             <ListView x:Name="LstVwTrialists"
@@ -261,8 +261,8 @@
                       Margin="0,8,0,0"
                       ItemsSource="{Binding Trialists}"
                       Opacity="{Binding ListOpacity, Mode=OneWay}"
-                      SelectionMode="Single"
-                      SelectedItem="{Binding SelectedTrialist}">
+                      SelectedItem="{Binding SelectedTrialist}"
+                      SelectionMode="Single">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseRightButtonUp">
                         <i:InvokeCommandAction Command="{Binding EditDataEntryCommand}"/>
@@ -278,8 +278,8 @@
                                     <StackPanel Orientation="Horizontal">
                                         <md:PackIcon Margin="0,0,4,0"
                                                      VerticalAlignment="Center"
-                                                     Kind="Person" />
-                                        <TextBlock Text="{Binding FullName}" />
+                                                     Kind="Person"/>
+                                        <TextBlock Text="{Binding FullName}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -288,7 +288,7 @@
                         <GridViewColumn Width="80" Header="{Binding DataContext.[Header_Status], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type model:Trialist}">
-                                    <TextBlock Text="{Binding Status}" />
+                                    <TextBlock Text="{Binding Status}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -299,8 +299,8 @@
                                     <StackPanel Orientation="Horizontal">
                                         <md:PackIcon Margin="0,0,4,0"
                                                      VerticalAlignment="Center"
-                                                     Kind="Phone" />
-                                        <TextBlock Text="{Binding PhoneNumber}" />
+                                                     Kind="Phone"/>
+                                        <TextBlock Text="{Binding PhoneNumber}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -312,8 +312,8 @@
                                     <StackPanel Orientation="Horizontal">
                                         <md:PackIcon Margin="0,0,4,0"
                                                      VerticalAlignment="Center"
-                                                     Kind="Email" />
-                                        <TextBlock Text="{Binding Email}" />
+                                                     Kind="Email"/>
+                                        <TextBlock Text="{Binding Email}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -330,18 +330,18 @@
                                                 <StackPanel Orientation="Horizontal">
                                                     <md:PackIcon Margin="0,0,4,0"
                                                                  VerticalAlignment="Center"
-                                                                 Kind="DogSide" />
-                                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
-                                                    <TextBlock VerticalAlignment="Center" Text=" | " />
+                                                                 Kind="DogSide"/>
+                                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                                                    <TextBlock VerticalAlignment="Center" Text=" | "/>
                                                     <TextBlock Margin="0,0,16,0"
                                                                VerticalAlignment="Center"
-                                                               Text="{Binding Status}" />
+                                                               Text="{Binding Status}"/>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <StackPanel Orientation="Horizontal" />
+                                                <StackPanel Orientation="Horizontal"/>
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
                                     </ItemsControl>
