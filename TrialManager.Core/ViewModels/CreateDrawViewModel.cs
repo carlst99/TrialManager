@@ -161,7 +161,7 @@ namespace TrialManager.Core.ViewModels
 
             await Task.Factory.StartNew(async () =>
             {
-                foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw())
+                foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay))
                     await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(element)).ConfigureAwait(false);
                 //int count = 1;
 
