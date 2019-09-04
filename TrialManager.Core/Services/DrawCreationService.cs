@@ -43,17 +43,23 @@ namespace TrialManager.Core.Services
             int count = 1;
 
             // Filter all local trialists
-            foreach (Trialist element in realm.All<Trialist>().Where(t => Location.DistanceTo(trialLocation, t.Location) < LOCAL_DISTANCE_MAX))
+            foreach (Trialist element in realm.All<Trialist>())
             {
-                foreach (Dog dog in element.Dogs)
-                    yield return new TrialistDrawEntry(element, dog, count++, startDay);
+                if (Location.DistanceTo(trialLocation, element.Location) < LOCAL_DISTANCE_MAX)
+                {
+                    foreach (Dog dog in element.Dogs)
+                        yield return new TrialistDrawEntry(element, dog, count++, startDay);
+                }
             }
 
             // Sort all non-local trialists
-            foreach (Trialist element in realm.All<Trialist>().Where(t => Location.DistanceTo(trialLocation, t.Location) > LOCAL_DISTANCE_MAX))
+            foreach (Trialist element in realm.All<Trialist>())
             {
-                foreach (Dog dog in element.Dogs)
-                    yield return new TrialistDrawEntry(element, dog, count++, startDay);
+                if (Location.DistanceTo(trialLocation, element.Location) > LOCAL_DISTANCE_MAX)
+                {
+                    foreach (Dog dog in element.Dogs)
+                        yield return new TrialistDrawEntry(element, dog, count++, startDay);
+                }
             }
         }
 
