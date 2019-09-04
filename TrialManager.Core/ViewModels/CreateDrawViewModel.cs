@@ -1,7 +1,6 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
-using MvvmCross.UI;
 using Realms;
 using System;
 using System.Collections.ObjectModel;

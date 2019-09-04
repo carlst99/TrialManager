@@ -3,12 +3,7 @@ using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using Realms;
 using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 using TrialManager.Core.Model;
-using TrialManager.Core.Model.Messages;
-using TrialManager.Core.Model.TrialistDb;
 using TrialManager.Core.ViewModels.Base;
 
 namespace TrialManager.Core.ViewModels
@@ -20,7 +15,6 @@ namespace TrialManager.Core.ViewModels
         private readonly Realm _realm;
         private readonly IIntraMessenger _messenger;
 
-        private ObservableCollection<TrialistDrawEntry> _trialists;
         private bool _showProgress;
         private bool _mergeData;
         private string _filePath;

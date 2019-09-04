@@ -2,10 +2,6 @@
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using Realms;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using TrialManager.Core.Model;
@@ -26,7 +22,6 @@ namespace TrialManager.Core.ViewModels
         private readonly IDataImportService _importService;
 
         private Trialist _selectedTrialist;
-        private Trialist _trialistToEdit;
         private Transaction _updateTransaction;
         private bool _isEditDialogOpen;
         private bool _canUseEditControls = true;
@@ -39,16 +34,6 @@ namespace TrialManager.Core.ViewModels
         public IMvxCommand ImportDataCommand => new MvxCommand(OnImportDataRequested);
 
         /// <summary>
-        /// Updates the list of selected trialists
-        /// </summary>
-        //public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand<IList>((s) =>
-        //{
-        //    _selectedTrialists = ConvertToList<Trialist>(s);
-        //    RaisePropertyChanged(nameof(CanEditDataEntry));
-        //    RaisePropertyChanged(nameof(CanDeleteDataEntries));
-        //});
-
-        /// <summary>
         /// Adds a trialist to the data source and saves the DB
         /// </summary>
         public IMvxCommand AddTrialistCommand => new MvxCommand(() => _realm.Write(() => _realm.Add(Trialist.Default)));
@@ -58,10 +43,8 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand DeleteTrialistCommand => new MvxCommand(() =>
         {
-            _realm.Write(() =>
-            {
-                _realm.Remove(SelectedTrialist);
-            });
+            if (CanDeleteDataEntries)
+                _realm.Write(() => _realm.Remove(SelectedTrialist));
         });
 
         /// <summary>
@@ -70,7 +53,6 @@ namespace TrialManager.Core.ViewModels
         public IMvxCommand EditDataEntryCommand => new MvxCommand(() =>
         {
             _updateTransaction = _realm.BeginWrite();
-            TrialistToEdit = SelectedTrialist;
             IsEditDialogOpen = true;
         });
 
@@ -80,18 +62,19 @@ namespace TrialManager.Core.ViewModels
         public IMvxCommand CloseEditDialogCommand => new MvxCommand(() =>
         {
             _updateTransaction.Commit();
+            _updateTransaction.Dispose();
             IsEditDialogOpen = false;
         });
 
         /// <summary>
         /// Deletes a dog from the currently edited trialist
         /// </summary>
-        public IMvxCommand DeleteDogCommand => new MvxCommand<Dog>((d) => _trialistToEdit.SafeRemoveDog(d));
+        public IMvxCommand DeleteDogCommand => new MvxCommand<Dog>((d) => SelectedTrialist.SafeRemoveDog(d));
 
         /// <summary>
         /// Adds a dog to the currently edited trialist
         /// </summary>
-        public IMvxCommand AddDogCommand => new MvxCommand(() => _trialistToEdit.Dogs.Add(Dog.Default));
+        public IMvxCommand AddDogCommand => new MvxCommand(() => SelectedTrialist.Dogs.Add(Dog.Default));
 
         #endregion
 
@@ -100,7 +83,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Gets the local view of trialists
         /// </summary>
-        public IEnumerable<Trialist> Trialists { get; }
+        public IQueryable<Trialist> Trialists { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not a data entry selection can be edited
@@ -142,15 +125,6 @@ namespace TrialManager.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="Trialist"/> object that should be loaded by the editor
-        /// </summary>
-        public Trialist TrialistToEdit
-        {
-            get => _trialistToEdit;
-            set => SetProperty(ref _trialistToEdit, value);
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether or not the editing dialog is open
         /// </summary>
         public bool IsEditDialogOpen
@@ -177,7 +151,7 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         private void OnImportDataRequested()
         {
-            if (Trialists.Count() != 0)
+            if (Trialists.Any())
             {
                 void ResultCallback(DialogMessage.DialogButton d)
                 {
@@ -246,17 +220,6 @@ namespace TrialManager.Core.ViewModels
                 Title = "Import data file",
                 Callback = callback
             });
-        }
-
-        private IList<T> ConvertToList<T>(IList list)
-        {
-            return list.Cast<T>().ToList();
-            //IList<T> converted = new List<T>();
-
-            //for (int i = 0; i < list.Count; i++)
-            //    converted.Add((T)list[i]);
-
-            //return converted;
         }
     }
 }
