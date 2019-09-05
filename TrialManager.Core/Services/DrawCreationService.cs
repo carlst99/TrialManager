@@ -24,80 +24,77 @@ namespace TrialManager.Core.Services
 
         public IEnumerable<TrialistDrawEntry> CreateDraw(int maxRunsPerDay, DateTime startDay, string address)
         {
-            int count = 1;
             Realm realm = RealmHelpers.GetRealmInstance();
             _locationService.TryResolve(address, out ILocation location);
-            SortedDictionary<DateTimeOffset, List<Trialist>> days = new SortedDictionary<DateTimeOffset, List<Trialist>>();
-            List<Trialist> noPreferredDay = new List<Trialist>();
+            //SortedDictionary<DateTimeOffset, List<Trialist>> days = new SortedDictionary<DateTimeOffset, List<Trialist>>();
+            //List<Trialist> noPreferredDay = new List<Trialist>();
 
             // Sort all trialists according to preferred day
-            foreach (Trialist element in realm.All<Trialist>())
-            {
-                if (element.PreferredDay != null && !days.ContainsKey(element.PreferredDay))
-                    days.Add(element.PreferredDay, new List<Trialist>());
+            //foreach (Trialist element in realm.All<Trialist>())
+            //{
+            //    if (element.PreferredDay != null && !days.ContainsKey(element.PreferredDay))
+            //        days.Add(element.PreferredDay, new List<Trialist>());
 
-                if (element.PreferredDay != null)
-                {
-                    if (days[element.PreferredDay].Count() < maxRunsPerDay)
-                        days[element.PreferredDay].Add(element);
-                    else
-                        noPreferredDay.Add(element);
-                } else
-                {
-                    noPreferredDay.Add(element);
-                }
-            }
+            //    if (element.PreferredDay != null)
+            //    {
+            //        if (days[element.PreferredDay].Count() < maxRunsPerDay)
+            //            days[element.PreferredDay].Add(element);
+            //        else
+            //            noPreferredDay.Add(element);
+            //    } else
+            //    {
+            //        noPreferredDay.Add(element);
+            //    }
+            //}
 
-            // Sort trialists who did not specify a preferred day
-            foreach (Trialist element in noPreferredDay)
-            {
-                bool wasPlaced = false;
+            //// Sort trialists who did not specify a preferred day
+            //foreach (Trialist element in noPreferredDay)
+            //{
+            //    bool wasPlaced = false;
 
-                foreach (var pair in days)
-                {
-                    if (pair.Value.Count() < maxRunsPerDay)
-                    {
-                        pair.Value.Add(element);
-                        wasPlaced = true;
-                        break;
-                    }
-                }
+            //    foreach (var pair in days)
+            //    {
+            //        if (pair.Value.Count() < maxRunsPerDay)
+            //        {
+            //            pair.Value.Add(element);
+            //            wasPlaced = true;
+            //            break;
+            //        }
+            //    }
 
-                // If all other days were full we need to create a new day to place the trialist
-                if (!wasPlaced)
-                {
-                    DateTimeOffset key = days.Keys.Max().AddDays(1);
-                    days.Add(key, new List<Trialist>());
-                    days[key].Add(element);
-                }
-            }
+            //    // If all other days were full we need to create a new day to place the trialist
+            //    if (!wasPlaced)
+            //    {
+            //        DateTimeOffset key = days.Keys.Max().AddDays(1);
+            //        days.Add(key, new List<Trialist>());
+            //        days[key].Add(element);
+            //    }
+            //}
 
             // Sort within days by distance to trial grounds
-            foreach (DateTimeOffset key in days.Keys)
-                days[key] = SortByDistance(days[key], location.Location);
+            //foreach (DateTimeOffset key in days.Keys)
+            //    days[key] = SortByDistance(days[key], location.Location);
 
-            foreach (var pair in days)
-            {
-                foreach (Trialist element in pair.Value)
-                {
-                    foreach (Dog dog in element.Dogs)
-                        yield return new TrialistDrawEntry(element, dog, count++, pair.Key);
-                }
-            }
-            
-
-            //if (location != null)
+            //foreach (var pair in days)
             //{
-            //    foreach (TrialistDrawEntry element in SortWithLocation(realm, maxRunsPerDay, startDay, location.Location))
-            //        yield return element;
-            //} else
-            //{
-            //    foreach (TrialistDrawEntry element in SortGeneric(realm, maxRunsPerDay, startDay))
-            //        yield return element;
+            //    foreach (Trialist element in pair.Value)
+            //    {
+            //        foreach (Dog dog in element.Dogs)
+            //            yield return new TrialistDrawEntry(element, dog, count++, pair.Key);
+            //    }
             //}
+
+            IEnumerable<Trialist> trialists;
+            if (location != null)
+                trialists = SortByDistance(realm.All<Trialist>(), location.Location);
+            else
+                trialists = realm.All<Trialist>();
+
+            foreach (TrialistDrawEntry value in SortGeneric(trialists, maxRunsPerDay, startDay))
+                yield return value;
         }
 
-        private List<Trialist> SortByDistance(List<Trialist> list, Location trialLocation)
+        private IEnumerable<Trialist> SortByDistance(IEnumerable<Trialist> list, Location trialLocation)
         {
             List<Trialist> locals = new List<Trialist>();
             List<Trialist> nonLocals = new List<Trialist>();
@@ -122,35 +119,10 @@ namespace TrialManager.Core.Services
             return locals;
         }
 
-        private IEnumerable<TrialistDrawEntry> SortWithLocation(Realm realm, int maxRunsPerDay, DateTime startDay, Location trialLocation)
+        private IEnumerable<TrialistDrawEntry> SortGeneric(IEnumerable<Trialist> trialists, int maxRunsPerDay, DateTime startDay)
         {
             int count = 1;
-
-            // Filter all local trialists
-            foreach (Trialist element in realm.All<Trialist>())
-            {
-                if (Location.DistanceTo(trialLocation, element.Location) < LOCAL_DISTANCE_MAX)
-                {
-                    foreach (Dog dog in element.Dogs)
-                        yield return new TrialistDrawEntry(element, dog, count++, startDay);
-                }
-            }
-
-            // Sort all non-local trialists
-            foreach (Trialist element in realm.All<Trialist>())
-            {
-                if (Location.DistanceTo(trialLocation, element.Location) > LOCAL_DISTANCE_MAX)
-                {
-                    foreach (Dog dog in element.Dogs)
-                        yield return new TrialistDrawEntry(element, dog, count++, startDay);
-                }
-            }
-        }
-
-        private IEnumerable<TrialistDrawEntry> SortGeneric(Realm realm, int maxRunsPerDay, DateTime startDay)
-        {
-            int count = 1;
-            foreach (Trialist element in realm.All<Trialist>())
+            foreach (Trialist element in trialists)
             {
                 foreach (Dog dog in element.Dogs)
                     yield return new TrialistDrawEntry(element, dog, count++, startDay);
