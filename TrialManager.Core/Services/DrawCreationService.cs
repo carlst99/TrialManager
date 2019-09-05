@@ -16,6 +16,16 @@ namespace TrialManager.Core.Services
         /// </summary>
         public const double LOCAL_DISTANCE_MAX = 0.6;
 
+        /// <summary>
+        /// Defines the maximum number of dogs that may be run in a day
+        /// </summary>
+        public const int MAX_DOGS_PER_DAY = 3;
+
+        /// <summary>
+        /// Defines the separation between dogs in the draw
+        /// </summary>
+        public const int DOG_RUN_SEPARATION = 20;
+
         private readonly ILocationService _locationService;
 
         public DrawCreationService(ILocationService locationService)
@@ -25,7 +35,6 @@ namespace TrialManager.Core.Services
 
         public IEnumerable<TrialistDrawEntry> CreateDraw(int maxRunsPerDay, DateTime startDay, string address)
         {
-            int count = 1;
             Realm realm = RealmHelpers.GetRealmInstance();
             _locationService.TryResolve(address, out ILocation location);
             //SortedDictionary<DateTimeOffset, List<Trialist>> days = new SortedDictionary<DateTimeOffset, List<Trialist>>();
@@ -47,7 +56,6 @@ namespace TrialManager.Core.Services
             //    {
             //        noPreferredDay.Add(element);
             //    }
-            //    Debug.Print("Complete cycle");
             //}
 
             //// Sort trialists who did not specify a preferred day
@@ -87,18 +95,17 @@ namespace TrialManager.Core.Services
             //    }
             //}
 
-
-            IEnumerable<Trialist> trialists = null;
+            IEnumerable<Trialist> trialists;
             if (location != null)
-                trialists = SortWithLocation(realm, maxRunsPerDay, startDay, location.Location);
+                trialists = SortByDistance(realm.All<Trialist>(), location.Location);
             else
                 trialists = realm.All<Trialist>();
 
-            foreach (TrialistDrawEntry element in SortGeneric(trialists, maxRunsPerDay, startDay))
-                yield return element;
+            foreach (TrialistDrawEntry value in SortGeneric(trialists, realm, maxRunsPerDay, startDay))
+                yield return value;
         }
 
-        private List<Trialist> SortByDistance(List<Trialist> list, Location trialLocation)
+        private IEnumerable<Trialist> SortByDistance(IEnumerable<Trialist> list, Location trialLocation)
         {
             List<Trialist> locals = new List<Trialist>();
             List<Trialist> nonLocals = new List<Trialist>();
@@ -123,38 +130,74 @@ namespace TrialManager.Core.Services
             return locals;
         }
 
-        private IEnumerable<Trialist> SortWithLocation(Realm realm, int maxRunsPerDay, DateTime startDay, Location trialLocation)
+        private IEnumerable<TrialistDrawEntry> SortGeneric(IEnumerable<Trialist> trialists, Realm realm, int maxRunsPerDay, DateTimeOffset startDay)
         {
-            // Filter all local trialists
-            foreach (Trialist element in realm.All<Trialist>())
-            {
-                if (Location.DistanceTo(trialLocation, element.Location) < LOCAL_DISTANCE_MAX)
-                    yield return element;
-            }
-
-            // Sort all non-local trialists
-            foreach (Trialist element in realm.All<Trialist>())
-            {
-                if (Location.DistanceTo(trialLocation, element.Location) > LOCAL_DISTANCE_MAX)
-                {
-                    foreach (Dog dog in element.Dogs)
-                        yield return element;
-                }
-            }
-        }
-
-        private IEnumerable<TrialistDrawEntry> SortGeneric(IEnumerable<Trialist> trialists, int maxRunsPerDay, DateTime startDay)
-        {
-            int count = 1;
-            // Setup days dictionary with correct amount of days
-            Dictionary<DateTimeOffset, List<Trialist>> days = new Dictionary<DateTimeOffset, List<Trialist>>();
-            int numDays = (int)Math.Floor((double)days.Count() / maxRunsPerDay);
-            for (int i = 0; i < numDays; i++)
-                days.Add(startDay.AddDays(i), new List<Trialist>());
+            TrialistDrawEntry[] draw = new TrialistDrawEntry[realm.All<Dog>().Count() * 2];
+            HashSet<int> usedNumbers = new HashSet<int>();
+            int count = 0;
+            DateTimeOffset day = startDay;
+            int oCount = 0;
 
             foreach (Trialist element in trialists)
             {
+                // Search for the next available number and update day if required
+                while (!usedNumbers.Add(count))
+                {
+                    count++;
+                    if (count % maxRunsPerDay == 0)
+                        day = day.AddDays(1);
+                }
 
+                // Set the local count and day
+                int localCount = count++;
+                if (count % maxRunsPerDay == 0)
+                    day = day.AddDays(1);
+                DateTimeOffset localDay = day;
+
+                // Add each dog with a run spacing of DOG_RUN_SEPARATION
+                for (int i = 0; i < element.Dogs.Count; i++)
+                {
+                    // If we are a multiple of the maximum dogs per day, move to the next day
+                    if (i != 0 && i % MAX_DOGS_PER_DAY == 0)
+                    {
+                        // Increment to next day
+                        int increment = maxRunsPerDay - localCount;
+                        localCount += increment;
+                        localDay = localDay.AddDays(1);
+
+                        // Find next available position
+                        while (!usedNumbers.Add(localCount))
+                            localCount++;
+                        usedNumbers.Remove(localCount); // Remove used number as it will be added later
+                    }
+
+                    // Add the entry
+                    if (draw[localCount] != null)
+                    {
+                        oCount++;
+                        Debug.WriteLine(localCount);
+                    }
+
+                    draw[localCount] = new TrialistDrawEntry(element, element.Dogs[i], localCount + 1, localDay);
+                    usedNumbers.Add(localCount);
+                    localCount += DOG_RUN_SEPARATION;
+                }
+            }
+
+            Debug.WriteLine(oCount);
+
+            int nullCount = 0;
+            foreach (TrialistDrawEntry element in draw)
+            {
+                if (element == null)
+                {
+                    nullCount++;
+                }
+                else
+                {
+                    element.RunNumber -= nullCount;
+                    yield return element;
+                }
             }
         }
     }

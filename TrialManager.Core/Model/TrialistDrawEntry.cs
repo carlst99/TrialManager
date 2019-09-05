@@ -16,8 +16,8 @@ namespace TrialManager.Core.Model
             if (!trialist.Dogs.Contains(dog))
                 throw new ArgumentException("This trialist does not own the dog " + dog.ToString());
 
-            TrialistName = trialist.FullName;
-            CompetingDogName = dog.Name;
+            TrialistName = trialist.FullName + " | " + trialist.Status;
+            CompetingDogName = dog.Name + " | " + dog.Status;
             RunNumber = runNumber;
             Day = day;
         }

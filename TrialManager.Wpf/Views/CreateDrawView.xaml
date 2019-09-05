@@ -139,6 +139,14 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <!-- Day -->
+                    <GridViewColumn Width="120" Header="Day">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Day}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <!-- Full name -->
                     <GridViewColumn Width="200" Header="{Binding DataContext.[Header_FullName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                         <GridViewColumn.CellTemplate>
@@ -162,14 +170,6 @@
                                                  Kind="DogSide"/>
                                     <TextBlock Text="{Binding CompetingDogName}"/>
                                 </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <!-- Dog Status -->
-                    <GridViewColumn Width="150" Header="{Binding DataContext.[Header_Status], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type model:TrialistDrawEntry}">
-                                <TextBlock Text="{Binding CompetingDog.Status}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
