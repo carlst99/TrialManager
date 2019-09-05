@@ -1,6 +1,7 @@
 ﻿using Realms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using TrialManager.Core.Model;
 using TrialManager.Core.Model.LocationDb;
@@ -14,6 +15,16 @@ namespace TrialManager.Core.Services
         /// Defines the maximum Gd2000 that a trialist can be considered as local for
         /// </summary>
         public const double LOCAL_DISTANCE_MAX = 0.6;
+
+        /// <summary>
+        /// Defines the maximum number of dogs that may be run in a day
+        /// </summary>
+        public const int MAX_DOGS_PER_DAY = 3;
+
+        /// <summary>
+        /// Defines the separation between dogs in the draw
+        /// </summary>
+        public const int DOG_RUN_SEPARATION = 20;
 
         private readonly ILocationService _locationService;
 
@@ -90,7 +101,7 @@ namespace TrialManager.Core.Services
             else
                 trialists = realm.All<Trialist>();
 
-            foreach (TrialistDrawEntry value in SortGeneric(trialists, maxRunsPerDay, startDay))
+            foreach (TrialistDrawEntry value in SortGeneric(trialists, realm, maxRunsPerDay, startDay))
                 yield return value;
         }
 
@@ -119,13 +130,65 @@ namespace TrialManager.Core.Services
             return locals;
         }
 
-        private IEnumerable<TrialistDrawEntry> SortGeneric(IEnumerable<Trialist> trialists, int maxRunsPerDay, DateTime startDay)
+        private IEnumerable<TrialistDrawEntry> SortGeneric(IEnumerable<Trialist> trialists, Realm realm, int maxRunsPerDay, DateTimeOffset startDay)
         {
-            int count = 1;
+            TrialistDrawEntry[] draw = new TrialistDrawEntry[realm.All<Dog>().Count() * 2];
+            HashSet<int> usedNumbers = new HashSet<int>();
+            int count = 0;
+            DateTimeOffset day = startDay;
+
             foreach (Trialist element in trialists)
             {
-                foreach (Dog dog in element.Dogs)
-                    yield return new TrialistDrawEntry(element, dog, count++, startDay);
+                // Search for the next available number and update day if required
+                while (!usedNumbers.Add(count))
+                {
+                    count++;
+                    if (count % maxRunsPerDay == 0)
+                        day = day.AddDays(1);
+                }
+
+                // Set the local count and day
+                int localCount = count++;
+                if (count % maxRunsPerDay == 0)
+                    day = day.AddDays(1);
+                DateTimeOffset localDay = day;
+
+                // Add each dog with a run spacing of DOG_RUN_SEPARATION
+                for (int i = 0; i < element.Dogs.Count; i++)
+                {
+                    // If we are a multiple of the maximum dogs per day, move to the next day
+                    if (i != 0 && i % MAX_DOGS_PER_DAY == 0)
+                    {
+                        // Increment to next day
+                        int increment = maxRunsPerDay - localCount;
+                        localCount += increment;
+                        localDay = localDay.AddDays(1);
+
+                        // Find next available position
+                        while (!usedNumbers.Add(localCount))
+                            localCount++;
+                        usedNumbers.Remove(localCount); // Remove used number as it will be added later
+                    }
+
+                    // Add the entry
+                    draw[localCount] = new TrialistDrawEntry(element, element.Dogs[i], localCount + 1, localDay);
+                    usedNumbers.Add(localCount);
+                    localCount += DOG_RUN_SEPARATION;
+                }
+            }
+
+            int nullCount = 0;
+            foreach (TrialistDrawEntry element in draw)
+            {
+                if (element == null)
+                {
+                    nullCount++;
+                }
+                else
+                {
+                    element.RunNumber -= nullCount;
+                    yield return element;
+                }
             }
         }
     }
