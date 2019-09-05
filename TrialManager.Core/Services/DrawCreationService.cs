@@ -136,6 +136,7 @@ namespace TrialManager.Core.Services
             HashSet<int> usedNumbers = new HashSet<int>();
             int count = 0;
             DateTimeOffset day = startDay;
+            int oCount = 0;
 
             foreach (Trialist element in trialists)
             {
@@ -171,11 +172,19 @@ namespace TrialManager.Core.Services
                     }
 
                     // Add the entry
+                    if (draw[localCount] != null)
+                    {
+                        oCount++;
+                        Debug.WriteLine(localCount);
+                    }
+
                     draw[localCount] = new TrialistDrawEntry(element, element.Dogs[i], localCount + 1, localDay);
                     usedNumbers.Add(localCount);
                     localCount += DOG_RUN_SEPARATION;
                 }
             }
+
+            Debug.WriteLine(oCount);
 
             int nullCount = 0;
             foreach (TrialistDrawEntry element in draw)
