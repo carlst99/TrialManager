@@ -166,9 +166,7 @@ namespace TrialManager.Core.Services
                         localDay = localDay.AddDays(1);
 
                         // Find next available position
-                        while (!usedNumbers.Add(localCount))
-                            localCount++;
-                        usedNumbers.Remove(localCount); // Remove used number as it will be added later
+                        FindNextAvailable(usedNumbers, ref localCount);
                     }
 
                     // Add the entry
@@ -181,6 +179,7 @@ namespace TrialManager.Core.Services
                     draw[localCount] = new TrialistDrawEntry(element, element.Dogs[i], localCount + 1, localDay);
                     usedNumbers.Add(localCount);
                     localCount += DOG_RUN_SEPARATION;
+                    FindNextAvailable(usedNumbers, ref localCount);
                 }
             }
 
@@ -199,6 +198,13 @@ namespace TrialManager.Core.Services
                     yield return element;
                 }
             }
+        }
+
+        private void FindNextAvailable(HashSet<int> usedNumbers, ref int localCount)
+        {
+            while (!usedNumbers.Add(localCount))
+                localCount++;
+            usedNumbers.Remove(localCount);
         }
     }
 }
