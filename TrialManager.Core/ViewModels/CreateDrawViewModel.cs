@@ -121,7 +121,8 @@ namespace TrialManager.Core.ViewModels
         {
             if (_realm.All<Trialist>().Any())
             {
-                await GenerateDraw().ConfigureAwait(false);
+                //await GenerateDraw().ConfigureAwait(false);
+                GenerateDraw().Wait();
             }
             else
             {
