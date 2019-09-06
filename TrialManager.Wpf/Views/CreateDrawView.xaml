@@ -29,7 +29,7 @@
 
         <!-- Draw Setup -->
         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-            <TextBox Width="200"
+            <!--<TextBox Width="200"
                      Margin="8,0"
                      VerticalAlignment="Center"
                      md:HintAssist.Hint="{Binding [Hint_TrialName], Mode=OneTime}"
@@ -43,7 +43,7 @@
                      md:HintAssist.Hint="{Binding [Hint_TrialNotes], Mode=OneTime}"
                      md:HintAssist.IsFloating="True"
                      FontSize="14"
-                     Text="{Binding TrialNotes, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding TrialNotes, UpdateSourceTrigger=PropertyChanged}"/>-->
 
             <TextBox x:Name="TxtBxRunCount"
                      Width="75"
@@ -55,13 +55,21 @@
                      PreviewTextInput="TxtBxRunCount_PreviewTextInput"
                      Text="{Binding RunsPerDay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IntToStringConverter}}"/>
 
-            <md:TimePicker Width="100"
+            <!--<md:TimePicker Width="100"
                            Margin="8,0"
                            VerticalAlignment="Center"
                            md:HintAssist.Hint="{Binding [Hint_TrialStartTime], Mode=OneTime}"
                            FontSize="14"
                            SelectedTime="{Binding TrialStartDate}"
-                           Style="{StaticResource MaterialDesignFloatingHintTimePicker}"/>
+                           Style="{StaticResource MaterialDesignFloatingHintTimePicker}"/>-->
+
+            <DatePicker Width="100"
+                        Margin="8,0"
+                        VerticalAlignment="Center"
+                        md:HintAssist.Hint="{Binding [Hint_TrialStartDate], Mode=OneTime}"
+                        FontSize="14"
+                        SelectedDate="{Binding TrialStartDate}"
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
         </StackPanel>
 
         <!-- Draw Controls -->
@@ -140,10 +148,10 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <!-- Day -->
-                    <GridViewColumn Width="120" Header="Day">
+                    <GridViewColumn Width="120" Header="{Binding DataContext.[Header_RunDay], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Day}"/>
+                                <TextBlock Text="{Binding Day, StringFormat='dddd'}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

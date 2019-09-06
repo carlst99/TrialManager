@@ -135,23 +135,15 @@ namespace TrialManager.Core.Services
             TrialistDrawEntry[] draw = new TrialistDrawEntry[realm.All<Dog>().Count() * 2];
             HashSet<int> usedNumbers = new HashSet<int>();
             int count = 0;
-            DateTimeOffset day = startDay;
-            int oCount = 0;
 
             foreach (Trialist element in trialists)
             {
                 // Search for the next available number and update day if required
                 while (!usedNumbers.Add(count))
-                {
                     count++;
-                    if (count % maxRunsPerDay == 0)
-                        day = day.AddDays(1);
-                }
 
                 // Set the local count and day
                 int localCount = count++;
-                if (count % maxRunsPerDay == 0)
-                    day = day.AddDays(1);
                 int dayIncrements = 0;
 
                 // Add each dog with a run spacing of DOG_RUN_SEPARATION
@@ -170,14 +162,10 @@ namespace TrialManager.Core.Services
                     }
 
                     // Add the entry
-                    if (draw[localCount] != null)
-                    {
-                        oCount++;
-                        Debug.WriteLine(localCount);
-                    }
-
                     draw[localCount] = new TrialistDrawEntry(element, element.Dogs[i], localCount + 1, startDay);
                     usedNumbers.Add(localCount);
+
+                    // Increment day if necessary and find next local count
                     localCount += DOG_RUN_SEPARATION;
                     if (localCount != 0 && maxRunsPerDay / localCount < 1)
                         dayIncrements++;
@@ -185,13 +173,12 @@ namespace TrialManager.Core.Services
                 }
             }
 
-            Debug.WriteLine(oCount);
-
-            // TODO assign dates based on maxRunsPerDay
-
+            DateTimeOffset localDay = startDay;
             int nullCount = 0;
-            foreach (TrialistDrawEntry element in draw)
+            for (int i = 0; i < draw.Length; i++)
             {
+                TrialistDrawEntry element = draw[i];
+
                 if (element == null)
                 {
                     nullCount++;
@@ -199,11 +186,21 @@ namespace TrialManager.Core.Services
                 else
                 {
                     element.RunNumber -= nullCount;
+                    element.Day = localDay;
                     yield return element;
                 }
+
+                // Increment the day if required
+                if (i != 0 && i % maxRunsPerDay == 0)
+                    localDay = localDay.AddDays(1);
             }
         }
 
+        /// <summary>
+        /// Finds the next available draw position
+        /// </summary>
+        /// <param name="usedNumbers"></param>
+        /// <param name="localCount"></param>
         private void FindNextAvailable(HashSet<int> usedNumbers, ref int localCount)
         {
             while (!usedNumbers.Add(localCount))

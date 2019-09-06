@@ -151,6 +151,15 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Day.
+        /// </summary>
+        public static string Header_RunDay {
+            get {
+                return ResourceManager.GetString("Header_RunDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run Number.
         /// </summary>
         public static string Header_RunNumber {
@@ -201,6 +210,15 @@ namespace TrialManager.Core.Resources {
         public static string Hint_TrialNotes {
             get {
                 return ResourceManager.GetString("Hint_TrialNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting Date.
+        /// </summary>
+        public static string Hint_TrialStartDate {
+            get {
+                return ResourceManager.GetString("Hint_TrialStartDate", resourceCulture);
             }
         }
         

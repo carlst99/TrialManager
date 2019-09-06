@@ -157,6 +157,10 @@
     <value>Phone Number</value>
     <comment>This header appears above a list of phone numbers</comment>
   </data>
+  <data name="Header_RunDay" xml:space="preserve">
+    <value>Day</value>
+    <comment>This header appears above a list of days on which a trialist makes their run</comment>
+  </data>
   <data name="Header_RunNumber" xml:space="preserve">
     <value>Run Number</value>
     <comment>This header appears above a list indicating the run number of a draw entry</comment>
@@ -180,6 +184,10 @@
   <data name="Hint_TrialNotes" xml:space="preserve">
     <value>Trial Notes</value>
     <comment>This hint appears on a control allowing the user to add notes about the trial</comment>
+  </data>
+  <data name="Hint_TrialStartDate" xml:space="preserve">
+    <value>Starting Date</value>
+    <comment>This hint appears on a timepicker control allowing the trial start date to be chosen</comment>
   </data>
   <data name="Hint_TrialStartTime" xml:space="preserve">
     <value>Trial Start Time</value>
