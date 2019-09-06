@@ -152,18 +152,18 @@ namespace TrialManager.Core.Services
                 int localCount = count++;
                 if (count % maxRunsPerDay == 0)
                     day = day.AddDays(1);
-                DateTimeOffset localDay = day;
+                int dayIncrements = 0;
 
                 // Add each dog with a run spacing of DOG_RUN_SEPARATION
                 for (int i = 0; i < element.Dogs.Count; i++)
                 {
                     // If we are a multiple of the maximum dogs per day, move to the next day
-                    if (i != 0 && i % MAX_DOGS_PER_DAY == 0)
+                    if (i != 0 && i % MAX_DOGS_PER_DAY == 0 && i / MAX_DOGS_PER_DAY == dayIncrements)
                     {
                         // Increment to next day
                         int increment = maxRunsPerDay - localCount;
                         localCount += increment;
-                        localDay = localDay.AddDays(1);
+                        dayIncrements++;
 
                         // Find next available position
                         FindNextAvailable(usedNumbers, ref localCount);
@@ -176,14 +176,18 @@ namespace TrialManager.Core.Services
                         Debug.WriteLine(localCount);
                     }
 
-                    draw[localCount] = new TrialistDrawEntry(element, element.Dogs[i], localCount + 1, localDay);
+                    draw[localCount] = new TrialistDrawEntry(element, element.Dogs[i], localCount + 1, startDay);
                     usedNumbers.Add(localCount);
                     localCount += DOG_RUN_SEPARATION;
+                    if (localCount != 0 && maxRunsPerDay / localCount < 1)
+                        dayIncrements++;
                     FindNextAvailable(usedNumbers, ref localCount);
                 }
             }
 
             Debug.WriteLine(oCount);
+
+            // TODO assign dates based on maxRunsPerDay
 
             int nullCount = 0;
             foreach (TrialistDrawEntry element in draw)
