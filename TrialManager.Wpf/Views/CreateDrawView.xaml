@@ -74,6 +74,7 @@
 
         <!-- Draw Controls -->
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+            <!-- Refresh draw -->
             <Button VerticalAlignment="Center" Command="{Binding CreateDrawCommand}">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
@@ -85,7 +86,23 @@
                 </Button.Content>
             </Button>
 
+            <!-- Export draw -->
             <Button Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding ExportDrawCommand}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon VerticalAlignment="Center" Kind="Export"/>
+                        <TextBlock Margin="4,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding [Command_ExportDraw], Mode=OneTime}"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+
+
+            <!-- Print draw -->
+            <!--<Button Margin="8,0,0,0"
                     VerticalAlignment="Center"
                     Command="{Binding PrintDrawCommand}">
                 <Button.Content>
@@ -96,14 +113,15 @@
                                    Text="{Binding [Command_PrintDraw], Mode=OneTime}"/>
                     </StackPanel>
                 </Button.Content>
-            </Button>
+            </Button>-->
         </StackPanel>
 
         <!-- Address Bar -->
         <controls:Autocomplete x:Name="AddressAutocompleter"
                                Grid.Row="1"
                                Margin="0,4,0,0"
-                               SelectedItem="{Binding TrialAddress, Mode=TwoWay}">
+                               SelectedItem="{Binding TrialAddress, Mode=TwoWay}"
+                               SelectedItemChangedCommand="{Binding CreateDrawCommand}">
             <controls:Autocomplete.Hint>
                 <StackPanel HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"

@@ -79,6 +79,15 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string Command_ExportDraw {
+            get {
+                return ResourceManager.GetString("Command_ExportDraw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Print Draw.
         /// </summary>
         public static string Command_PrintDraw {

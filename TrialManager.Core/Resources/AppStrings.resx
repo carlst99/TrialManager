@@ -125,6 +125,10 @@
     <value>Refresh Draw</value>
     <comment>This label appears on a control which initiates the draw creation sequence</comment>
   </data>
+  <data name="Command_ExportDraw" xml:space="preserve">
+    <value>Export</value>
+    <comment>This label appears on a control which allows the user to export the draw</comment>
+  </data>
   <data name="Command_PrintDraw" xml:space="preserve">
     <value>Print Draw</value>
     <comment>This label appears on a control allowing the draw to be printed</comment>

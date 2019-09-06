@@ -1,9 +1,11 @@
-﻿using IntraMessaging;
+﻿using CsvHelper;
+using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using Realms;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TrialManager.Core.Model;
@@ -101,6 +103,8 @@ namespace TrialManager.Core.ViewModels
 
         public IMvxCommand PrintDrawCommand => new MvxCommand(OnPrintDraw);
 
+        public IMvxCommand ExportDrawCommand => new MvxCommand(OnExportDraw);
+
         #endregion
 
         public CreateDrawViewModel(IMvxNavigationService navigationService, IIntraMessenger messenger, IDrawCreationService drawCreationService)
@@ -121,8 +125,7 @@ namespace TrialManager.Core.ViewModels
         {
             if (_realm.All<Trialist>().Any())
             {
-                //await GenerateDraw().ConfigureAwait(false);
-                GenerateDraw().Wait();
+                await GenerateDraw().ConfigureAwait(false);
             }
             else
             {
@@ -160,15 +163,68 @@ namespace TrialManager.Core.ViewModels
             ShowProgress = true;
             RunsEntered.Clear();
 
-            foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
-                RunsEntered.Add(element);
+            //foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
+            //    RunsEntered.Add(element);
 
-            //await Task.Factory.StartNew(async () =>
-            //{
-            //    foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
-            //        await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(element)).ConfigureAwait(false);
-            //}).ConfigureAwait(false);
+            await Task.Factory.StartNew(async () =>
+            {
+                foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
+                    await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(element)).ConfigureAwait(false);
+            }).ConfigureAwait(false);
             ShowProgress = false;
+        }
+
+        private void OnExportDraw()
+        {
+            async void callback(FileDialogMessage.DialogResult result, string path)
+            {
+                if (result == FileDialogMessage.DialogResult.Failed)
+                    return;
+
+                if (!Directory.Exists(Path.GetDirectoryName(path)))
+                    return;
+
+                bool complete = await Task.Run(() =>
+                {
+                    try
+                    {
+                        using (StreamWriter sw = new StreamWriter(path))
+                        using (CsvWriter cw = new CsvWriter(sw))
+                            cw.WriteRecords(RunsEntered);
+                        return true;
+                    } catch (Exception ex)
+                    {
+                        App.LogError("Could not export draw", ex);
+                        return false;
+                    }
+                }).ConfigureAwait(false);
+
+                if (!complete)
+                {
+                    _messenger.Send(new DialogMessage
+                    {
+                        Title = "Export error",
+                        Content = "Sorry, we couldn't export the draw. Please try again!",
+                        Buttons = DialogMessage.DialogButton.Ok
+                    });
+                } else
+                {
+                    _messenger.Send(new DialogMessage
+                    {
+                        Title = "Export Complete",
+                        Content = "The draw was successfully exported",
+                        Buttons = DialogMessage.DialogButton.Ok
+                    });
+                }
+            }
+
+            FileDialogMessage fd = new FileDialogMessage
+            {
+                Title = "Export Location",
+                Type = FileDialogMessage.DialogType.FileSave,
+                Callback = callback
+            };
+            _messenger.Send(fd);
         }
 
         private void OnPrintDraw()
