@@ -41,6 +41,7 @@
     <md:DialogHost CloseOnClickAway="False"
                    Identifier="DlgHstDataDisplayView"
                    IsOpen="{Binding IsEditDialogOpen}">
+        <!-- Edit popup box -->
         <md:DialogHost.DialogContent>
             <Grid MinWidth="400">
                 <Grid.ColumnDefinitions>
@@ -74,7 +75,8 @@
                             Grid.Column="1"
                             Margin="0,16,16,16"
                             DataContext="{Binding SelectedTrialist}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_FullName], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding DataContext.[Header_FullName], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                     <TextBox Text="{Binding FullName}"/>
 
                     <TextBlock Margin="0,4,0,0"
@@ -93,7 +95,8 @@
                             Grid.Column="1"
                             Margin="{StaticResource EditDialogContentMargin}"
                             DataContext="{Binding SelectedTrialist}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_Address], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding DataContext.[Header_Address], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                     <controls:Autocomplete x:Name="AddressAutocompleter"
                                            Grid.Row="2"
                                            Grid.Column="1"
@@ -124,7 +127,8 @@
                             Grid.Column="1"
                             Margin="{StaticResource EditDialogContentMargin}"
                             DataContext="{Binding SelectedTrialist}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_PhoneNumber], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding DataContext.[Header_PhoneNumber], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                     <TextBox Text="{Binding PhoneNumber}"/>
                 </StackPanel>
 
@@ -136,7 +140,8 @@
                             Grid.Column="1"
                             Margin="{StaticResource EditDialogContentMargin}"
                             DataContext="{Binding SelectedTrialist}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_Email], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding DataContext.[Header_Email], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                     <TextBox Text="{Binding Email}"/>
                 </StackPanel>
 
@@ -148,7 +153,8 @@
                             Grid.Column="1"
                             Margin="{StaticResource EditDialogContentMargin}"
                             DataContext="{Binding SelectedTrialist}">
-                    <TextBlock Foreground="Gray" Text="{Binding DataContext.[Header_Dogs], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding DataContext.[Header_Dogs], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
                     <ItemsControl ItemsSource="{Binding Dogs}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type model:Dog}">
@@ -158,7 +164,8 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox VerticalAlignment="Bottom" Text="{Binding Name}"/>
+                                    <TextBox VerticalAlignment="Bottom"
+                                             Text="{Binding Name}"/>
                                     <ComboBox Grid.Column="1"
                                               Margin="16,0,0,0"
                                               Padding="0,6"
@@ -198,8 +205,11 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <Button Command="{Binding ImportDataCommand}" Content="{Binding [Label_ImportData], Mode=OneTime}"/>
+            <!-- Import button and edit hint -->
+            <StackPanel HorizontalAlignment="Left"
+                        Orientation="Horizontal">
+                <Button Command="{Binding ImportDataCommand}"
+                        Content="{Binding [Label_ImportData], Mode=OneTime}"/>
                 <TextBlock x:Name="TxtBxHint"
                            Margin="16,0,0,0"
                            VerticalAlignment="Center"
@@ -256,8 +266,7 @@
                          Value="0"/>
 
             <!-- Data list -->
-            <ListView x:Name="LstVwTrialists"
-                      Grid.Row="1"
+            <ListView Grid.Row="1"
                       Margin="0,8,0,0"
                       ItemsSource="{Binding Trialists}"
                       Opacity="{Binding ListOpacity, Mode=OneWay}"
@@ -272,7 +281,8 @@
                 <ListView.View>
                     <GridView>
                         <!-- Full name -->
-                        <GridViewColumn Width="100" Header="{Binding DataContext.[Header_FullName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                        <GridViewColumn Width="100"
+                                        Header="{Binding DataContext.[Header_FullName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type model:Trialist}">
                                     <StackPanel Orientation="Horizontal">
@@ -285,7 +295,8 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <!-- Status -->
-                        <GridViewColumn Width="80" Header="{Binding DataContext.[Header_Status], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                        <GridViewColumn Width="80"
+                                        Header="{Binding DataContext.[Header_Status], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type model:Trialist}">
                                     <TextBlock Text="{Binding Status}"/>
@@ -293,7 +304,8 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <!-- Phone Number -->
-                        <GridViewColumn Width="130" Header="{Binding DataContext.[Header_PhoneNumber], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                        <GridViewColumn Width="130"
+                                        Header="{Binding DataContext.[Header_PhoneNumber], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type model:Trialist}">
                                     <StackPanel Orientation="Horizontal">
@@ -306,7 +318,8 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <!-- Email -->
-                        <GridViewColumn Width="170" Header="{Binding DataContext.[Header_Email], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                        <GridViewColumn Width="170"
+                                        Header="{Binding DataContext.[Header_Email], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type model:Trialist}">
                                     <StackPanel Orientation="Horizontal">
@@ -319,7 +332,8 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <!-- Dogs -->
-                        <GridViewColumn Width="Auto" Header="{Binding DataContext.[Header_Dogs], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                        <GridViewColumn Width="Auto"
+                                        Header="{Binding DataContext.[Header_Dogs], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type model:Trialist}">
                                     <ItemsControl ItemsSource="{Binding Dogs}"
@@ -331,8 +345,10 @@
                                                     <md:PackIcon Margin="0,0,4,0"
                                                                  VerticalAlignment="Center"
                                                                  Kind="DogSide"/>
-                                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
-                                                    <TextBlock VerticalAlignment="Center" Text=" | "/>
+                                                    <TextBlock VerticalAlignment="Center"
+                                                               Text="{Binding Name}"/>
+                                                    <TextBlock VerticalAlignment="Center"
+                                                               Text=" | "/>
                                                     <TextBlock Margin="0,0,16,0"
                                                                VerticalAlignment="Center"
                                                                Text="{Binding Status}"/>
