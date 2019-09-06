@@ -6,9 +6,9 @@ namespace TrialManager.Core.Model
     public class TrialistDrawEntry
     {
         public string TrialistName { get; set; }
+
         public string CompetingDogName { get; set; }
         public int RunNumber { get; set; }
-
         public DateTimeOffset Day { get; set; }
 
         public TrialistDrawEntry(Trialist trialist, Dog dog, int runNumber, DateTimeOffset day)

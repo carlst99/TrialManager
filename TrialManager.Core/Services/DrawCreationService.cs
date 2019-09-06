@@ -1,7 +1,6 @@
 ﻿using Realms;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using TrialManager.Core.Model;
 using TrialManager.Core.Model.LocationDb;

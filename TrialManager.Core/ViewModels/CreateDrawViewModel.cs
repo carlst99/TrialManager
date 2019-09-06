@@ -5,10 +5,12 @@ using MvvmCross.Navigation;
 using Realms;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TrialManager.Core.Model;
+using TrialManager.Core.Model.Csv;
 using TrialManager.Core.Model.Messages;
 using TrialManager.Core.Model.TrialistDb;
 using TrialManager.Core.Services;
@@ -190,9 +192,14 @@ namespace TrialManager.Core.ViewModels
                     {
                         using (StreamWriter sw = new StreamWriter(path))
                         using (CsvWriter cw = new CsvWriter(sw))
+                        {
+                            cw.Configuration.RegisterClassMap<TrialistDrawEntryMapping>();
                             cw.WriteRecords(RunsEntered);
+                        }
+
                         return true;
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         App.LogError("Could not export draw", ex);
                         return false;
