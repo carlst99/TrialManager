@@ -3,6 +3,7 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:controls="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                   xmlns:local="clr-namespace:TrialManager.Wpf"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -53,7 +54,13 @@
                      md:HintAssist.IsFloating="True"
                      FontSize="14"
                      PreviewTextInput="TxtBxRunCount_PreviewTextInput"
-                     Text="{Binding RunsPerDay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IntToStringConverter}}"/>
+                     Text="{Binding RunsPerDay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IntToStringConverter}}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedDateChanged">
+                        <i:InvokeCommandAction Command="{Binding CreateDrawCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
 
             <!--<md:TimePicker Width="100"
                            Margin="8,0"
@@ -69,7 +76,13 @@
                         md:HintAssist.Hint="{Binding [Hint_TrialStartDate], Mode=OneTime}"
                         FontSize="14"
                         SelectedDate="{Binding TrialStartDate}"
-                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedDateChanged">
+                        <i:InvokeCommandAction Command="{Binding CreateDrawCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </DatePicker>
         </StackPanel>
 
         <!-- Draw Controls -->
