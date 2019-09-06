@@ -1,14 +1,13 @@
 ﻿using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using Realms;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using TrialManager.Core.Model;
 using TrialManager.Core.Model.Messages;
 using TrialManager.Core.Model.TrialistDb;
+using TrialManager.Core.Services;
 using TrialManager.Core.ViewModels.Base;
 
 namespace TrialManager.Core.ViewModels
@@ -18,111 +17,111 @@ namespace TrialManager.Core.ViewModels
     {
         #region Fields
 
-        private readonly TrialistContext _managerContext;
+        private readonly Realm _realm;
         private readonly IIntraMessenger _messagingService;
+        private readonly IDataImportService _importService;
 
-        private ObservableCollection<Trialist> _trialists;
-        private IList<Trialist> _selectedTrialists;
-        private Trialist _trialistToEdit;
+        private Trialist _selectedTrialist;
+        private Transaction _updateTransaction;
         private bool _isEditDialogOpen;
+        private bool _canUseEditControls = true;
+        private double _listOpacity = 1;
 
         #endregion
 
         #region Commands
 
-        public IMvxCommand ImportDataCommand => new MvxCommand(OnImportData);
-
-        /// <summary>
-        /// Updates the list of selected trialists
-        /// </summary>
-        public IMvxCommand TrialistSelectionChangedCommand => new MvxCommand<IList>((s) =>
-        {
-            _selectedTrialists = ConvertToList<Trialist>(s);
-            RaisePropertyChanged(nameof(CanEditDataEntry));
-            RaisePropertyChanged(nameof(CanDeleteDataEntries));
-        });
+        public IMvxCommand ImportDataCommand => new MvxCommand(OnImportDataRequested);
 
         /// <summary>
         /// Adds a trialist to the data source and saves the DB
         /// </summary>
-        public IMvxCommand AddTrialistCommand => new MvxCommand(async () =>
-        {
-            Trialist trialist = Trialist.Default;
-            _managerContext.Add(trialist);
-            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
-            Trialists.Add(trialist);
-        });
+        public IMvxCommand AddTrialistCommand => new MvxCommand(() => _realm.Write(() => _realm.Add(Trialist.Default)));
 
         /// <summary>
         /// Removes a trialist from the data source and saves the DB
         /// </summary>
-        public IMvxCommand DeleteTrialistCommand => new MvxCommand(async () =>
+        public IMvxCommand DeleteTrialistCommand => new MvxCommand(() =>
         {
-            _managerContext.RemoveRange(_selectedTrialists);
-            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
-            foreach (Trialist t in _selectedTrialists)
-                Trialists.Remove(t);
+            if (CanDeleteDataEntries)
+                _realm.Write(() => _realm.Remove(SelectedTrialist));
         });
 
         /// <summary>
         /// Invokes the data edit dialog and starts tracking the edited item
         /// </summary>
-        public IMvxCommand EditDataEntryCommand => new MvxCommand<Trialist>((t) =>
+        public IMvxCommand EditDataEntryCommand => new MvxCommand(() =>
         {
-            TrialistToEdit = t;
-            _managerContext.Update(t);
+            _updateTransaction = _realm.BeginWrite();
             IsEditDialogOpen = true;
         });
 
         /// <summary>
         /// Closes the data edit dialog and saves the DB
         /// </summary>
-        public IMvxCommand CloseEditDialogCommand => new MvxCommand(async () =>
+        public IMvxCommand CloseEditDialogCommand => new MvxCommand(() =>
         {
+            _updateTransaction.Commit();
+            _updateTransaction.Dispose();
             IsEditDialogOpen = false;
-            await _managerContext.SaveChangesAsync().ConfigureAwait(false);
         });
 
         /// <summary>
         /// Deletes a dog from the currently edited trialist
         /// </summary>
-        public IMvxCommand DeleteDogCommand => new MvxCommand<Dog>((d) => _trialistToEdit.SafeRemoveDog(d));
+        public IMvxCommand DeleteDogCommand => new MvxCommand<Dog>((d) => SelectedTrialist.SafeRemoveDog(d));
 
         /// <summary>
         /// Adds a dog to the currently edited trialist
         /// </summary>
-        public IMvxCommand AddDogCommand => new MvxCommand(() => _trialistToEdit.Dogs.Add(Dog.Default));
+        public IMvxCommand AddDogCommand => new MvxCommand(() => SelectedTrialist.Dogs.Add(Dog.Default));
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Gets or sets the list of trialists held in the database
+        /// Gets the local view of trialists
         /// </summary>
-        public ObservableCollection<Trialist> Trialists
-        {
-            get => _trialists;
-            set => SetProperty(ref _trialists, value);
-        }
+        public IQueryable<Trialist> Trialists { get; }
 
         /// <summary>
         /// Gets a value indicating whether or not a data entry selection can be edited
         /// </summary>
-        public bool CanEditDataEntry => _selectedTrialists?.Count == 1;
+        public bool CanEditDataEntry => _selectedTrialist != null;
 
         /// <summary>
         /// Gets a value indicating whether or not data entries can be deleted
         /// </summary>
-        public bool CanDeleteDataEntries => _selectedTrialists?.Count > 0;
+        public bool CanDeleteDataEntries => _selectedTrialist != null;
+
+        public Trialist SelectedTrialist
+        {
+            get => _selectedTrialist;
+            set
+            {
+                SetProperty(ref _selectedTrialist, value);
+                RaisePropertyChanged(nameof(CanEditDataEntry));
+                RaisePropertyChanged(nameof(CanDeleteDataEntries));
+            }
+        }
 
         /// <summary>
-        /// Gets or sets the <see cref="Trialist"/> object that should be loaded by the editor
+        /// Gets or sets a value indicating whether the user can use the data editing controls. Also controls the visibility of the import progress bar
         /// </summary>
-        public Trialist TrialistToEdit
+        public bool CanUseEditControls
         {
-            get => _trialistToEdit;
-            set => SetProperty(ref _trialistToEdit, value);
+            get => _canUseEditControls;
+            set => SetProperty(ref _canUseEditControls, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the opacity of the data list
+        /// </summary>
+        public double ListOpacity
+        {
+            get => _listOpacity;
+            set => SetProperty(ref _listOpacity, value);
         }
 
         /// <summary>
@@ -136,28 +135,30 @@ namespace TrialManager.Core.ViewModels
 
         #endregion
 
-        public DataDisplayViewModel(IMvxNavigationService navigationService, ITrialistContext managerContext, IIntraMessenger messagingService)
+        public DataDisplayViewModel(IMvxNavigationService navigationService,
+            IIntraMessenger messagingService,
+            IDataImportService importService)
             : base(navigationService)
         {
-            _managerContext = (TrialistContext)managerContext;
+            _realm = RealmHelpers.GetRealmInstance();
+            Trialists = _realm.All<Trialist>();
             _messagingService = messagingService;
-
-            if (_managerContext.Trialists.Any())
-                Trialists = new ObservableCollection<Trialist>(_managerContext.Trialists.ToList());
-            else
-                Trialists = new ObservableCollection<Trialist>();
+            _importService = importService;
         }
 
-        private async void OnImportData()
+        /// <summary>
+        /// If required, ask the user if they want to merge data before importing
+        /// </summary>
+        private void OnImportDataRequested()
         {
-            if (_trialists?.Count != 0)
+            if (Trialists.Any())
             {
-                async void ResultCallback(DialogMessage.DialogButton d)
+                void ResultCallback(DialogMessage.DialogButton d)
                 {
                     if ((d & DialogMessage.DialogButton.Yes) != 0)
-                        await ImportData(true).ConfigureAwait(false);
+                        ImportData(true);
                     else
-                        await ImportData(false).ConfigureAwait(false);
+                        ImportData(false);
                 }
 
                 DialogMessage dialogRequest = new DialogMessage
@@ -171,17 +172,18 @@ namespace TrialManager.Core.ViewModels
             }
             else
             {
-                await ImportData(false).ConfigureAwait(false);
+                ImportData(false);
             }
         }
 
-        private async Task ImportData(bool merge)
+        private void ImportData(bool merge)
         {
-            void callback(FileDialogMessage.DialogResult result, string path)
+            async void callback(FileDialogMessage.DialogResult result, string path)
             {
                 if (result == FileDialogMessage.DialogResult.Failed)
                     return;
 
+                // Tell the user if they've selected a file that does not exist
                 if (!File.Exists(path))
                 {
                     _messagingService.Send(new DialogMessage
@@ -193,10 +195,24 @@ namespace TrialManager.Core.ViewModels
                     return;
                 }
 
-                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                // Prevent the user from editing/adding data while an import is in progress, and dim list
+                CanUseEditControls = false;
+                ListOpacity = 0.5;
+
+                if (!await _importService.ImportFromCsv(path, merge).ConfigureAwait(false))
                 {
-                    // TODO act on file
+                    _messagingService.Send(new DialogMessage
+                    {
+                        Title = "Error",
+                        Content = "There was a problem opening the file. Please make sure that no other programs are using the file, then try again",
+                        Buttons = DialogMessage.DialogButton.Ok
+                    });
                 }
+
+                CanUseEditControls = true;
+                ListOpacity = 1;
+
+                //await NavigationService.Navigate<DataImportViewModel, Tuple<string, bool>>(new Tuple<string, bool>(path, merge)).ConfigureAwait(false);
             }
 
             _messagingService.Send(new FileDialogMessage
@@ -204,18 +220,6 @@ namespace TrialManager.Core.ViewModels
                 Title = "Import data file",
                 Callback = callback
             });
-        }
-
-        private IList<T> ConvertToList<T>(IList list)
-        {
-            List<T> converted = new List<T>();
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                converted.Add((T)list[i]);
-            }
-
-            return converted;
         }
     }
 }

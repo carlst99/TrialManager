@@ -7,8 +7,6 @@
     {
         Maiden = 1,
         Intermediate = 2,
-        OpenRed = 3,
-        OpenBlue = 4,
-        OpenBlack = 5
+        Open = 3
     }
 }

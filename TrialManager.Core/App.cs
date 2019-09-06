@@ -1,15 +1,15 @@
 ﻿using MvvmCross;
 using MvvmCross.IoC;
 using MvvmCross.ViewModels;
-using TrialManager.Core.ViewModels;
 using Plugin.DeviceInfo;
 using Plugin.DeviceInfo.Abstractions;
+using Realms;
 using Serilog;
 using Serilog.Events;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
+using TrialManager.Core.ViewModels;
 
 [assembly: InternalsVisibleTo("MvvmCrossCoreTestProject")]
 
@@ -19,7 +19,7 @@ namespace TrialManager.Core
     {
         public const string LOG_FILE_NAME = "log.log";
 
-        public async override void Initialize()
+        public override void Initialize()
         {
             CreatableTypes()
                 .EndingWith("Service")
@@ -30,11 +30,6 @@ namespace TrialManager.Core
 
             Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
             Mvx.IoCProvider.RegisterSingleton<IntraMessaging.IIntraMessenger>(IntraMessaging.IntraMessenger.Instance);
-
-            var context = new Model.TrialistDb.TrialistContext();
-            await context.Database.MigrateAsync().ConfigureAwait(false);
-            Mvx.IoCProvider.RegisterSingleton<Model.TrialistDb.ITrialistContext>(context);
-            Mvx.IoCProvider.RegisterSingleton<Model.LocationDb.ILocationContext>(new Model.LocationDb.LocationContext());
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
@@ -103,15 +98,21 @@ namespace TrialManager.Core
         /// </returns>
         public static string GetPlatformAppdataPath()
         {
+            string path;
             switch (Mvx.IoCProvider.GetSingleton<IDeviceInfo>().Platform)
             {
                 case Platform.Android:
-                    return Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                    break;
                 case Platform.iOS:
-                    return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    break;
                 default:
-                    return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    break;
             }
+
+			return Path.Combine(path, "TrialManager");
         }
 
         /// <summary>

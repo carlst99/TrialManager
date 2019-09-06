@@ -75,11 +75,32 @@ namespace TrialManager.Wpf
                         EnsurePathExists = true,
                         Multiselect = false
                     };
-                    cofd.Filters.Add(new CommonFileDialogFilter("CSV Files", ".csv"));
+                    cofd.Filters.Add(new CommonFileDialogFilter("CSV Files", "*.csv"));
+                    cofd.Filters.Add(new CommonFileDialogFilter("All Files", "*.*"));
 
                     CommonFileDialogResult result = cofd.ShowDialog();
+                    cofd.Dispose();
                     if (result == CommonFileDialogResult.Ok)
                         fMessage.Callback?.Invoke(FileDialogMessage.DialogResult.Succeeded, cofd.FileName);
+                    else
+                        fMessage.Callback?.Invoke(FileDialogMessage.DialogResult.Failed, null);
+                }
+                else if (fMessage.Type == FileDialogMessage.DialogType.FileSave)
+                {
+                    CommonSaveFileDialog cosd = new CommonSaveFileDialog
+                    {
+                        Title = fMessage.Title,
+                        EnsurePathExists = true,
+                        DefaultExtension = ".csv",
+                        DefaultFileName = "Draw"
+                    };
+                    cosd.Filters.Add(new CommonFileDialogFilter("CSV Files", "*.csv"));
+                    cosd.Filters.Add(new CommonFileDialogFilter("All Files", "*.*"));
+
+                    CommonFileDialogResult result = cosd.ShowDialog();
+                    cosd.Dispose();
+                    if (result == CommonFileDialogResult.Ok)
+                        fMessage.Callback?.Invoke(FileDialogMessage.DialogResult.Succeeded, cosd.FileName);
                     else
                         fMessage.Callback?.Invoke(FileDialogMessage.DialogResult.Failed, null);
                 }

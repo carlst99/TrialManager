@@ -79,6 +79,15 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string Command_ExportDraw {
+            get {
+                return ResourceManager.GetString("Command_ExportDraw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Print Draw.
         /// </summary>
         public static string Command_PrintDraw {
@@ -133,15 +142,6 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to First Name.
-        /// </summary>
-        public static string Header_FirstName {
-            get {
-                return ResourceManager.GetString("Header_FirstName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Competitor.
         /// </summary>
         public static string Header_FullName {
@@ -160,6 +160,15 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Day.
+        /// </summary>
+        public static string Header_RunDay {
+            get {
+                return ResourceManager.GetString("Header_RunDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run Number.
         /// </summary>
         public static string Header_RunNumber {
@@ -174,15 +183,6 @@ namespace TrialManager.Core.Resources {
         public static string Header_Status {
             get {
                 return ResourceManager.GetString("Header_Status", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Surname.
-        /// </summary>
-        public static string Header_Surname {
-            get {
-                return ResourceManager.GetString("Header_Surname", resourceCulture);
             }
         }
         
@@ -219,6 +219,15 @@ namespace TrialManager.Core.Resources {
         public static string Hint_TrialNotes {
             get {
                 return ResourceManager.GetString("Hint_TrialNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting Date.
+        /// </summary>
+        public static string Hint_TrialStartDate {
+            get {
+                return ResourceManager.GetString("Hint_TrialStartDate", resourceCulture);
             }
         }
         

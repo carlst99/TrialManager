@@ -1,42 +1,31 @@
 ﻿using MessagePack;
+using Realms;
 
 namespace TrialManager.Core.Model.TrialistDb
 {
     [MessagePackObject]
-    public class Dog : ContextItem
+    public class Dog : RealmObject, IContextItem
     {
         public static Dog Default => new Dog
         {
+            Id = RealmHelpers.GetNextId<Dog>(),
             Name = "Dog",
             Status = EntityStatus.Maiden
         };
 
-        #region Fields
-
-        private int _dogId;
-        private string _name;
-        private EntityStatus _status;
-
-        #endregion Fields
+        private int StatusRaw { get; set; }
 
         #region Properties
 
-        [Key(0)]
-        public int DogId
-        {
-            get => _dogId;
-            set => SetProperty(ref _dogId, value, nameof(DogId));
-        }
+        [PrimaryKey]
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the dog
         /// </summary>
         [Key(1)]
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value, nameof(Name));
-        }
+        [Required]
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the status of the dog
@@ -44,8 +33,21 @@ namespace TrialManager.Core.Model.TrialistDb
         [Key(2)]
         public EntityStatus Status
         {
-            get => _status;
-            set => SetProperty(ref _status, value, nameof(Status));
+            get => (EntityStatus)StatusRaw;
+            set => StatusRaw = (int)value;
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public Dog() { }
+
+        public Dog(string name, EntityStatus status)
+        {
+            Name = name;
+            Status = status;
+            Id = RealmHelpers.GetNextId<Dog>();
         }
 
         #endregion
@@ -66,8 +68,12 @@ namespace TrialManager.Core.Model.TrialistDb
 
         public override int GetHashCode()
         {
-            const int hash = 13;
-            return (hash * 7) + DogId;
+            unchecked
+            {
+                int hash = 13;
+                hash = (hash * 7) + Status.GetHashCode();
+                return (hash * 7) + Name.GetHashCode();
+            }
         }
 
         public static bool operator ==(Dog one, Dog two)

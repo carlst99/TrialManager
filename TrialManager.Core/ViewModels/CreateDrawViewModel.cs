@@ -1,14 +1,19 @@
-﻿using IntraMessaging;
+﻿using CsvHelper;
+using IntraMessaging;
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
-using MvvmCross.UI;
+using Realms;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TrialManager.Core.Model;
+using TrialManager.Core.Model.Csv;
 using TrialManager.Core.Model.Messages;
 using TrialManager.Core.Model.TrialistDb;
+using TrialManager.Core.Services;
 using TrialManager.Core.ViewModels.Base;
 
 namespace TrialManager.Core.ViewModels
@@ -18,10 +23,10 @@ namespace TrialManager.Core.ViewModels
     {
         #region Fields
 
-        private readonly TrialistContext _managerContext;
+        private readonly Realm _realm;
         private readonly IIntraMessenger _messenger;
+        private readonly IDrawCreationService _drawCreationService;
 
-        private ObservableCollection<TrialistDrawEntry> _trialists;
         private bool _showProgress;
         private DateTime _trialStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0);
         private string _trialName;
@@ -36,11 +41,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Gets the list of trialists to use in the draw
         /// </summary>
-        public ObservableCollection<TrialistDrawEntry> Trialists
-        {
-            get => _trialists;
-            private set => SetProperty(ref _trialists, value);
-        }
+        public ObservableCollection<TrialistDrawEntry> RunsEntered { get; } = new ObservableCollection<TrialistDrawEntry>();
 
         /// <summary>
         /// Gets or sets a value indicating whether the loading indicator should be shown
@@ -104,13 +105,16 @@ namespace TrialManager.Core.ViewModels
 
         public IMvxCommand PrintDrawCommand => new MvxCommand(OnPrintDraw);
 
+        public IMvxCommand ExportDrawCommand => new MvxCommand(OnExportDraw);
+
         #endregion
 
-        public CreateDrawViewModel(IMvxNavigationService navigationService, ITrialistContext managerContext, IIntraMessenger messenger)
+        public CreateDrawViewModel(IMvxNavigationService navigationService, IIntraMessenger messenger, IDrawCreationService drawCreationService)
             : base (navigationService)
         {
-            _managerContext = (TrialistContext)managerContext;
+            _realm = RealmHelpers.GetRealmInstance();
             _messenger = messenger;
+            _drawCreationService = drawCreationService;
         }
 
         public override void ViewAppearing()
@@ -121,7 +125,7 @@ namespace TrialManager.Core.ViewModels
 
         private async void OnCreateDraw()
         {
-            if (_managerContext.Trialists.Any())
+            if (_realm.All<Trialist>().Any())
             {
                 await GenerateDraw().ConfigureAwait(false);
             }
@@ -159,24 +163,75 @@ namespace TrialManager.Core.ViewModels
         private async Task GenerateDraw()
         {
             ShowProgress = true;
-            Trialists = new ObservableCollection<TrialistDrawEntry>();
+            RunsEntered.Clear();
+
+            //foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
+            //    RunsEntered.Add(element);
 
             await Task.Factory.StartNew(async () =>
             {
-                int count = 1;
-
-                foreach (Trialist element in _managerContext.Trialists.ToList())
-                {
-                    foreach (Dog dog in element.Dogs)
-                    {
-                        TrialistDrawEntry entry = new TrialistDrawEntry(element, dog, count);
-                        count++;
-                        await AsyncDispatcher.ExecuteOnMainThreadAsync(() => Trialists.Add(entry)).ConfigureAwait(false);
-                    }
-                }
+                foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
+                    await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(element)).ConfigureAwait(false);
             }).ConfigureAwait(false);
-
             ShowProgress = false;
+        }
+
+        private void OnExportDraw()
+        {
+            async void callback(FileDialogMessage.DialogResult result, string path)
+            {
+                if (result == FileDialogMessage.DialogResult.Failed)
+                    return;
+
+                if (!Directory.Exists(Path.GetDirectoryName(path)))
+                    return;
+
+                bool complete = await Task.Run(() =>
+                {
+                    try
+                    {
+                        using (StreamWriter sw = new StreamWriter(path))
+                        using (CsvWriter cw = new CsvWriter(sw))
+                        {
+                            cw.Configuration.RegisterClassMap<TrialistDrawEntryMapping>();
+                            cw.WriteRecords(RunsEntered);
+                        }
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.LogError("Could not export draw", ex);
+                        return false;
+                    }
+                }).ConfigureAwait(false);
+
+                if (!complete)
+                {
+                    _messenger.Send(new DialogMessage
+                    {
+                        Title = "Export error",
+                        Content = "Sorry, we couldn't export the draw. Please try again!",
+                        Buttons = DialogMessage.DialogButton.Ok
+                    });
+                } else
+                {
+                    _messenger.Send(new DialogMessage
+                    {
+                        Title = "Export Complete",
+                        Content = "The draw was successfully exported",
+                        Buttons = DialogMessage.DialogButton.Ok
+                    });
+                }
+            }
+
+            FileDialogMessage fd = new FileDialogMessage
+            {
+                Title = "Export Location",
+                Type = FileDialogMessage.DialogType.FileSave,
+                Callback = callback
+            };
+            _messenger.Send(fd);
         }
 
         private void OnPrintDraw()

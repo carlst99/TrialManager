@@ -7,7 +7,7 @@ namespace TrialManager.Core.Model.Messages
     {
         public enum DialogType
         {
-            File, Folder
+            File, Folder, FileSave
         }
 
         public enum DialogResult

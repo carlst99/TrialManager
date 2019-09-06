@@ -3,6 +3,8 @@ using CsvHelper;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Realms;
+using System.Reflection;
 
 namespace LINZCsvConverter
 {
@@ -13,14 +15,22 @@ namespace LINZCsvConverter
 
         public static void Main()
 		{
-            LocationContext locations = new LocationContext();
+            Realm realm = null;
+            string assemPath = Assembly.GetEntryAssembly().Location;
+            assemPath = Path.GetDirectoryName(assemPath);
+            string realmPath = Path.Combine(assemPath, "Resources", "locations.realm");
+
             // Delete previous database
             Console.WriteLine("Deleting previous database...");
-            locations.Database.EnsureDeleted();
+            if (File.Exists(realmPath))
+                File.Delete(realmPath);
 
             // Create new database
             Console.WriteLine("Creating new database...");
-            locations.Database.EnsureCreated();
+            realm = Realm.GetInstance(new RealmConfiguration(realmPath));
+
+            int sLocCounter = 0;
+            int tLocCounter = 0;
 
             // Get all of the suburb/localities
             Console.WriteLine("Reading all suburbs/localities...");
@@ -35,9 +45,14 @@ namespace LINZCsvConverter
                 {
                     // Merge if already present in dictionary
                     if (suburbLocalities.ContainsKey(sLoc.Name))
+                    {
                         suburbLocalities[sLoc.Name].Merge(sLoc);
+                    }
                     else
+                    {
+                        sLoc.Id = sLocCounter++;
                         suburbLocalities.Add(sLoc.Name, sLoc);
+                    }
                 }
             }
 
@@ -45,40 +60,40 @@ namespace LINZCsvConverter
             // Also now generate a list of towns/cities
             Console.WriteLine("Preparing suburbs/localities and creating list of towns/cities...");
             Dictionary<string, TownCityLocation> townsCities = new Dictionary<string, TownCityLocation>();
-            foreach (SuburbLocalityLocation sLoc in suburbLocalities.Values)
+            realm.Write(() =>
             {
-                sLoc.Prepare();
-                locations.SuburbsLocalities.Add(sLoc);
+                foreach (SuburbLocalityLocation sLoc in suburbLocalities.Values)
+                {
+                    sLoc.Prepare();
+                    realm.Add(sLoc);
 
-                if (townsCities.ContainsKey(sLoc.TownCityName))
-                {
-                    townsCities[sLoc.TownCityName].Suburbs.Add(sLoc);
-                }
-                else if (!string.IsNullOrEmpty(sLoc.TownCityName))
-                {
-                    TownCityLocation tLoc = new TownCityLocation
+                    if (townsCities.ContainsKey(sLoc.TownCityName))
                     {
-                        Name = sLoc.TownCityName
-                    };
-                    tLoc.Suburbs.Add(sLoc);
-                    townsCities.Add(tLoc.Name, tLoc);
+                        townsCities[sLoc.TownCityName].Suburbs.Add(sLoc);
+                    }
+                    else if (!string.IsNullOrEmpty(sLoc.TownCityName))
+                    {
+                        TownCityLocation tLoc = new TownCityLocation
+                        {
+                            Name = sLoc.TownCityName,
+                            Id = tLocCounter++
+                        };
+                        tLoc.Suburbs.Add(sLoc);
+                        townsCities.Add(tLoc.Name, tLoc);
+                    }
                 }
-            }
 
-            // Prepare each town/city
-            Console.WriteLine("Preparing towns/cities...");
-            foreach (TownCityLocation tLoc in townsCities.Values)
-            {
-                tLoc.Prepare();
-                locations.TownsCities.Add(tLoc);
-            }
+                // Prepare each town/city
+                Console.WriteLine("Preparing towns/cities...");
+                foreach (TownCityLocation tLoc in townsCities.Values)
+                {
+                    tLoc.Prepare();
+                    realm.Add(tLoc);
+                }
+            });
 
-            Console.WriteLine("Saving DB. This may take a while...");
-            locations.SaveChanges();
             Console.WriteLine("DB saved. Press any key to exit");
             Console.ReadLine();
-
-            locations.Dispose();
 		}
     }
 }

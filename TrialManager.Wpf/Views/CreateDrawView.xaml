@@ -1,21 +1,23 @@
 ﻿<views:MvxWpfView x:Class="TrialManager.Wpf.Views.CreateDrawView"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                  xmlns:controls="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
                   xmlns:local="clr-namespace:TrialManager.Wpf"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                   xmlns:model="clr-namespace:TrialManager.Core.Model;assembly=TrialManager.Core"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
-                  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                  xmlns:controls="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
-                  mc:Ignorable="d" FontSize="13"
-                  d:DesignHeight="450" d:DesignWidth="800"
-                  Loaded="MvxWpfView_Loaded">
+                  d:DesignHeight="450"
+                  d:DesignWidth="800"
+                  FontSize="13"
+                  Loaded="MvxWpfView_Loaded"
+                  mc:Ignorable="d">
 
     <views:MvxWpfView.Resources>
         <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter"/>
         <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter"/>
-        <local:NativeMvxColorConverter x:Key="ColorConverter"/>
         <local:NativeIntToStringConverter x:Key="IntToStringConverter"/>
     </views:MvxWpfView.Resources>
 
@@ -26,130 +28,187 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <TextBox md:HintAssist.Hint="{Binding [Hint_TrialName], Mode=OneTime}"
-                     Width="200" VerticalAlignment="Center" Margin="8,0" FontSize="14"
-                     Text="{Binding TrialName, UpdateSourceTrigger=PropertyChanged}"
-                     md:HintAssist.IsFloating="True"/>
-            
-            <TextBox md:HintAssist.Hint="{Binding [Hint_TrialNotes], Mode=OneTime}"
-                     Width="200" VerticalAlignment="Center" Margin="8,0" FontSize="14"
-                     Text="{Binding TrialNotes, UpdateSourceTrigger=PropertyChanged}"
-                     md:HintAssist.IsFloating="True"/>
+        <!-- Draw Setup -->
+        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+            <!--<TextBox Width="200"
+                     Margin="8,0"
+                     VerticalAlignment="Center"
+                     md:HintAssist.Hint="{Binding [Hint_TrialName], Mode=OneTime}"
+                     md:HintAssist.IsFloating="True"
+                     FontSize="14"
+                     Text="{Binding TrialName, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <TextBox x:Name="TxtBxRunCount" FontSize="14"
-                     PreviewTextInput="TxtBxRunCount_PreviewTextInput"
-                     Text="{Binding RunsPerDay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IntToStringConverter}}"
+            <TextBox Width="200"
+                     Margin="8,0"
+                     VerticalAlignment="Center"
+                     md:HintAssist.Hint="{Binding [Hint_TrialNotes], Mode=OneTime}"
+                     md:HintAssist.IsFloating="True"
+                     FontSize="14"
+                     Text="{Binding TrialNotes, UpdateSourceTrigger=PropertyChanged}"/>-->
+
+            <TextBox x:Name="TxtBxRunCount"
+                     Width="75"
+                     Margin="8,0"
+                     VerticalAlignment="Center"
                      md:HintAssist.Hint="{Binding [Hint_RunsPerDay], Mode=OneTime}"
                      md:HintAssist.IsFloating="True"
-                     Width="75" VerticalAlignment="Center" Margin="8,0"/>
+                     FontSize="14"
+                     PreviewTextInput="TxtBxRunCount_PreviewTextInput"
+                     Text="{Binding RunsPerDay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IntToStringConverter}}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedDateChanged">
+                        <i:InvokeCommandAction Command="{Binding CreateDrawCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
 
-            <md:TimePicker Width="100" FontSize="14"
+            <!--<md:TimePicker Width="100"
+                           Margin="8,0"
+                           VerticalAlignment="Center"
                            md:HintAssist.Hint="{Binding [Hint_TrialStartTime], Mode=OneTime}"
+                           FontSize="14"
                            SelectedTime="{Binding TrialStartDate}"
-                           Style="{StaticResource MaterialDesignFloatingHintTimePicker}"
-                           VerticalAlignment="Center" Margin="8,0"/>
+                           Style="{StaticResource MaterialDesignFloatingHintTimePicker}"/>-->
+
+            <DatePicker Width="100"
+                        Margin="8,0"
+                        VerticalAlignment="Center"
+                        md:HintAssist.Hint="{Binding [Hint_TrialStartDate], Mode=OneTime}"
+                        FontSize="14"
+                        SelectedDate="{Binding TrialStartDate}"
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedDateChanged">
+                        <i:InvokeCommandAction Command="{Binding CreateDrawCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </DatePicker>
         </StackPanel>
 
+        <!-- Draw Controls -->
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Command="{Binding CreateDrawCommand}"
-                    VerticalAlignment="Center">
+            <!-- Refresh draw -->
+            <Button VerticalAlignment="Center" Command="{Binding CreateDrawCommand}">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
-                        <md:PackIcon Kind="Refresh" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding [Command_CreateDraw], Mode=OneTime}"
-                                   VerticalAlignment="Center" Margin="4,0,0,0"/>
+                        <md:PackIcon VerticalAlignment="Center" Kind="Refresh"/>
+                        <TextBlock Margin="4,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding [Command_CreateDraw], Mode=OneTime}"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
 
-            <Button Command="{Binding PrintDrawCommand}"
+            <!-- Export draw -->
+            <Button Margin="8,0,0,0"
                     VerticalAlignment="Center"
-                    Margin="8,0,0,0">
+                    Command="{Binding ExportDrawCommand}">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
-                        <md:PackIcon Kind="Printer" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding [Command_PrintDraw], Mode=OneTime}"
-                                   VerticalAlignment="Center" Margin="4,0,0,0"/>
+                        <md:PackIcon VerticalAlignment="Center" Kind="Export"/>
+                        <TextBlock Margin="4,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding [Command_ExportDraw], Mode=OneTime}"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
+
+
+            <!-- Print draw -->
+            <!--<Button Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding PrintDrawCommand}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon VerticalAlignment="Center" Kind="Printer"/>
+                        <TextBlock Margin="4,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding [Command_PrintDraw], Mode=OneTime}"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>-->
         </StackPanel>
 
+        <!-- Address Bar -->
         <controls:Autocomplete x:Name="AddressAutocompleter"
+                               Grid.Row="1"
+                               Margin="0,4,0,0"
                                SelectedItem="{Binding TrialAddress, Mode=TwoWay}"
-                               Grid.Row="1" Margin="0,4,0,0">
+                               SelectedItemChangedCommand="{Binding CreateDrawCommand}">
             <controls:Autocomplete.Hint>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                    <md:PackIcon Kind="AddressMarker" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding [Hint_TrialLocation], Mode=OneTime}"
-                                FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
-                                Margin="16,0,0,0" VerticalAlignment="Center"/>
+                <StackPanel HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <md:PackIcon VerticalAlignment="Center" Kind="AddressMarker"/>
+                    <TextBlock Margin="16,0,0,0"
+                               VerticalAlignment="Center"
+                               FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
+                               Text="{Binding [Hint_TrialLocation], Mode=OneTime}"/>
                 </StackPanel>
             </controls:Autocomplete.Hint>
         </controls:Autocomplete>
 
-            <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+        <!--<Border x:Name="BdrBlur" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
             <Border.Effect>
                 <BlurEffect Radius="5" KernelType="Gaussian"/>
             </Border.Effect>
         </Border>-->
 
-        <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}"
-                     Value="0" IsIndeterminate="True"
-                     Height="100" Width="100"
-                     HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2"
-                     Visibility="{Binding ShowProgress, Converter={StaticResource VisibilityConverter}}"/>
+        <ProgressBar Grid.Row="2"
+                     Width="100"
+                     Height="100"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     IsIndeterminate="True"
+                     Style="{DynamicResource MaterialDesignCircularProgressBar}"
+                     Visibility="{Binding ShowProgress, Converter={StaticResource VisibilityConverter}}"
+                     Value="0"/>
 
         <ListView Grid.Row="2"
-                  Visibility="{Binding ShowProgress, Converter={StaticResource InvertedVisibilityConverter}}"
-                  ItemsSource="{Binding Trialists}"
-                  AllowDrop="True">
+                  AllowDrop="True"
+                  ItemsSource="{Binding RunsEntered}"
+                  Visibility="{Binding ShowProgress, Converter={StaticResource InvertedVisibilityConverter}}">
             <ListView.View>
                 <GridView>
                     <!-- Run Number -->
-                    <GridViewColumn Header="{Binding DataContext.[Header_RunNumber], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="120">
+                    <GridViewColumn Width="120" Header="{Binding DataContext.[Header_RunNumber], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:TrialistDrawEntry}">
                                 <TextBlock Text="{Binding RunNumber}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <!-- Day -->
+                    <GridViewColumn Width="120" Header="{Binding DataContext.[Header_RunDay], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Day, StringFormat='dddd'}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <!-- Full name -->
-                    <GridViewColumn Header="{Binding DataContext.[Header_FullName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="200">
+                    <GridViewColumn Width="200" Header="{Binding DataContext.[Header_FullName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:TrialistDrawEntry}">
                                 <StackPanel Orientation="Horizontal">
-                                    <md:PackIcon Kind="Person"
+                                    <md:PackIcon Margin="0,0,4,0"
                                                  VerticalAlignment="Center"
-                                                 Margin="0,0,4,0"/>
-                                    <TextBlock Text="{Binding Trialist.FullName}"/>
+                                                 Kind="Person"/>
+                                    <TextBlock Text="{Binding TrialistName}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <!-- Dog Name -->
-                    <GridViewColumn Header="{Binding DataContext.[Header_Dog], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="150">
+                    <GridViewColumn Width="150" Header="{Binding DataContext.[Header_Dog], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type model:TrialistDrawEntry}">
                                 <StackPanel Orientation="Horizontal">
-                                    <md:PackIcon Kind="DogSide"
+                                    <md:PackIcon Margin="0,0,4,0"
                                                  VerticalAlignment="Center"
-                                                 Margin="0,0,4,0"/>
-                                    <TextBlock Text="{Binding CompetingDog}"/>
+                                                 Kind="DogSide"/>
+                                    <TextBlock Text="{Binding CompetingDogName}"/>
                                 </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <!-- Dog Status -->
-                    <GridViewColumn Header="{Binding DataContext.[Header_Status], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}"
-                                    Width="150">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type model:TrialistDrawEntry}">
-                                <TextBlock Text="{Binding CompetingDog.Status}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
