@@ -46,7 +46,13 @@ namespace TrialManager.Core.Model.Csv
             };
 
             // Parse preferred day
-            DateTimeOffset.TryParse(PreferredDay, out DateTimeOffset preferredDay);
+            DateTimeOffset preferredDay;
+            if (PreferredDay == "Friday 27th September")
+                preferredDay = new DateTimeOffset(2019, 9, 27, 7, 0, 0, TimeSpan.Zero);
+            else if (PreferredDay == "Saturday 28th September")
+                preferredDay = new DateTimeOffset(2019, 9, 28, 7, 0, 0, TimeSpan.Zero);
+            else
+                preferredDay = DateTimeOffset.MinValue;
             trialist.PreferredDay = preferredDay;
 
             // Add dogs
