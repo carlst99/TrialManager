@@ -1,6 +1,7 @@
 ﻿using Realms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using TrialManager.Core.Model;
 using TrialManager.Core.Model.LocationDb;
@@ -39,10 +40,33 @@ namespace TrialManager.Core.Services
 
             IEnumerable<Trialist> trialists = realm.All<Trialist>();
             trialists = trialists.ToList().OrderByDescending(t => t.Dogs.Count);
-            if (location != null)
-                trialists = SortByDistance(trialists, location.Location);
 
-            foreach (TrialistDrawEntry value in SortGeneric(trialists, realm, maxRunsPerDay, startDay))
+            DateTimeOffset fridayDate = new DateTimeOffset(2019, 9, 27, 7, 0, 0, TimeSpan.Zero);
+            DateTimeOffset saturdayDate = new DateTimeOffset(2019, 9, 28, 7, 0, 0, TimeSpan.Zero);
+            var noPref = trialists.Where(t => t.PreferredDay == DateTimeOffset.MinValue);
+            var friday = trialists.Where(t => t.PreferredDay == fridayDate);
+            var saturday = trialists.Where(t => t.PreferredDay == saturdayDate);
+
+            if (location != null)
+            {
+                trialists = SortByDistance(trialists, location.Location);
+                noPref = SortByDistance(noPref, location.Location);
+                friday = SortByDistance(friday, location.Location);
+                saturday = SortByDistance(saturday, location.Location);
+            }
+
+            //foreach (TrialistDrawEntry value in SortGeneric(trialists, realm, maxRunsPerDay, startDay))
+            //    yield return value;
+            foreach (TrialistDrawEntry value in SortGeneric(noPref, realm, maxRunsPerDay, DateTimeOffset.MinValue, 0))
+                yield return value;
+            int dogCount = 0;
+            foreach (var element in noPref)
+                dogCount += element.Dogs.Count;
+            foreach (TrialistDrawEntry value in SortGeneric(friday, realm, maxRunsPerDay, fridayDate, dogCount))
+                yield return value;
+            foreach (var element in friday)
+                dogCount += element.Dogs.Count;
+            foreach (TrialistDrawEntry value in SortGeneric(saturday, realm, maxRunsPerDay, saturdayDate, dogCount))
                 yield return value;
         }
 
@@ -71,11 +95,12 @@ namespace TrialManager.Core.Services
             return locals;
         }
 
-        private IEnumerable<TrialistDrawEntry> SortGeneric(IEnumerable<Trialist> trialists, Realm realm, int maxRunsPerDay, DateTimeOffset startDay)
+        private IEnumerable<TrialistDrawEntry> SortGeneric(IEnumerable<Trialist> trialists, Realm realm, int maxRunsPerDay, DateTimeOffset startDay, int count)
         {
             TrialistDrawEntry[] draw = new TrialistDrawEntry[realm.All<Dog>().Count() * 2];
             HashSet<int> usedNumbers = new HashSet<int>();
-            int count = 0;
+            //int count = 0;
+            int startCount = count;
 
             foreach (Trialist element in trialists)
             {
@@ -127,13 +152,14 @@ namespace TrialManager.Core.Services
                 else
                 {
                     element.RunNumber -= nullCount;
+                    element.RunNumber += startCount;
                     element.Day = localDay;
                     yield return element;
                 }
 
                 // Increment the day if required
-                if (i != 0 && i % maxRunsPerDay == 0)
-                    localDay = localDay.AddDays(1);
+                //if (i != 0 && i % maxRunsPerDay == 0)
+                //    localDay = localDay.AddDays(1);
             }
         }
 
