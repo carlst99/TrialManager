@@ -5,6 +5,8 @@ namespace TrialManager.Core.Model
 {
     public class TrialistDrawEntry
     {
+        private const string SEPARATOR = " | ";
+
         public string TrialistName { get; set; }
 
         public string CompetingDogName { get; set; }
@@ -16,8 +18,8 @@ namespace TrialManager.Core.Model
             if (!trialist.Dogs.Contains(dog))
                 throw new ArgumentException("This trialist does not own the dog " + dog.ToString());
 
-            TrialistName = trialist.FullName + " | " + trialist.Status;
-            CompetingDogName = dog.Name + " | " + dog.Status;
+            TrialistName = trialist.Name + SEPARATOR + trialist.Status;
+            CompetingDogName = dog.Name + SEPARATOR + dog.Status;
             RunNumber = runNumber;
             Day = day;
         }

@@ -4,7 +4,7 @@ using System;
 namespace TrialManager.Core.Model.LocationDb
 {
     [MessagePackObject]
-    public class Location
+    public class Gd2000Coordinate
     {
         /// <summary>
         /// Gets the X coordinate of this location point
@@ -18,9 +18,9 @@ namespace TrialManager.Core.Model.LocationDb
         [Key(1)]
         public double Gd2000Y { get; set; }
 
-        public Location() { }
+        public Gd2000Coordinate() { }
 
-        public Location(double gd2000X, double gd2000Y)
+        public Gd2000Coordinate(double gd2000X, double gd2000Y)
         {
             Gd2000X = gd2000X;
             Gd2000Y = gd2000Y;
@@ -35,7 +35,7 @@ namespace TrialManager.Core.Model.LocationDb
 
         public override bool Equals(object obj)
         {
-            return obj is Location loc
+            return obj is Gd2000Coordinate loc
                 && loc.Gd2000X.Equals(Gd2000X)
                 && loc.Gd2000Y.Equals(Gd2000Y);
         }
@@ -58,7 +58,7 @@ namespace TrialManager.Core.Model.LocationDb
         /// <param name="lFrom"></param>
         /// <param name="lTo"></param>
         /// <returns>The distance between the two location points, 'as the crow flies'</returns>
-        public static double DistanceTo(Location lFrom, Location lTo)
+        public static double DistanceTo(Gd2000Coordinate lFrom, Gd2000Coordinate lTo)
         {
             double xDistance = Math.Abs(lFrom.Gd2000X - lTo.Gd2000X);
             double yDistance = Math.Abs(lFrom.Gd2000Y - lTo.Gd2000Y);

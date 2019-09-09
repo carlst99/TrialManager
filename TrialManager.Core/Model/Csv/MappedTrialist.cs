@@ -37,7 +37,7 @@ namespace TrialManager.Core.Model.Csv
             Trialist trialist = new Trialist
             {
                 Id = RealmHelpers.GetNextId<Trialist>(realm),
-                FullName = FullName,
+                Name = FullName,
                 Status = Status,
                 Address = Address,
                 PhoneNumber = PhoneNumber,

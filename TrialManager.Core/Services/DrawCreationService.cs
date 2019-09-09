@@ -70,7 +70,7 @@ namespace TrialManager.Core.Services
                 yield return value;
         }
 
-        private IEnumerable<Trialist> SortByDistance(IEnumerable<Trialist> list, Location trialLocation)
+        private IEnumerable<Trialist> SortByDistance(IEnumerable<Trialist> list, Gd2000Coordinate trialLocation)
         {
             List<Trialist> locals = new List<Trialist>();
             List<Trialist> nonLocals = new List<Trialist>();
@@ -84,7 +84,7 @@ namespace TrialManager.Core.Services
                     continue;
                 }
 
-                if (Location.DistanceTo(trialLocation, element.Location) < LOCAL_DISTANCE_MAX)
+                if (Gd2000Coordinate.DistanceTo(trialLocation, element.Location) < LOCAL_DISTANCE_MAX)
                     locals.Add(element);
                 else
                     nonLocals.Add(element);

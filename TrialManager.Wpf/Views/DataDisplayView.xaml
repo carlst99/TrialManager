@@ -77,7 +77,7 @@
                             DataContext="{Binding SelectedTrialist}">
                     <TextBlock Foreground="Gray"
                                Text="{Binding DataContext.[Header_FullName], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
-                    <TextBox Text="{Binding FullName}"/>
+                    <TextBox Text="{Binding Name}"/>
 
                     <TextBlock Margin="0,4,0,0"
                                Foreground="Gray"
@@ -289,7 +289,7 @@
                                         <md:PackIcon Margin="0,0,4,0"
                                                      VerticalAlignment="Center"
                                                      Kind="Person"/>
-                                        <TextBlock Text="{Binding FullName}"/>
+                                        <TextBlock Text="{Binding Name}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
