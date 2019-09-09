@@ -219,7 +219,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Helpers\LocationAutocompleteSource.cs" />
-    <Compile Include="Helpers\Settings.cs" />
     <Compile Include="NativeConverters.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="UIEnhancements\TabControlAssist.cs" />
