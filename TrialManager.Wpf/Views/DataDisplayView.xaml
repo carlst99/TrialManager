@@ -73,18 +73,17 @@
                              Kind="Person"/>
                 <StackPanel Grid.Row="1"
                             Grid.Column="1"
-                            Margin="0,16,16,16"
-                            DataContext="{Binding SelectedTrialist}">
+                            Margin="0,16,16,16">
                     <TextBlock Foreground="Gray"
-                               Text="{Binding DataContext.[Header_FullName], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
-                    <TextBox Text="{Binding Name}"/>
+                               Text="{Binding [Header_FullName], Mode=OneTime}"/>
+                    <TextBox Text="{Binding SelectedTrialist.Name}"/>
 
                     <TextBlock Margin="0,4,0,0"
                                Foreground="Gray"
-                               Text="{Binding DataContext.[Header_Status], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                               Text="{Binding [Header_Status], Mode=OneTime}"/>
                     <ComboBox Padding="0,6"
                               ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
-                              SelectedItem="{Binding Status}"/>
+                              SelectedItem="{Binding SelectedTrialist.Status}"/>
                 </StackPanel>
 
                 <!-- Address -->
@@ -93,15 +92,14 @@
                              Kind="Location"/>
                 <StackPanel Grid.Row="2"
                             Grid.Column="1"
-                            Margin="{StaticResource EditDialogContentMargin}"
-                            DataContext="{Binding SelectedTrialist}">
+                            Margin="{StaticResource EditDialogContentMargin}">
                     <TextBlock Foreground="Gray"
-                               Text="{Binding DataContext.[Header_Address], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
+                               Text="{Binding [Header_Address], Mode=OneTime}"/>
                     <controls:Autocomplete x:Name="AddressAutocompleter"
                                            Grid.Row="2"
                                            Grid.Column="1"
                                            Margin="{StaticResource EditDialogContentMargin}"
-                                           SelectedItem="{Binding Address, Mode=TwoWay}"
+                                           SelectedItem="{Binding SelectedTrialist.Address, Mode=TwoWay}"
                                            Style="{StaticResource MaterialDesignAutocompleteDense}">
                         <controls:Autocomplete.Hint>
                             <TextBlock VerticalAlignment="Center"
@@ -125,11 +123,10 @@
                              Kind="Phone"/>
                 <StackPanel Grid.Row="3"
                             Grid.Column="1"
-                            Margin="{StaticResource EditDialogContentMargin}"
-                            DataContext="{Binding SelectedTrialist}">
+                            Margin="{StaticResource EditDialogContentMargin}">
                     <TextBlock Foreground="Gray"
-                               Text="{Binding DataContext.[Header_PhoneNumber], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
-                    <TextBox Text="{Binding PhoneNumber}"/>
+                               Text="{Binding [Header_PhoneNumber], Mode=OneTime}"/>
+                    <TextBox Text="{Binding SelectedTrialist.PhoneNumber}"/>
                 </StackPanel>
 
                 <!-- Email -->
@@ -138,11 +135,10 @@
                              Kind="Email"/>
                 <StackPanel Grid.Row="4"
                             Grid.Column="1"
-                            Margin="{StaticResource EditDialogContentMargin}"
-                            DataContext="{Binding SelectedTrialist}">
+                            Margin="{StaticResource EditDialogContentMargin}">
                     <TextBlock Foreground="Gray"
-                               Text="{Binding DataContext.[Header_Email], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
-                    <TextBox Text="{Binding Email}"/>
+                               Text="{Binding [Header_Email], Mode=OneTime}"/>
+                    <TextBox Text="{Binding SelectedTrialist.Email}"/>
                 </StackPanel>
 
                 <!-- Dogs -->
@@ -151,11 +147,10 @@
                              Kind="DogSide"/>
                 <StackPanel Grid.Row="5"
                             Grid.Column="1"
-                            Margin="{StaticResource EditDialogContentMargin}"
-                            DataContext="{Binding SelectedTrialist}">
+                            Margin="{StaticResource EditDialogContentMargin}">
                     <TextBlock Foreground="Gray"
-                               Text="{Binding DataContext.[Header_Dogs], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"/>
-                    <ItemsControl ItemsSource="{Binding Dogs}">
+                               Text="{Binding [Header_Dogs], Mode=OneTime}"/>
+                    <ItemsControl ItemsSource="{Binding SelectedTrialist.Dogs}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type model:Dog}">
                                 <Grid>
@@ -244,7 +239,6 @@
                 <Button Margin="0,0,8,0"
                         HorizontalAlignment="Right"
                         Command="{Binding EditDataEntryCommand}"
-                        CommandParameter="{Binding SelectedItem, ElementName=LstVwTrialists}"
                         Content="{md:PackIcon Kind=Edit}"
                         IsEnabled="{Binding CanEditDataEntry, Mode=OneWay}"
                         ToolTip="{Binding [ToolTip_EditItem], Mode=OneTime}"/>
