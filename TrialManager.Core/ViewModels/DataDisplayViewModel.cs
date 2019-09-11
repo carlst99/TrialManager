@@ -21,6 +21,7 @@ namespace TrialManager.Core.ViewModels
         private readonly IIntraMessenger _messagingService;
         private readonly IDataImportService _importService;
 
+        private IQueryable<Trialist> _trialists;
         private Trialist _selectedTrialist;
         private Transaction _updateTransaction;
         private bool _isEditDialogOpen;
@@ -41,10 +42,19 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Removes a trialist from the data source and saves the DB
         /// </summary>
-        public IMvxCommand DeleteTrialistCommand => new MvxCommand(() =>
+        public IMvxCommand DeleteTrialistCommand => new MvxCommand(async () =>
         {
             if (CanDeleteDataEntries)
-                _realm.Write(() => _realm.Remove(SelectedTrialist));
+            {
+                Trialist temp = Trialists.First();
+                await AsyncDispatcher.ExecuteOnMainThreadAsync(() => Trialists = null);
+                _realm.Write(() => _realm.Remove(temp));
+                Trialists = _realm.All<Trialist>();
+            }
+            //Trialists = _realm.All<Trialist>();
+            //RaisePropertyChanged(nameof(Trialists));
+            //if (CanDeleteDataEntries)
+            //    _realm.Write(() => _realm.Remove(Trialists.First()));
         });
 
         /// <summary>
@@ -83,7 +93,16 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Gets the local view of trialists
         /// </summary>
-        public IQueryable<Trialist> Trialists { get; }
+        public IQueryable<Trialist> Trialists
+        {
+            get => _trialists;
+            set
+            {
+                SetProperty(ref _trialists, value);
+                RaisePropertyChanged(nameof(CanEditDataEntry));
+                RaisePropertyChanged(nameof(CanDeleteDataEntries));
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether or not a data entry selection can be edited

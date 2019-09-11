@@ -92,6 +92,17 @@ namespace TrialManager.Core.Model.TrialistDb
 
         #endregion
 
+        #region Ctors
+
+        public Trialist() { }
+
+        public Trialist(IList<Dog> dogs)
+        {
+            Dogs = dogs;
+        }
+
+        #endregion
+
         /// <summary>
         /// Removes a dog, ensuring that one still remains in the list
         /// </summary>
@@ -121,7 +132,6 @@ namespace TrialManager.Core.Model.TrialistDb
             const int hash = 13;
             return (hash * 7) + Id;
         }
-
         #endregion
 
         /// <summary>
@@ -146,6 +156,22 @@ namespace TrialManager.Core.Model.TrialistDb
                 int hash = 13;
                 hash = (hash * 7) + Name.GetHashCode();
                 return (hash * 7) + Status.GetHashCode();
+            }
+        }
+
+        public new Trialist MemberwiseClone()
+        {
+            return new Trialist(Dogs)
+            {
+                Id = Id,
+                Name = Name,
+                Status = Status,
+                PhoneNumber = PhoneNumber,
+                Email = Email,
+                Address = Address,
+                Location = Location,
+                PreferredDay = PreferredDay,
+                TravellingPartner = new Trialist { Name = TravellingPartner.Name }
             }
         }
     }
