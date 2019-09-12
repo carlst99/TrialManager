@@ -262,9 +262,9 @@
             <!-- Data list -->
             <ListView Grid.Row="1"
                       Margin="0,8,0,0"
-                      ItemsSource="{Binding Trialists}"
+                      ItemsSource="{Binding Trialists, Mode=OneWay}"
                       Opacity="{Binding ListOpacity, Mode=OneWay}"
-                      SelectedItem="{Binding SelectedTrialist}"
+                      SelectedItem="{Binding SelectedTrialist, Mode=OneWayToSource}"
                       SelectionMode="Single">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseRightButtonUp">

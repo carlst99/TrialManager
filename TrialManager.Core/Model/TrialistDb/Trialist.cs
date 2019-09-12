@@ -161,7 +161,7 @@ namespace TrialManager.Core.Model.TrialistDb
 
         public new Trialist MemberwiseClone()
         {
-            return new Trialist(Dogs)
+            Trialist t = new Trialist(Dogs)
             {
                 Id = Id,
                 Name = Name,
@@ -170,9 +170,12 @@ namespace TrialManager.Core.Model.TrialistDb
                 Email = Email,
                 Address = Address,
                 Location = Location,
-                PreferredDay = PreferredDay,
-                TravellingPartner = new Trialist { Name = TravellingPartner.Name }
-            }
+                PreferredDay = PreferredDay
+            };
+            if (TravellingPartner != null)
+                t.TravellingPartner = new Trialist { Name = TravellingPartner.Name };
+
+            return t;
         }
     }
 }
