@@ -2,6 +2,7 @@
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using Realms;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace TrialManager.Core.ViewModels
         private readonly IDataImportService _importService;
 
         private List<Trialist> _trialists;
+        private Transaction _editTransaction;
         private Trialist _selectedTrialist;
         private bool _isEditDialogOpen;
         private bool _canUseEditControls = true;
@@ -37,7 +39,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Adds a trialist to the data source and saves the DB
         /// </summary>
-        public IMvxCommand AddTrialistCommand => new MvxCommand(() => _realm.Write(() => _realm.Add(Trialist.Default)));
+        public IMvxCommand AddTrialistCommand => new MvxCommand(() => DoRealmAction(() => _realm.Add(Trialist.Default)));
 
         /// <summary>
         /// Removes a trialist from the data source and saves the DB
@@ -46,11 +48,9 @@ namespace TrialManager.Core.ViewModels
         {
             if (CanDeleteDataEntries)
             {
-                Trialist temp = Trialists.First();
-                Trialists = null;
-                SelectedTrialist = temp;
-                _realm.Write(() => _realm.Remove(GetTrackedSelectedTrialist()));
-                SetupTrialistList();
+                Trialist temp = SelectedTrialist;
+                SelectedTrialist = null;
+                DoRealmAction(() => _realm.Remove(temp));
             }
         });
 
@@ -59,7 +59,11 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand EditDataEntryCommand => new MvxCommand(() =>
         {
-            IsEditDialogOpen = true;
+            if (CanEditDataEntry)
+            {
+                IsEditDialogOpen = true;
+                _editTransaction = _realm.BeginWrite();
+            }
         });
 
         /// <summary>
@@ -67,7 +71,10 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand CloseEditDialogCommand => new MvxCommand(() =>
         {
-            _realm.Write(() => _realm.Add(SelectedTrialist, true));
+            _realm.Add(SelectedTrialist, true);
+            _editTransaction.Commit();
+            _editTransaction.Dispose();
+            DoRealmAction(null);
             IsEditDialogOpen = false;
         });
 
@@ -76,20 +83,14 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand DeleteDogCommand => new MvxCommand<Dog>((d) =>
         {
-            Trialist temp = GetTrackedSelectedTrialist();
-            temp.SafeRemoveDog(d);
-            SelectedTrialist.SafeRemoveDog(d);
+            if (CanDeleteDataEntries)
+                SelectedTrialist.SafeRemoveDog(d);
         });
 
         /// <summary>
         /// Adds a dog to the currently edited trialist
         /// </summary>
-        public IMvxCommand AddDogCommand => new MvxCommand(() =>
-        {
-            Trialist temp = GetTrackedSelectedTrialist();
-            temp.Dogs.Add(Dog.Default);
-            SelectedTrialist.Dogs.Add(Dog.Default);
-        });
+        public IMvxCommand AddDogCommand => new MvxCommand(() => SelectedTrialist.SafeAddDog(Dog.Default));
 
         #endregion
 
@@ -109,6 +110,12 @@ namespace TrialManager.Core.ViewModels
             }
         }
 
+        //public List<Dog> SelectedDogs
+        //{
+        //    get => _selectedDogs;
+        //    set => SetProperty(ref _selectedDogs, value);
+        //}
+
         /// <summary>
         /// Gets a value indicating whether or not a data entry selection can be edited
         /// </summary>
@@ -117,7 +124,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Gets a value indicating whether or not data entries can be deleted
         /// </summary>
-        public bool CanDeleteDataEntries => _selectedTrialist == null;
+        public bool CanDeleteDataEntries => _selectedTrialist != null;
 
         public Trialist SelectedTrialist
         {
@@ -125,6 +132,7 @@ namespace TrialManager.Core.ViewModels
             set
             {
                 SetProperty(ref _selectedTrialist, value);
+                //SelectedDogs = value?.Dogs.ToList();
                 RaisePropertyChanged(nameof(CanEditDataEntry));
                 RaisePropertyChanged(nameof(CanDeleteDataEntries));
             }
@@ -165,9 +173,10 @@ namespace TrialManager.Core.ViewModels
             : base(navigationService)
         {
             _realm = RealmHelpers.GetRealmInstance();
-            SetupTrialistList();
             _messagingService = messagingService;
             _importService = importService;
+
+            DoRealmAction(null);
         }
 
         /// <summary>
@@ -175,7 +184,7 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         private void OnImportDataRequested()
         {
-            if (Trialists.Any())
+            if (Trialists.Count > 0)
             {
                 void ResultCallback(DialogMessage.DialogButton d)
                 {
@@ -233,6 +242,7 @@ namespace TrialManager.Core.ViewModels
                     });
                 }
 
+                await AsyncDispatcher.ExecuteOnMainThreadAsync(() => DoRealmAction(null)).ConfigureAwait(false);
                 CanUseEditControls = true;
                 ListOpacity = 1;
 
@@ -246,22 +256,11 @@ namespace TrialManager.Core.ViewModels
             });
         }
 
-        private void SetupTrialistList()
+        private void DoRealmAction(Action action)
         {
-            if (Trialists == null)
-                Trialists = new List<Trialist>();
-            else
-                Trialists.Clear();
-
-            foreach (Trialist element in _realm.All<Trialist>())
-                Trialists.Add(element.MemberwiseClone());
-        }
-
-        private Trialist GetTrackedSelectedTrialist()
-        {
-            if (SelectedTrialist == null)
-                return null;
-            return _realm.All<Trialist>().First(t => t.Id == SelectedTrialist.Id);
+            if (action != null)
+                _realm.Write(action);
+            Trialists = _realm.All<Trialist>().ToList();
         }
     }
 }

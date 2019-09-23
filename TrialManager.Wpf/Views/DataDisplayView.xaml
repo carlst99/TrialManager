@@ -150,7 +150,7 @@
                             Margin="{StaticResource EditDialogContentMargin}">
                     <TextBlock Foreground="Gray"
                                Text="{Binding [Header_Dogs], Mode=OneTime}"/>
-                    <ItemsControl ItemsSource="{Binding SelectedTrialist.Dogs}">
+                    <ItemsControl ItemsSource="{Binding SelectedTrialist.UISafeDogs, Mode=OneWay}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type model:Dog}">
                                 <Grid>
@@ -264,7 +264,7 @@
                       Margin="0,8,0,0"
                       ItemsSource="{Binding Trialists, Mode=OneWay}"
                       Opacity="{Binding ListOpacity, Mode=OneWay}"
-                      SelectedItem="{Binding SelectedTrialist, Mode=OneWayToSource}"
+                      SelectedItem="{Binding SelectedTrialist}"
                       SelectionMode="Single">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseRightButtonUp">
@@ -330,7 +330,7 @@
                                         Header="{Binding DataContext.[Header_Dogs], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type model:Trialist}">
-                                    <ItemsControl ItemsSource="{Binding Dogs}"
+                                    <ItemsControl ItemsSource="{Binding UISafeDogs}"
                                                   ScrollViewer.CanContentScroll="True"
                                                   ScrollViewer.HorizontalScrollBarVisibility="Visible">
                                         <ItemsControl.ItemTemplate>

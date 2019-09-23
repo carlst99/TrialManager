@@ -2,6 +2,7 @@
 using Realms;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TrialManager.Core.Model.LocationDb;
 
 namespace TrialManager.Core.Model.TrialistDb
@@ -72,6 +73,11 @@ namespace TrialManager.Core.Model.TrialistDb
         public IList<Dog> Dogs { get; }
 
         /// <summary>
+        /// Gets a list of dogs that is safe to use in UI binding
+        /// </summary>
+        public List<Dog> UISafeDogs => Dogs.ToList();
+
+        /// <summary>
         /// Gets or sets the location of this <see cref="Trialist"/>
         /// </summary>
         public Gd2000Coordinate Location
@@ -92,17 +98,6 @@ namespace TrialManager.Core.Model.TrialistDb
 
         #endregion
 
-        #region Ctors
-
-        public Trialist() { }
-
-        public Trialist(IList<Dog> dogs)
-        {
-            Dogs = dogs;
-        }
-
-        #endregion
-
         /// <summary>
         /// Removes a dog, ensuring that one still remains in the list
         /// </summary>
@@ -112,6 +107,13 @@ namespace TrialManager.Core.Model.TrialistDb
             Dogs.Remove(dog);
             if (Dogs.Count == 0)
                 Dogs.Add(Dog.Default);
+            RaisePropertyChanged(nameof(UISafeDogs));
+        }
+
+        public void SafeAddDog(Dog dog)
+        {
+            Dogs.Add(dog);
+            RaisePropertyChanged(nameof(UISafeDogs));
         }
 
         #region Object Overrides
@@ -157,25 +159,6 @@ namespace TrialManager.Core.Model.TrialistDb
                 hash = (hash * 7) + Name.GetHashCode();
                 return (hash * 7) + Status.GetHashCode();
             }
-        }
-
-        public new Trialist MemberwiseClone()
-        {
-            Trialist t = new Trialist(Dogs)
-            {
-                Id = Id,
-                Name = Name,
-                Status = Status,
-                PhoneNumber = PhoneNumber,
-                Email = Email,
-                Address = Address,
-                Location = Location,
-                PreferredDay = PreferredDay
-            };
-            if (TravellingPartner != null)
-                t.TravellingPartner = new Trialist { Name = TravellingPartner.Name };
-
-            return t;
         }
     }
 }
