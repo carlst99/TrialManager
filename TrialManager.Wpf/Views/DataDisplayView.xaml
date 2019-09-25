@@ -194,6 +194,7 @@
             </Grid>
         </md:DialogHost.DialogContent>
 
+        <!-- Page content -->
         <Grid Margin="16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -226,6 +227,11 @@
                     </TextBlock.Triggers>
                 </TextBlock>
             </StackPanel>
+
+            <!-- -->
+            <Grid>
+                
+            </Grid>
 
             <!-- Data modification controls -->
             <StackPanel HorizontalAlignment="Right"
