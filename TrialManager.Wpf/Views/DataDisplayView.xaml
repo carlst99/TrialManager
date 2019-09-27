@@ -201,13 +201,19 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Import button and edit hint -->
-            <StackPanel HorizontalAlignment="Left"
-                        Orientation="Horizontal">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
                 <Button Command="{Binding ImportDataCommand}"
                         Content="{Binding [Label_ImportData], Mode=OneTime}"/>
                 <TextBlock x:Name="TxtBxHint"
                            Margin="16,0,0,0"
+                           Grid.Column="1"
                            VerticalAlignment="Center"
                            FontWeight="Bold"
                            Text="Hint: Right-click an entry to edit it!">
@@ -226,15 +232,71 @@
                         </EventTrigger>
                     </TextBlock.Triggers>
                 </TextBlock>
-            </StackPanel>
 
-            <!-- -->
-            <Grid>
-                
+                <TextBox md:HintAssist.Hint="Search"
+                         md:HintAssist.IsFloating="True"
+                         x:Name="TxtBxSearch"
+                         Grid.Column="2"
+                         Margin="8,0,8,0"
+                         VerticalAlignment="Center"
+                         TextChanged="TxtBxSearch_TextChanged"/>
+
+                <StackPanel IsEnabled="{Binding CanUseEditControls, Mode=OneWay}"
+                            Orientation="Horizontal"
+                            Grid.Column="3">
+                    <Button Margin="0,0,8,0"
+                            HorizontalAlignment="Right"
+                            Command="{Binding AddTrialistCommand}"
+                            Content="{md:PackIcon Kind=Add}"
+                            ToolTip="{Binding [ToolTip_AddItem], Mode=OneTime}"/>
+                    <Button Margin="0,0,8,0"
+                            HorizontalAlignment="Right"
+                            Command="{Binding EditDataEntryCommand}"
+                            Content="{md:PackIcon Kind=Edit}"
+                            IsEnabled="{Binding CanEditDataEntry, Mode=OneWay}"
+                            ToolTip="{Binding [ToolTip_EditItem], Mode=OneTime}"/>
+                    <Button HorizontalAlignment="Right"
+                            Command="{Binding DeleteTrialistCommand}"
+                            Content="{md:PackIcon Kind=Trash}"
+                            IsEnabled="{Binding CanDeleteDataEntries, Mode=OneWay}"
+                            ToolTip="{Binding [ToolTip_DeleteItem], Mode=OneTime}"/>
+                </StackPanel>
             </Grid>
 
             <!-- Data modification controls -->
-            <StackPanel HorizontalAlignment="Right"
+            <!--<Grid HorizontalAlignment="Stretch"
+                  IsEnabled="{Binding CanUseEditControls, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                
+                <Button Margin="0,0,8,0"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Command="{Binding AddTrialistCommand}"
+                        Content="{md:PackIcon Kind=Add}"
+                        ToolTip="{Binding [ToolTip_AddItem], Mode=OneTime}"/>
+                <Button Margin="0,0,8,0"
+                        Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Command="{Binding EditDataEntryCommand}"
+                        Content="{md:PackIcon Kind=Edit}"
+                        IsEnabled="{Binding CanEditDataEntry, Mode=OneWay}"
+                        ToolTip="{Binding [ToolTip_EditItem], Mode=OneTime}"/>
+                <Button HorizontalAlignment="Right"
+                        Grid.Column="3"
+                        Command="{Binding DeleteTrialistCommand}"
+                        Content="{md:PackIcon Kind=Trash}"
+                        IsEnabled="{Binding CanDeleteDataEntries, Mode=OneWay}"
+                        ToolTip="{Binding [ToolTip_DeleteItem], Mode=OneTime}"/>
+            </Grid>-->
+
+            <!-- Data modification controls -->
+            <!--<StackPanel HorizontalAlignment="Right"
                         IsEnabled="{Binding CanUseEditControls, Mode=OneWay}"
                         Orientation="Horizontal">
                 <Button Margin="0,0,8,0"
@@ -253,7 +315,7 @@
                         Content="{md:PackIcon Kind=Trash}"
                         IsEnabled="{Binding CanDeleteDataEntries, Mode=OneWay}"
                         ToolTip="{Binding [ToolTip_DeleteItem], Mode=OneTime}"/>
-            </StackPanel>
+            </StackPanel>-->
 
             <ProgressBar Grid.Row="1"
                          Width="100"
@@ -267,6 +329,7 @@
 
             <!-- Data list -->
             <ListView Grid.Row="1"
+                      x:Name="LstVwTrialists"
                       Margin="0,8,0,0"
                       ItemsSource="{Binding Trialists, Mode=OneWay}"
                       Opacity="{Binding ListOpacity, Mode=OneWay}"
