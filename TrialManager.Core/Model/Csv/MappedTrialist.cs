@@ -9,6 +9,8 @@ namespace TrialManager.Core.Model.Csv
 {
     public class MappedTrialist
     {
+        #region Mapped Properties
+
         public string FullName;
         public EntityStatus Status;
         public string Address;
@@ -27,6 +29,8 @@ namespace TrialManager.Core.Model.Csv
         public EntityStatus DogFourStatus;
         public string DogFiveName;
         public EntityStatus DogFiveStatus;
+
+        #endregion
 
         /// <summary>
         /// Converts this <see cref="MappedTrialist"/> to a <see cref="Trialist"/>. Does not fill <see cref="Trialist.TravellingPartner"/>
