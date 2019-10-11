@@ -7,7 +7,7 @@ using TrialManager.Core.Services;
 
 namespace TrialManager.Core.Model.Csv
 {
-    public class MappedTrialist
+    internal class MappedTrialist
     {
         #region Mapped Properties
 

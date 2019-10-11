@@ -36,10 +36,38 @@ namespace TrialManager.Core.Services
         public IEnumerable<TrialistDrawEntry> CreateDraw(int maxRunsPerDay, DateTime startDay, string address)
         {
             Realm realm = RealmHelpers.GetRealmInstance();
-            _locationService.TryResolve(address, out ILocation location);
+            _locationService.TryResolve(address, out ILocation trialLocation);
+            Dictionary<DateTimeOffset, IEnumerable<Trialist>> trialistDayPairs = new Dictionary<DateTimeOffset, IEnumerable<Trialist>>();
 
+            // Get trialists and order by number of dogs, so those with more dogs are run earlier in the day
             IEnumerable<Trialist> trialists = realm.All<Trialist>();
             trialists = trialists.OrderByDescending(t => t.Dogs.Count);
+
+            // Get all distinct days
+            IEnumerable<DateTimeOffset> distinctDays = trialists.Distinct(new PreferredDayEqualityComparer())
+                                                                .OrderBy(t => t.PreferredDay)
+                                                                .Select(t => t.PreferredDay);
+            // Setup list of trialists for each day
+            foreach (DateTimeOffset day in distinctDays)
+            {
+                IEnumerable<Trialist> trialistsForSaidDay = trialists.Where(t => t.PreferredDay.Equals(day));
+                trialistDayPairs.Add(day, trialistsForSaidDay);
+            }
+
+            // Sort each list by location to trial grounds
+            if (trialLocation != null)
+            {
+                foreach (IEnumerable<Trialist> list in trialistDayPairs.Values)
+                {
+                    list.OrderBy(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation.Location));
+                    foreach (Trialist element in list)
+                        yield return new TrialistDrawEntry(element.Name, element.Dogs[0].Name, 0);
+                }
+            }
+
+            yield break;
+
+            // Old code past this point
 
             DateTimeOffset fridayDate = new DateTimeOffset(2019, 9, 27, 7, 0, 0, TimeSpan.Zero);
             DateTimeOffset saturdayDate = new DateTimeOffset(2019, 9, 28, 7, 0, 0, TimeSpan.Zero);
@@ -47,12 +75,12 @@ namespace TrialManager.Core.Services
             var friday = trialists.Where(t => t.PreferredDay == fridayDate);
             var saturday = trialists.Where(t => t.PreferredDay == saturdayDate);
 
-            if (location != null)
+            if (trialLocation != null)
             {
-                trialists = SortByDistance(trialists, location.Location);
-                noPref = SortByDistance(noPref, location.Location);
-                friday = SortByDistance(friday, location.Location);
-                saturday = SortByDistance(saturday, location.Location);
+                trialists = SortByDistance(trialists, trialLocation.Location);
+                noPref = SortByDistance(noPref, trialLocation.Location);
+                friday = SortByDistance(friday, trialLocation.Location);
+                saturday = SortByDistance(saturday, trialLocation.Location);
             }
 
             //foreach (TrialistDrawEntry value in SortGeneric(trialists, realm, maxRunsPerDay, startDay))
