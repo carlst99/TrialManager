@@ -39,7 +39,7 @@ namespace TrialManager.Core.Services
             _locationService.TryResolve(address, out ILocation location);
 
             IEnumerable<Trialist> trialists = realm.All<Trialist>();
-            trialists = trialists.ToList().OrderByDescending(t => t.Dogs.Count);
+            trialists = trialists.OrderByDescending(t => t.Dogs.Count);
 
             DateTimeOffset fridayDate = new DateTimeOffset(2019, 9, 27, 7, 0, 0, TimeSpan.Zero);
             DateTimeOffset saturdayDate = new DateTimeOffset(2019, 9, 28, 7, 0, 0, TimeSpan.Zero);
