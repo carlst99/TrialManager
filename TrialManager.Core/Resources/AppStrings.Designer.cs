@@ -187,11 +187,29 @@ namespace TrialManager.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hint: Right-click an entry to edit it!.
+        /// </summary>
+        public static string Hint_RightClickToEdit {
+            get {
+                return ResourceManager.GetString("Hint_RightClickToEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Runs Per Day.
         /// </summary>
         public static string Hint_RunsPerDay {
             get {
                 return ResourceManager.GetString("Hint_RunsPerDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search by name.
+        /// </summary>
+        public static string Hint_SearchTrialists {
+            get {
+                return ResourceManager.GetString("Hint_SearchTrialists", resourceCulture);
             }
         }
         
