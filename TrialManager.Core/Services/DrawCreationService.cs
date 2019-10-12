@@ -45,12 +45,33 @@ namespace TrialManager.Core.Services
         {
             Realm realm = RealmHelpers.GetRealmInstance();
             _locationService.TryResolve(address, out ILocation trialLocation);
-            Dictionary<DateTimeOffset, IEnumerable<Trialist>> trialistDayPairs = new Dictionary<DateTimeOffset, IEnumerable<Trialist>>();
 
             // Get trialists and order by number of dogs, so those with more dogs are run earlier in the day
             IEnumerable<Trialist> trialists = realm.All<Trialist>();
             trialists = trialists.OrderByDescending(t => t.Dogs.Count);
 
+            // Split the trialist list by day
+            List<DayTrialistPair> dayTrialistPairs = GetDayTrialistPairs(trialists);
+
+            // Sort each list by distance to trial grounds
+            if (trialLocation != null)
+                SortByDistance(dayTrialistPairs, trialLocation.Location);
+
+            // Fill days if needed and generate final list
+            IEnumerable<Trialist> finalList = GenerateFinalList(dayTrialistPairs, maxRunsPerDay);
+
+            foreach (TrialistDrawEntry value in SpreadAndGenerateRuns(finalList, realm, maxRunsPerDay, 0))
+                yield return value;
+        }
+
+        /// <summary>
+        /// Splits the trialist list by day
+        /// </summary>
+        /// <param name="trialists"></param>
+        /// <returns></returns>
+        private List<DayTrialistPair> GetDayTrialistPairs(IEnumerable<Trialist> trialists)
+        {
+            List<DayTrialistPair> dayTrialistPairs = new List<DayTrialistPair>();
             // Get all distinct days
             List<DateTimeOffset> distinctDays = trialists.Distinct(new PreferredDayEqualityComparer())
                                                                 .OrderBy(t => t.PreferredDay)
@@ -60,33 +81,55 @@ namespace TrialManager.Core.Services
             foreach (DateTimeOffset day in distinctDays)
             {
                 IEnumerable<Trialist> trialistsForSaidDay = trialists.Where(t => t.PreferredDay.Equals(day));
-                trialistDayPairs.Add(day, trialistsForSaidDay);
+                dayTrialistPairs.Add(new DayTrialistPair(day, trialistsForSaidDay));
             }
+            return dayTrialistPairs;
+        }
 
-            // Sort each list by location to trial grounds
-            if (trialLocation != null)
+        /// <summary>
+        /// Sorts day-trialist pairs by predetermined location sorting rules
+        /// </summary>
+        /// <param name="dayTrialistPairs"></param>
+        /// <param name="trialLocation"></param>
+        /// <remarks>First day is sorted in ascending order so those with further to travel have time to settle in. Other days sorted in descending order as they can arrive day before</remarks>
+        private void SortByDistance(List<DayTrialistPair> dayTrialistPairs, Gd2000Coordinate trialLocation)
+        {
+            for (int i = 0; i < dayTrialistPairs.Count; i++)
             {
-                List<IEnumerable<Trialist>> temp = new List<IEnumerable<Trialist>>();
-                foreach (DateTimeOffset key in trialistDayPairs.Keys)
+                // For the first day, those farther away should be run later. i == 1 as no preference day is first
+                // For days after this, those from farther away should be run earlier so that they can
+                // Arrive the previous day, and leave earlier on the day of their runs
+                if (i == 1)
                 {
-                    var locationSorted = trialistDayPairs[key]
-                        .OrderBy(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation.Location));
-                    temp.Add(locationSorted);
+                    dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
+                    .OrderBy(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation));
                 }
-
-                for (int i = 0; i < distinctDays.Count; i++)
-                    trialistDayPairs[distinctDays[i]] = temp[i];
+                else
+                {
+                    dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
+                    .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation));
+                }
             }
+        }
 
+        /// <summary>
+        /// Creates a final list of trialists which is ready to be run-sorted
+        /// </summary>
+        /// <param name="dayTrialistPairs"></param>
+        /// <param name="maxRunsPerDay"></param>
+        /// <returns></returns>
+        /// <remarks>Fills days with trialists if said day is needing more runs to reach the maximum</remarks>
+        private IEnumerable<Trialist> GenerateFinalList(List<DayTrialistPair> dayTrialistPairs, int maxRunsPerDay)
+        {
             // Fill days to max run count with those who don't have a preferred day, and build the final list
             IEnumerable<Trialist> finalList = null;
             int noPrefPositionCounter = 0;
-            List<Trialist> noPreferredDay = trialistDayPairs[NO_PREFERRED_DAY_MARKER].ToList();
-            trialistDayPairs.Remove(NO_PREFERRED_DAY_MARKER);
+            List<Trialist> noPreferredDay = dayTrialistPairs.First(p => p.Day == NO_PREFERRED_DAY_MARKER).Trialists.ToList();
+            dayTrialistPairs.RemoveAll(p => p.Day == NO_PREFERRED_DAY_MARKER);
 
-            foreach (DateTimeOffset key in trialistDayPairs.Keys)
+            foreach (DayTrialistPair pair in dayTrialistPairs)
             {
-                IEnumerable<Trialist> list = trialistDayPairs[key];
+                IEnumerable<Trialist> list = pair.Trialists;
                 int runCount = list.Sum(t => t.Dogs.Count);
                 if (runCount < maxRunsPerDay)
                 {
@@ -110,38 +153,18 @@ namespace TrialManager.Core.Services
             if (noPrefPositionCounter < noPreferredDay.Count)
                 finalList = finalList.Concat(noPreferredDay.GetRange(noPrefPositionCounter, noPreferredDay.Count - noPrefPositionCounter));
 
-            foreach (TrialistDrawEntry value in SortGeneric(finalList, realm, maxRunsPerDay, 0))
-                yield return value;
-
-            yield break;
+            return finalList;
         }
 
-        private IEnumerable<Trialist> SortByDistance(IEnumerable<Trialist> list, Gd2000Coordinate trialLocation)
-        {
-            List<Trialist> locals = new List<Trialist>();
-            List<Trialist> nonLocals = new List<Trialist>();
-            List<Trialist> unsorted = new List<Trialist>();
-
-            foreach (Trialist element in list)
-            {
-                if (element.Location == null)
-                {
-                    unsorted.Add(element);
-                    continue;
-                }
-
-                if (Gd2000Coordinate.DistanceTo(trialLocation, element.Location) < LOCAL_DISTANCE_MAX)
-                    locals.Add(element);
-                else
-                    nonLocals.Add(element);
-            }
-
-            locals.AddRange(unsorted);
-            locals.AddRange(nonLocals);
-            return locals;
-        }
-
-        private IEnumerable<TrialistDrawEntry> SortGeneric(IEnumerable<Trialist> trialists, Realm realm, int maxRunsPerDay, int count)
+        /// <summary>
+        /// Spreads out each trialists runs and returns the generated draw entries
+        /// </summary>
+        /// <param name="trialists"></param>
+        /// <param name="realm"></param>
+        /// <param name="maxRunsPerDay"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        private IEnumerable<TrialistDrawEntry> SpreadAndGenerateRuns(IEnumerable<Trialist> trialists, Realm realm, int maxRunsPerDay, int count)
         {
             TrialistDrawEntry[] draw = new TrialistDrawEntry[realm.All<Dog>().Count() * 2];
             HashSet<int> usedNumbers = new HashSet<int>();
