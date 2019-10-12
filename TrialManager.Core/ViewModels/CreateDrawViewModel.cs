@@ -182,10 +182,10 @@ namespace TrialManager.Core.ViewModels
             {
                 foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
                     await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(element)).ConfigureAwait(false);
-            }).ConfigureAwait(false);
+            }).ConfigureAwait(true);
 
-            GridColumnSize = Double.NaN;
             ShowProgress = false;
+            GridColumnSize = double.NaN;
         }
 
         private void OnExportDraw()
