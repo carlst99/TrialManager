@@ -1,7 +1,6 @@
 ﻿using Realms;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using TrialManager.Core.Model;
 using TrialManager.Core.Model.LocationDb;
@@ -11,6 +10,8 @@ namespace TrialManager.Core.Services
 {
     public class DrawCreationService : IDrawCreationService
     {
+        #region Constants
+
         /// <summary>
         /// Defines the maximum Gd2000 that a trialist can be considered as local for
         /// </summary>
@@ -25,6 +26,13 @@ namespace TrialManager.Core.Services
         /// Defines the separation between dogs in the draw
         /// </summary>
         public const int DOG_RUN_SEPARATION = 20;
+
+        /// <summary>
+        /// Gets the marker used to define a non-preference of day
+        /// </summary>
+        public static readonly DateTimeOffset NO_PREFERRED_DAY_MARKER = DateTimeOffset.MinValue;
+
+        #endregion
 
         private readonly ILocationService _locationService;
 
@@ -57,13 +65,41 @@ namespace TrialManager.Core.Services
             // Sort each list by location to trial grounds
             if (trialLocation != null)
             {
-                foreach (IEnumerable<Trialist> list in trialistDayPairs.Values)
+                foreach (DateTimeOffset key in trialistDayPairs.Keys)
                 {
-                    list.OrderBy(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation.Location));
-                    foreach (Trialist element in list)
-                        yield return new TrialistDrawEntry(element.Name, element.Dogs[0].Name, 0);
+                    IEnumerable<Trialist> list = trialistDayPairs[key]
+                        .OrderBy(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation.Location));
                 }
             }
+
+            // Fill days to max run count with those who don't have a preferred day, and build the final list
+            IEnumerable<Trialist> finalList = null;
+            int noPrefPositionCounter = 0;
+            List<Trialist> noPreferredDay = trialistDayPairs[NO_PREFERRED_DAY_MARKER].ToList();
+            trialistDayPairs.Remove(NO_PREFERRED_DAY_MARKER);
+
+            foreach (DateTimeOffset key in trialistDayPairs.Keys)
+            {
+                IEnumerable<Trialist> list = trialistDayPairs[key];
+                int runCount = list.Sum(t => t.Dogs.Count);
+                if (runCount < maxRunsPerDay)
+                {
+                    int diff = maxRunsPerDay - runCount;
+                    list = trialistDayPairs[key].Concat(noPreferredDay.GetRange(noPrefPositionCounter, diff));
+                    noPrefPositionCounter = diff;
+                }
+
+                if (finalList == null)
+                    finalList = list;
+                else
+                    finalList = finalList.Concat(list);
+            }
+
+            if (noPrefPositionCounter < noPreferredDay.Count)
+                finalList = finalList.Concat(noPreferredDay.GetRange(noPrefPositionCounter, noPreferredDay.Count - noPrefPositionCounter));
+
+            foreach (TrialistDrawEntry value in SortGeneric(finalList, realm, maxRunsPerDay, trialistDayPairs.Keys.Min(), 0))
+                yield return value;
 
             yield break;
 
