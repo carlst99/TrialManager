@@ -1,12 +1,17 @@
-﻿using TrialManager.Core.ViewModels;
+﻿using MvvmCross;
 using MvvmCross.IoC;
 using MvvmCross.ViewModels;
 using Plugin.DeviceInfo;
 using Plugin.DeviceInfo.Abstractions;
+using Realms;
 using Serilog;
 using Serilog.Events;
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
+using TrialManager.Core.ViewModels;
+
+[assembly: InternalsVisibleTo("MvvmCrossCoreTestProject")]
 
 namespace TrialManager.Core
 {
@@ -23,13 +28,14 @@ namespace TrialManager.Core
 
             RegisterAppStart<HomeViewModel>();
 
+            Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
+            Mvx.IoCProvider.RegisterSingleton<IntraMessaging.IIntraMessenger>(IntraMessaging.IntraMessenger.Instance);
+
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .WriteTo.Debug()
                 .WriteTo.File(GetAppdataFilePath(LOG_FILE_NAME))
                 .CreateLogger();
-
-            Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
 
             if (CrossDeviceInfo.IsSupported)
             {
@@ -92,15 +98,21 @@ namespace TrialManager.Core
         /// </returns>
         public static string GetPlatformAppdataPath()
         {
+            string path;
             switch (Mvx.IoCProvider.GetSingleton<IDeviceInfo>().Platform)
             {
                 case Platform.Android:
-                    return Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                    break;
                 case Platform.iOS:
-                    return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    break;
                 default:
-                    return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    break;
             }
+
+			return Path.Combine(path, "TrialManager");
         }
 
         /// <summary>

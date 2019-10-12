@@ -1,5 +1,4 @@
 ﻿using MvvmCross.Navigation;
-using MvvmCross.ViewModels;
 
 namespace TrialManager.Core.ViewModels.Base
 {

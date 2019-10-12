@@ -1,0 +1,476 @@
+﻿<views:MvxWpfView x:Class="TrialManager.Wpf.Views.DataDisplayView"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:controls="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                  xmlns:local="clr-namespace:TrialManager.Wpf"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                  xmlns:model="clr-namespace:TrialManager.Core.Model.TrialistDb;assembly=TrialManager.Core"
+                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                  xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+                  d:DesignHeight="450"
+                  d:DesignWidth="800"
+                  Loaded="MvxWpfView_Loaded"
+                  mc:Ignorable="d">
+
+    <views:MvxWpfView.Resources>
+        <ObjectDataProvider x:Key="EnumValueResolver"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="model:EntityStatus" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <Thickness x:Key="EditDialogIconMargin"
+                   Bottom="16"
+                   Left="16"
+                   Right="16"
+                   Top="0" />
+        <Thickness x:Key="EditDialogContentMargin"
+                   Bottom="16"
+                   Left="0"
+                   Right="16"
+                   Top="0" />
+
+        <local:NativeMvxVisibilityValueConverter x:Key="VisibilityConverter" />
+        <local:NativeMvxInvertedVisibilityValueConverter x:Key="InvertedVisibilityConverter" />
+    </views:MvxWpfView.Resources>
+
+    <md:DialogHost CloseOnClickAway="False"
+                   Identifier="DlgHstDataDisplayView"
+                   IsOpen="{Binding IsEditDialogOpen}">
+        <!-- Edit popup box -->
+        <md:DialogHost.DialogContent>
+            <Grid MinWidth="400">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <md:ColorZone Grid.ColumnSpan="2"
+                              Padding="12"
+                              Mode="Dark">
+                    <TextBlock Margin="4,4,4,0"
+                               Style="{DynamicResource MaterialDesignSubheadingTextBlock}"
+                               Text="{Binding [Header_EditTrialist], Mode=OneTime}" />
+                </md:ColorZone>
+
+                <!-- Name and status -->
+                <md:PackIcon Grid.Row="1"
+                             Margin="16"
+                             Kind="Person" />
+                <StackPanel Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,16,16,16">
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding [Header_FullName], Mode=OneTime}" />
+                    <TextBox Text="{Binding SelectedTrialist.Name}" />
+
+                    <TextBlock Margin="0,4,0,0"
+                               Foreground="Gray"
+                               Text="{Binding [Header_Status], Mode=OneTime}" />
+                    <ComboBox Padding="0,6"
+                              ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
+                              SelectedItem="{Binding SelectedTrialist.Status}" />
+                </StackPanel>
+
+                <!-- Address -->
+                <md:PackIcon Grid.Row="2"
+                             Margin="{StaticResource EditDialogIconMargin}"
+                             Kind="Location" />
+                <StackPanel Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="{StaticResource EditDialogContentMargin}">
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding [Header_Address], Mode=OneTime}" />
+                    <controls:Autocomplete x:Name="AddressAutocompleter"
+                                           Grid.Row="2"
+                                           Grid.Column="1"
+                                           Margin="{StaticResource EditDialogContentMargin}"
+                                           SelectedItem="{Binding SelectedTrialist.Address, Mode=TwoWay}"
+                                           Style="{StaticResource MaterialDesignAutocompleteDense}">
+                        <controls:Autocomplete.Hint>
+                            <TextBlock VerticalAlignment="Center"
+                                       FontSize="{Binding Path=FontSize, ElementName=AddressAutocompleter}"
+                                       Text="{Binding [Hint_TrialLocation], Mode=OneTime}" />
+                        </controls:Autocomplete.Hint>
+
+                        <controls:Autocomplete.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="0"
+                                           VerticalAlignment="Center"
+                                           Text="{Binding}" />
+                            </DataTemplate>
+                        </controls:Autocomplete.ItemTemplate>
+                    </controls:Autocomplete>
+                </StackPanel>
+
+                <!-- Phone number -->
+                <md:PackIcon Grid.Row="3"
+                             Margin="{StaticResource EditDialogIconMargin}"
+                             Kind="Phone" />
+                <StackPanel Grid.Row="3"
+                            Grid.Column="1"
+                            Margin="{StaticResource EditDialogContentMargin}">
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding [Header_PhoneNumber], Mode=OneTime}" />
+                    <TextBox Text="{Binding SelectedTrialist.PhoneNumber}" />
+                </StackPanel>
+
+                <!-- Email -->
+                <md:PackIcon Grid.Row="4"
+                             Margin="{StaticResource EditDialogIconMargin}"
+                             Kind="Email" />
+                <StackPanel Grid.Row="4"
+                            Grid.Column="1"
+                            Margin="{StaticResource EditDialogContentMargin}">
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding [Header_Email], Mode=OneTime}" />
+                    <TextBox Text="{Binding SelectedTrialist.Email}" />
+                </StackPanel>
+
+                <!-- Dogs -->
+                <md:PackIcon Grid.Row="5"
+                             Margin="{StaticResource EditDialogIconMargin}"
+                             Kind="DogSide" />
+                <StackPanel Grid.Row="5"
+                            Grid.Column="1"
+                            Margin="{StaticResource EditDialogContentMargin}">
+                    <TextBlock Foreground="Gray"
+                               Text="{Binding [Header_Dogs], Mode=OneTime}" />
+                    <ItemsControl ItemsSource="{Binding SelectedTrialist.UISafeDogs, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type model:Dog}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox VerticalAlignment="Bottom"
+                                             Text="{Binding Name}" />
+                                    <ComboBox Grid.Column="1"
+                                              Margin="16,0,0,0"
+                                              Padding="0,6"
+                                              VerticalAlignment="Bottom"
+                                              ItemsSource="{Binding Source={StaticResource EnumValueResolver}}"
+                                              SelectedItem="{Binding Status}" />
+                                    <Button Grid.Column="2"
+                                            Margin="4,0"
+                                            Command="{Binding DataContext.DeleteDogCommand, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                                            CommandParameter="{Binding}"
+                                            Content="{md:PackIcon Kind=Delete}"
+                                            Style="{DynamicResource MaterialDesignFlatButton}"
+                                            ToolTip="{Binding DataContext.[ToolTip_DeleteItem], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Margin="0,4,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding DataContext.AddDogCommand, RelativeSource={RelativeSource AncestorType=md:DialogHost}}"
+                            Content="{md:PackIcon Kind=Add}"
+                            ToolTip="{Binding DataContext.[ToolTip_AddItem], Mode=OneTime, RelativeSource={RelativeSource AncestorType=md:DialogHost}}" />
+                </StackPanel>
+
+                <!-- Close button -->
+                <Button Grid.Row="6"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding CloseEditDialogCommand}"
+                        Content="{Binding [Label_Done], Mode=OneTime}" />
+            </Grid>
+        </md:DialogHost.DialogContent>
+
+        <!-- Page content -->
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Import, hint and search -->
+                <Button Command="{Binding ImportDataCommand}"
+                        Content="{Binding [Label_ImportData], Mode=OneTime}" />
+                <TextBlock x:Name="TxtBxHint"
+                           Grid.Column="1"
+                           Margin="16,0,0,0"
+                           VerticalAlignment="Center"
+                           FontWeight="Bold"
+                           Text="{Binding [Hint_RightClickToEdit], Mode=OneTime}">
+                    <TextBlock.Triggers>
+                        <EventTrigger RoutedEvent="TextBlock.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation BeginTime="0:0:2"
+                                                     Storyboard.TargetName="TxtBxHint"
+                                                     Storyboard.TargetProperty="Opacity"
+                                                     From="1.0"
+                                                     To="0"
+                                                     Duration="0:0:3" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </TextBlock.Triggers>
+                </TextBlock>
+
+                <TextBox x:Name="TxtBxSearch"
+                         Grid.Column="2"
+                         Margin="8,0,8,0"
+                         VerticalAlignment="Center"
+                         md:HintAssist.Hint="{Binding [Hint_SearchTrialists], Mode=OneTime}"
+                         md:HintAssist.IsFloating="True"
+                         TextChanged="TxtBxSearch_TextChanged" />
+
+                <!-- Data modification controls -->
+                <StackPanel Grid.Column="3"
+                            IsEnabled="{Binding CanUseEditControls, Mode=OneWay}"
+                            Orientation="Horizontal">
+                    <Button Margin="0,0,8,0"
+                            HorizontalAlignment="Right"
+                            Command="{Binding AddTrialistCommand}"
+                            Content="{md:PackIcon Kind=Add}"
+                            ToolTip="{Binding [ToolTip_AddItem], Mode=OneTime}" />
+                    <Button Margin="0,0,8,0"
+                            HorizontalAlignment="Right"
+                            Command="{Binding EditDataEntryCommand}"
+                            Content="{md:PackIcon Kind=Edit}"
+                            IsEnabled="{Binding CanEditDataEntry, Mode=OneWay}"
+                            ToolTip="{Binding [ToolTip_EditItem], Mode=OneTime}" />
+                    <Button HorizontalAlignment="Right"
+                            Command="{Binding DeleteTrialistCommand}"
+                            Content="{md:PackIcon Kind=Trash}"
+                            IsEnabled="{Binding CanDeleteDataEntries, Mode=OneWay}"
+                            ToolTip="{Binding [ToolTip_DeleteItem], Mode=OneTime}" />
+                </StackPanel>
+            </Grid>
+
+            <ProgressBar Grid.Row="1"
+                         Width="100"
+                         Height="100"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         IsIndeterminate="True"
+                         Style="{DynamicResource MaterialDesignCircularProgressBar}"
+                         Visibility="{Binding CanUseEditControls, Converter={StaticResource InvertedVisibilityConverter}}"
+                         Value="0" />
+
+            <!-- Data list -->
+            <!--<DataGrid x:Name="DGTrialists"
+                      Grid.Row="1"
+                      Margin="0,8,0,0"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      ItemsSource="{Binding Trialists, Mode=OneWay}"
+                      Opacity="{Binding ListOpacity, Mode=OneWay}"
+                      SelectedItem="{Binding SelectedTrialist}"
+                      SelectionMode="Single">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseRightButtonUp">
+                        <i:InvokeCommandAction Command="{Binding EditDataEntryCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Full Name">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Trialist}">
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Margin="0,0,4,0"
+                                                 VerticalAlignment="Center"
+                                                 Kind="Person"/>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Status">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Trialist}">
+                                <TextBlock Text="{Binding Status}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Phone">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Trialist}">
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Margin="0,0,4,0"
+                                                 VerticalAlignment="Center"
+                                                 Kind="Phone"/>
+                                    <TextBlock Text="{Binding PhoneNumber}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="{Binding DataContext.[Header_Email], RelativeSource={RelativeSource AncestorType=DataGrid}, Mode=OneTime}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Trialist}">
+                                <StackPanel Orientation="Horizontal">
+                                    <md:PackIcon Margin="0,0,4,0"
+                                                 VerticalAlignment="Center"
+                                                 Kind="Email"/>
+                                    <TextBlock Text="{Binding Email}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="{Binding DataContext.[Header_Dogs], RelativeSource={RelativeSource AncestorType=DataGrid}, Mode=OneTime}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type model:Trialist}">
+                                <ItemsControl ItemsSource="{Binding UISafeDogs}"
+                                              ScrollViewer.CanContentScroll="True"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Visible">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type model:Dog}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <md:PackIcon Margin="0,0,4,0"
+                                                             VerticalAlignment="Center"
+                                                             Kind="DogSide"/>
+                                                <TextBlock VerticalAlignment="Center"
+                                                           Text="{Binding Name}"/>
+                                                <TextBlock VerticalAlignment="Center"
+                                                           Text=" | "/>
+                                                <TextBlock Margin="0,0,16,0"
+                                                           VerticalAlignment="Center"
+                                                           Text="{Binding Status}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>-->
+
+            <ListView x:Name="LstVwTrialists"
+                      Grid.Row="1"
+                      Margin="0,8,0,0"
+                      ItemsSource="{Binding Trialists, Mode=OneWay}"
+                      Opacity="{Binding ListOpacity, Mode=OneWay}"
+                      SelectedItem="{Binding SelectedTrialist}"
+                      SelectionMode="Single">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseRightButtonUp">
+                        <i:InvokeCommandAction Command="{Binding EditDataEntryCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <ListView.View>
+                    <GridView>
+                        <!-- Full name -->
+                        <GridViewColumn Width="Auto"
+                                        Header="{Binding DataContext.[Header_FullName], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type model:Trialist}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <md:PackIcon Margin="0,0,4,0"
+                                                     VerticalAlignment="Center"
+                                                     Kind="Person" />
+                                        <TextBlock Text="{Binding Name}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!-- Status -->
+                        <GridViewColumn Width="Auto"
+                                        Header="{Binding DataContext.[Header_Status], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type model:Trialist}">
+                                    <TextBlock Text="{Binding Status}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!-- Phone Number -->
+                        <GridViewColumn Width="Auto"
+                                        Header="{Binding DataContext.[Header_PhoneNumber], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type model:Trialist}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <md:PackIcon Margin="0,0,4,0"
+                                                     VerticalAlignment="Center"
+                                                     Kind="Phone" />
+                                        <TextBlock Text="{Binding PhoneNumber}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!-- Email -->
+                        <GridViewColumn Width="Auto"
+                                        Header="{Binding DataContext.[Header_Email], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type model:Trialist}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <md:PackIcon Margin="0,0,4,0"
+                                                     VerticalAlignment="Center"
+                                                     Kind="Email" />
+                                        <TextBlock Text="{Binding Email}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!-- Dogs -->
+                        <GridViewColumn Width="Auto"
+                                        Header="{Binding DataContext.[Header_Dogs], RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneTime}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type model:Trialist}">
+                                    <ItemsControl ItemsSource="{Binding UISafeDogs}"
+                                                  ScrollViewer.CanContentScroll="True"
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Visible">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type model:Dog}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Margin="0,0,4,0"
+                                                                 VerticalAlignment="Center"
+                                                                 Kind="DogSide" />
+                                                    <TextBlock VerticalAlignment="Center"
+                                                               Text="{Binding Name}" />
+                                                    <TextBlock VerticalAlignment="Center"
+                                                               Text=" | " />
+                                                    <TextBlock Margin="0,0,16,0"
+                                                               VerticalAlignment="Center"
+                                                               Text="{Binding Status}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </md:DialogHost>
+</views:MvxWpfView>
