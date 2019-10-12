@@ -47,7 +47,8 @@ namespace TrialManager.Core.Services
                         if (trialistHashes.Add(trialist.GetContentHashCode()))
                             tempRealm.Add(trialist);
                         else
-                            duplicates.Add(trialist);
+                            tempRealm.Add(trialist);
+                            //duplicates.Add(trialist);
                     }
                 });
 

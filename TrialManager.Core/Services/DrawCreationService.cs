@@ -121,11 +121,13 @@ namespace TrialManager.Core.Services
         /// <remarks>Fills days with trialists if said day is needing more runs to reach the maximum</remarks>
         private IEnumerable<Trialist> GenerateFinalList(List<DayTrialistPair> dayTrialistPairs, int maxRunsPerDay)
         {
-            // Fill days to max run count with those who don't have a preferred day, and build the final list
             IEnumerable<Trialist> finalList = null;
             int noPrefPositionCounter = 0;
-            List<Trialist> noPreferredDay = dayTrialistPairs.First(p => p.Day == NO_PREFERRED_DAY_MARKER).Trialists.ToList();
-            dayTrialistPairs.RemoveAll(p => p.Day == NO_PREFERRED_DAY_MARKER);
+
+            // Take and remove the no preference pair
+            DayTrialistPair noPreferencePair = dayTrialistPairs.First(p => p.Day == NO_PREFERRED_DAY_MARKER);
+            dayTrialistPairs.Remove(noPreferencePair);
+            List<Trialist> noPreferredDay = noPreferencePair.Trialists.ToList();
 
             foreach (DayTrialistPair pair in dayTrialistPairs)
             {
