@@ -211,7 +211,7 @@ namespace TrialManager.Core.ViewModels
                     _messenger.Send(new DialogMessage
                     {
                         Title = "Export error",
-                        Content = "Sorry, we couldn't export the draw. Please try again!",
+                        Content = "Sorry, we couldn't export the draw. Please try again!\nIf you are trying to overwrite a draw file, make sure it is not open in another program",
                         Buttons = DialogMessage.DialogButton.Ok
                     });
                 } else
@@ -236,7 +236,11 @@ namespace TrialManager.Core.ViewModels
 
         private void OnPrintDraw()
         {
-            throw new NotImplementedException();
+            _messenger.Send(new DialogMessage
+            {
+                Title = "Sorry!",
+                Content = "The print functionality has not yet been implemented. Please export the file instead, and print the exported copy"
+            });
         }
     }
 }

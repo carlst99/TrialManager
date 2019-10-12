@@ -1,6 +1,7 @@
 ﻿using Realms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using TrialManager.Core.Model;
 using TrialManager.Core.Model.LocationDb;
@@ -50,26 +51,34 @@ namespace TrialManager.Core.Services
             // Get trialists and order by number of dogs, so those with more dogs are run earlier in the day
             IEnumerable<Trialist> trialists = realm.All<Trialist>();
             trialists = trialists.OrderByDescending(t => t.Dogs.Count);
+            Debug.WriteLine(trialists.First().Name);
 
             // Get all distinct days
-            IEnumerable<DateTimeOffset> distinctDays = trialists.Distinct(new PreferredDayEqualityComparer())
+            List<DateTimeOffset> distinctDays = trialists.Distinct(new PreferredDayEqualityComparer())
                                                                 .OrderBy(t => t.PreferredDay)
-                                                                .Select(t => t.PreferredDay);
+                                                                .Select(t => t.PreferredDay)
+                                                                .ToList();
             // Setup list of trialists for each day
             foreach (DateTimeOffset day in distinctDays)
             {
                 IEnumerable<Trialist> trialistsForSaidDay = trialists.Where(t => t.PreferredDay.Equals(day));
+                Debug.WriteLine(trialistsForSaidDay.First().Name);
                 trialistDayPairs.Add(day, trialistsForSaidDay);
             }
 
             // Sort each list by location to trial grounds
             if (trialLocation != null)
             {
+                List<IEnumerable<Trialist>> temp = new List<IEnumerable<Trialist>>();
                 foreach (DateTimeOffset key in trialistDayPairs.Keys)
                 {
-                    IEnumerable<Trialist> list = trialistDayPairs[key]
+                    var locationSorted = trialistDayPairs[key]
                         .OrderBy(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation.Location));
+                    temp.Add(locationSorted);
                 }
+
+                for (int i = 0; i < distinctDays.Count; i++)
+                    trialistDayPairs[distinctDays[i]] = temp[i];
             }
 
             // Fill days to max run count with those who don't have a preferred day, and build the final list
@@ -84,9 +93,15 @@ namespace TrialManager.Core.Services
                 int runCount = list.Sum(t => t.Dogs.Count);
                 if (runCount < maxRunsPerDay)
                 {
-                    int diff = maxRunsPerDay - runCount;
-                    list = trialistDayPairs[key].Concat(noPreferredDay.GetRange(noPrefPositionCounter, diff));
-                    noPrefPositionCounter = diff;
+                    int runDiff = maxRunsPerDay - runCount;
+                    int originalPos = noPrefPositionCounter;
+                    while (runDiff >= 0)
+                    {
+                        runDiff -= noPreferredDay[noPrefPositionCounter].Dogs.Count;
+                        noPrefPositionCounter++;
+                    }
+
+                    list = list.Concat(noPreferredDay.GetRange(originalPos, noPrefPositionCounter - originalPos));
                 }
 
                 if (finalList == null)
@@ -163,12 +178,11 @@ namespace TrialManager.Core.Services
         {
             TrialistDrawEntry[] draw = new TrialistDrawEntry[realm.All<Dog>().Count() * 2];
             HashSet<int> usedNumbers = new HashSet<int>();
-            //int count = 0;
             int startCount = count;
 
             foreach (Trialist element in trialists)
             {
-                // Search for the next available number and update day if required
+                // Search for the next available number
                 while (!usedNumbers.Add(count))
                     count++;
 
