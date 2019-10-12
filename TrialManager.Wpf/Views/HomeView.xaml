@@ -15,9 +15,9 @@
                   mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <md:ColorZone Padding="0,16,0,0"
@@ -28,30 +28,31 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            mvx:Bi.nd="Text [App_Title], Mode=OneTime"
-                           Style="{DynamicResource MaterialDesignTitleTextBlock}"/>
+                           Style="{DynamicResource MaterialDesignTitleTextBlock}" />
 
                 <Border Width="300"
                         Margin="0,4"
                         HorizontalAlignment="Center"
                         BorderBrush="#CCDFDFDF"
-                        BorderThickness="0,2,0,0"/>
+                        BorderThickness="0,2,0,0" />
 
                 <TabControl x:Name="TbCtrlNavigation"
                             mvx:Bi.nd="ItemsSource NavigatableViewModels, Mode=OneWay"
                             SelectedIndex="{Binding SelectedPageIndex}">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Value}"/>
+                            <TextBlock Text="{Binding Value}" />
                         </DataTemplate>
                     </TabControl.ItemTemplate>
 
                     <TabControl.ContentTemplate>
-                        <DataTemplate/>
+                        <DataTemplate />
                     </TabControl.ContentTemplate>
 
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding OnNavigateRequestedCommand}" CommandParameter="{Binding ElementName=TbCtrlNavigation, Path=SelectedItem.Key}"/>
+                            <i:InvokeCommandAction Command="{Binding OnNavigateRequestedCommand}"
+                                                   CommandParameter="{Binding ElementName=TbCtrlNavigation, Path=SelectedItem.Key}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </TabControl>
@@ -100,6 +101,6 @@
         <Frame Grid.Row="2"
                Margin="0,4,0,0"
                mvx:Bi.nd="Content DetailView, Mode=OneWay"
-               NavigationUIVisibility="Hidden"/>
+               NavigationUIVisibility="Hidden" />
     </Grid>
 </views:MvxWpfView>

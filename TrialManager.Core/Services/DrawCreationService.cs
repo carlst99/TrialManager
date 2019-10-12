@@ -1,7 +1,6 @@
 ﻿using Realms;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using TrialManager.Core.Model;
 using TrialManager.Core.Model.LocationDb;
@@ -51,7 +50,6 @@ namespace TrialManager.Core.Services
             // Get trialists and order by number of dogs, so those with more dogs are run earlier in the day
             IEnumerable<Trialist> trialists = realm.All<Trialist>();
             trialists = trialists.OrderByDescending(t => t.Dogs.Count);
-            Debug.WriteLine(trialists.First().Name);
 
             // Get all distinct days
             List<DateTimeOffset> distinctDays = trialists.Distinct(new PreferredDayEqualityComparer())
@@ -62,7 +60,6 @@ namespace TrialManager.Core.Services
             foreach (DateTimeOffset day in distinctDays)
             {
                 IEnumerable<Trialist> trialistsForSaidDay = trialists.Where(t => t.PreferredDay.Equals(day));
-                Debug.WriteLine(trialistsForSaidDay.First().Name);
                 trialistDayPairs.Add(day, trialistsForSaidDay);
             }
 
