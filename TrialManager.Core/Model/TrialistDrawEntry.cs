@@ -11,9 +11,8 @@ namespace TrialManager.Core.Model
 
         public string CompetingDogName { get; set; }
         public int RunNumber { get; set; }
-        public DateTimeOffset Day { get; set; }
 
-        public TrialistDrawEntry(Trialist trialist, Dog dog, int runNumber, DateTimeOffset day)
+        public TrialistDrawEntry(Trialist trialist, Dog dog, int runNumber)
         {
             if (!trialist.Dogs.Contains(dog))
                 throw new ArgumentException("This trialist does not own the dog " + dog.ToString());
@@ -21,7 +20,6 @@ namespace TrialManager.Core.Model
             TrialistName = trialist.Name + SEPARATOR + trialist.Status;
             CompetingDogName = dog.Name + SEPARATOR + dog.Status;
             RunNumber = runNumber;
-            Day = day;
         }
 
         public TrialistDrawEntry(string trialistName, string dogName, int runNumber)
