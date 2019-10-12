@@ -114,36 +114,6 @@ namespace TrialManager.Core.Services
                 yield return value;
 
             yield break;
-
-            // Old code past this point
-
-            DateTimeOffset fridayDate = new DateTimeOffset(2019, 9, 27, 7, 0, 0, TimeSpan.Zero);
-            DateTimeOffset saturdayDate = new DateTimeOffset(2019, 9, 28, 7, 0, 0, TimeSpan.Zero);
-            var noPref = trialists.Where(t => t.PreferredDay == DateTimeOffset.MinValue);
-            var friday = trialists.Where(t => t.PreferredDay == fridayDate);
-            var saturday = trialists.Where(t => t.PreferredDay == saturdayDate);
-
-            if (trialLocation != null)
-            {
-                trialists = SortByDistance(trialists, trialLocation.Location);
-                noPref = SortByDistance(noPref, trialLocation.Location);
-                friday = SortByDistance(friday, trialLocation.Location);
-                saturday = SortByDistance(saturday, trialLocation.Location);
-            }
-
-            //foreach (TrialistDrawEntry value in SortGeneric(trialists, realm, maxRunsPerDay, startDay))
-            //    yield return value;
-            foreach (TrialistDrawEntry value in SortGeneric(noPref, realm, maxRunsPerDay, 0))
-                yield return value;
-            int dogCount = 0;
-            foreach (var element in noPref)
-                dogCount += element.Dogs.Count;
-            foreach (TrialistDrawEntry value in SortGeneric(friday, realm, maxRunsPerDay, dogCount))
-                yield return value;
-            foreach (var element in friday)
-                dogCount += element.Dogs.Count;
-            foreach (TrialistDrawEntry value in SortGeneric(saturday, realm, maxRunsPerDay, dogCount))
-                yield return value;
         }
 
         private IEnumerable<Trialist> SortByDistance(IEnumerable<Trialist> list, Gd2000Coordinate trialLocation)
