@@ -5,7 +5,6 @@ using MvvmCross.Navigation;
 using Realms;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,6 +32,7 @@ namespace TrialManager.Core.ViewModels
         private string _trialNotes;
         private string _trialAddress;
         private int _runsPerDay = 100;
+        private double _gridColumnSize = 250d;
 
         #endregion
 
@@ -95,6 +95,15 @@ namespace TrialManager.Core.ViewModels
         {
             get => _runsPerDay;
             set => SetProperty(ref _runsPerDay, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the size of all the grid columns. Used to force auto-resize after draw is created
+        /// </summary>
+        public double GridColumnSize
+        {
+            get => _gridColumnSize;
+            set => SetProperty(ref _gridColumnSize, value);
         }
 
         #endregion
@@ -164,6 +173,7 @@ namespace TrialManager.Core.ViewModels
         {
             ShowProgress = true;
             RunsEntered.Clear();
+            GridColumnSize = 250d;
 
             //foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
             //    RunsEntered.Add(element);
@@ -173,6 +183,8 @@ namespace TrialManager.Core.ViewModels
                 foreach (TrialistDrawEntry element in _drawCreationService.CreateDraw(RunsPerDay, TrialStartDate, TrialAddress))
                     await AsyncDispatcher.ExecuteOnMainThreadAsync(() => RunsEntered.Add(element)).ConfigureAwait(false);
             }).ConfigureAwait(false);
+
+            GridColumnSize = Double.NaN;
             ShowProgress = false;
         }
 
@@ -211,7 +223,7 @@ namespace TrialManager.Core.ViewModels
                     _messenger.Send(new DialogMessage
                     {
                         Title = "Export error",
-                        Content = "Sorry, we couldn't export the draw. Please try again!",
+                        Content = "Sorry, we couldn't export the draw. Please try again!\nIf you are trying to overwrite a draw file, make sure it is not open in another program",
                         Buttons = DialogMessage.DialogButton.Ok
                     });
                 } else
@@ -236,7 +248,11 @@ namespace TrialManager.Core.ViewModels
 
         private void OnPrintDraw()
         {
-            throw new NotImplementedException();
+            _messenger.Send(new DialogMessage
+            {
+                Title = "Sorry!",
+                Content = "The print functionality has not yet been implemented. Please export the file instead, and print the exported copy"
+            });
         }
     }
 }

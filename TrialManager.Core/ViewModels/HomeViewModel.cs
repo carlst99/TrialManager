@@ -137,7 +137,7 @@ namespace TrialManager.Core.ViewModels
                 return 0;
             if (!locService.TryResolve(AddressTwo, out ILocation locTwo))
                 return 0;
-            return Location.DistanceTo(locOne.Location, locTwo.Location);
+            return Gd2000Coordinate.DistanceTo(locOne.Location, locTwo.Location);
         }
     }
 }

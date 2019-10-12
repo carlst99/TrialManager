@@ -2,7 +2,7 @@
 
 namespace TrialManager.Core.Model.Csv
 {
-    public class TrialistMapping : ClassMap<MappedTrialist>
+    internal class TrialistMapping : ClassMap<MappedTrialist>
     {
         public TrialistMapping()
         {

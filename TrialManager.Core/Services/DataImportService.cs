@@ -1,5 +1,4 @@
 ﻿using CsvHelper;
-using MvvmCross.Base;
 using Realms;
 using System;
 using System.Collections.Generic;
@@ -103,12 +102,12 @@ namespace TrialManager.Core.Services
                                 continue;
 
                             // Find one potential partner
-                            IQueryable<Trialist> partners = realm.All<Trialist>().Where(t => t.FullName.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
+                            IQueryable<Trialist> partners = realm.All<Trialist>().Where(t => t.Name.Equals(mt.TravellingPartner, StringComparison.OrdinalIgnoreCase));
                             if (partners.Count() != 1)
                                 continue;
 
                             // Find one original
-                            IQueryable<Trialist> trialists = realm.All<Trialist>().Where(t => t.FullName.Equals(mt.FullName, StringComparison.OrdinalIgnoreCase));
+                            IQueryable<Trialist> trialists = realm.All<Trialist>().Where(t => t.Name.Equals(mt.FullName, StringComparison.OrdinalIgnoreCase));
                             if (trialists.Count() != 1)
                                 continue;
 

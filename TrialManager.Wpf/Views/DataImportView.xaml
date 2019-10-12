@@ -21,16 +21,18 @@
     </views:MvxWpfView.Resources>
 
     <Grid Margin="16">
-        <controls:Stepper IsLinear="True"
-                          Layout="Vertical"
-                          CancelNavigationCommand="{Binding CancelImportCommand}">
+        <controls:Stepper CancelNavigationCommand="{Binding CancelImportCommand}"
+                          IsLinear="True"
+                          Layout="Vertical">
             <controls:Stepper.Steps>
                 <steps:Step>
                     <steps:Step.Header>
                         <steps:StepTitleHeader FirstLevelTitle="Setup Mapping" />
                     </steps:Step.Header>
                     <steps:Step.Content>
-                        <controls:StepButtonBar Back="Back" Continue="Next" Cancel="Cancel" />
+                        <controls:StepButtonBar Back="Back"
+                                                Cancel="Cancel"
+                                                Continue="Next" />
                     </steps:Step.Content>
                 </steps:Step>
 
@@ -39,7 +41,8 @@
                         <steps:StepTitleHeader FirstLevelTitle="Correct Duplicates" />
                     </steps:Step.Header>
                     <steps:Step.Content>
-                        <controls:StepButtonBar Back="Back" Continue="Next" />
+                        <controls:StepButtonBar Back="Back"
+                                                Continue="Next" />
                     </steps:Step.Content>
                 </steps:Step>
             </controls:Stepper.Steps>

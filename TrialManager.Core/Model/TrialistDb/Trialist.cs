@@ -2,6 +2,7 @@
 using Realms;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TrialManager.Core.Model.LocationDb;
 
 namespace TrialManager.Core.Model.TrialistDb
@@ -11,13 +12,13 @@ namespace TrialManager.Core.Model.TrialistDb
         public static Trialist Default => new Trialist
         {
             Id = RealmHelpers.GetNextId<Trialist>(),
-            FullName = "Full Name",
+            Name = "Full Name",
             Status = EntityStatus.Maiden,
             PhoneNumber = "012 345 6789",
             Email = "email@email.com",
             Address = "32 Hopeful Lane, Tamahere, Waikato",
             Dogs = { Dog.Default },
-            Location = new Location()
+            Location = new Gd2000Coordinate()
         };
 
         #region Fields
@@ -40,7 +41,7 @@ namespace TrialManager.Core.Model.TrialistDb
         /// </summary>
         [Required]
         [Indexed]
-        public string FullName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the phone number of the trialist
@@ -72,11 +73,16 @@ namespace TrialManager.Core.Model.TrialistDb
         public IList<Dog> Dogs { get; }
 
         /// <summary>
+        /// Gets a list of dogs that is safe to use in UI binding
+        /// </summary>
+        public List<Dog> UISafeDogs => Dogs.ToList();
+
+        /// <summary>
         /// Gets or sets the location of this <see cref="Trialist"/>
         /// </summary>
-        public Location Location
+        public Gd2000Coordinate Location
         {
-            get => MessagePackSerializer.Deserialize<Location>(LocationRaw);
+            get => MessagePackSerializer.Deserialize<Gd2000Coordinate>(LocationRaw);
             set => LocationRaw = MessagePackSerializer.Serialize(value);
         }
 
@@ -101,13 +107,20 @@ namespace TrialManager.Core.Model.TrialistDb
             Dogs.Remove(dog);
             if (Dogs.Count == 0)
                 Dogs.Add(Dog.Default);
+            RaisePropertyChanged(nameof(UISafeDogs));
+        }
+
+        public void SafeAddDog(Dog dog)
+        {
+            Dogs.Add(dog);
+            RaisePropertyChanged(nameof(UISafeDogs));
         }
 
         #region Object Overrides
 
         public override string ToString()
         {
-            return FullName;
+            return Name;
         }
 
         public override bool Equals(object obj)
@@ -121,7 +134,6 @@ namespace TrialManager.Core.Model.TrialistDb
             const int hash = 13;
             return (hash * 7) + Id;
         }
-
         #endregion
 
         /// <summary>
@@ -129,10 +141,9 @@ namespace TrialManager.Core.Model.TrialistDb
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public bool IsContentEqual(object obj)
+        public bool IsContentEqual(Trialist trialist)
         {
-            return obj is Trialist trialist
-                && trialist.FullName.Equals(FullName)
+            return trialist.Name.Equals(Name)
                 && trialist.Status.Equals(Status);
         }
 
@@ -145,7 +156,7 @@ namespace TrialManager.Core.Model.TrialistDb
             unchecked
             {
                 int hash = 13;
-                hash = (hash * 7) + FullName.GetHashCode();
+                hash = (hash * 7) + Name.GetHashCode();
                 return (hash * 7) + Status.GetHashCode();
             }
         }

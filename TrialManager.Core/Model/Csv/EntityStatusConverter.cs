@@ -6,7 +6,7 @@ using TrialManager.Core.Model.TrialistDb;
 
 namespace TrialManager.Core.Model.Csv
 {
-    public class EntityStatusConverter : ITypeConverter
+    internal class EntityStatusConverter : ITypeConverter
     {
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {

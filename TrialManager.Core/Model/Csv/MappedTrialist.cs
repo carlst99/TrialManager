@@ -7,8 +7,10 @@ using TrialManager.Core.Services;
 
 namespace TrialManager.Core.Model.Csv
 {
-    public class MappedTrialist
+    internal class MappedTrialist
     {
+        #region Mapped Properties
+
         public string FullName;
         public EntityStatus Status;
         public string Address;
@@ -28,6 +30,8 @@ namespace TrialManager.Core.Model.Csv
         public string DogFiveName;
         public EntityStatus DogFiveStatus;
 
+        #endregion
+
         /// <summary>
         /// Converts this <see cref="MappedTrialist"/> to a <see cref="Trialist"/>. Does not fill <see cref="Trialist.TravellingPartner"/>
         /// </summary>
@@ -37,7 +41,7 @@ namespace TrialManager.Core.Model.Csv
             Trialist trialist = new Trialist
             {
                 Id = RealmHelpers.GetNextId<Trialist>(realm),
-                FullName = FullName,
+                Name = FullName,
                 Status = Status,
                 Address = Address,
                 PhoneNumber = PhoneNumber,
@@ -46,7 +50,13 @@ namespace TrialManager.Core.Model.Csv
             };
 
             // Parse preferred day
-            DateTimeOffset.TryParse(PreferredDay, out DateTimeOffset preferredDay);
+            DateTimeOffset preferredDay;
+            if (PreferredDay == "Friday 27th September")
+                preferredDay = new DateTimeOffset(2019, 9, 27, 7, 0, 0, TimeSpan.Zero);
+            else if (PreferredDay == "Saturday 28th September")
+                preferredDay = new DateTimeOffset(2019, 9, 28, 7, 0, 0, TimeSpan.Zero);
+            else
+                preferredDay = DateTimeOffset.MinValue;
             trialist.PreferredDay = preferredDay;
 
             // Add dogs

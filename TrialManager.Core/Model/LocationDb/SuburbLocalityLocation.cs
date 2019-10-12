@@ -26,12 +26,16 @@ namespace TrialManager.Core.Model.LocationDb
         /// <summary>
         /// Gets or sets the NZ Geodetic Datum 2000 (NZGD2000) coordinate point for this location
         /// </summary>
-        public Location Location
+        [Ignored]
+        public Gd2000Coordinate Location
         {
-            get => MessagePackSerializer.Deserialize<Location>(LocationRaw);
+            get => MessagePackSerializer.Deserialize<Gd2000Coordinate>(LocationRaw);
             set => LocationRaw = MessagePackSerializer.Serialize(value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the town/city that this suburb belongs to
+        /// </summary>
         public string TownCityName { get; set; }
 
         [Ignored]

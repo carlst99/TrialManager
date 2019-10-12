@@ -4,8 +4,6 @@ namespace TrialManager.Core.Model.LocationDb
 {
     public interface ILocation
     {
-        #region Properties
-
         /// <summary>
         /// Gets or sets the primary DB key
         /// </summary>
@@ -22,8 +20,6 @@ namespace TrialManager.Core.Model.LocationDb
         /// <summary>
         /// Gets or sets the NZ Geodetic Datum 2000 (NZGD2000) coordinate point for this location
         /// </summary>
-        Location Location { get; set; }
-
-        #endregion
+        Gd2000Coordinate Location { get; set; }
     }
 }

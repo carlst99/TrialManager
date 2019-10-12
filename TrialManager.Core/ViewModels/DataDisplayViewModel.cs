@@ -2,6 +2,8 @@
 using MvvmCross.Commands;
 using MvvmCross.Navigation;
 using Realms;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TrialManager.Core.Model;
@@ -21,8 +23,9 @@ namespace TrialManager.Core.ViewModels
         private readonly IIntraMessenger _messagingService;
         private readonly IDataImportService _importService;
 
+        private List<Trialist> _trialists;
+        private Transaction _editTransaction;
         private Trialist _selectedTrialist;
-        private Transaction _updateTransaction;
         private bool _isEditDialogOpen;
         private bool _canUseEditControls = true;
         private double _listOpacity = 1;
@@ -36,7 +39,7 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Adds a trialist to the data source and saves the DB
         /// </summary>
-        public IMvxCommand AddTrialistCommand => new MvxCommand(() => _realm.Write(() => _realm.Add(Trialist.Default)));
+        public IMvxCommand AddTrialistCommand => new MvxCommand(() => DoRealmAction(() => _realm.Add(Trialist.Default)));
 
         /// <summary>
         /// Removes a trialist from the data source and saves the DB
@@ -44,7 +47,11 @@ namespace TrialManager.Core.ViewModels
         public IMvxCommand DeleteTrialistCommand => new MvxCommand(() =>
         {
             if (CanDeleteDataEntries)
-                _realm.Write(() => _realm.Remove(SelectedTrialist));
+            {
+                Trialist temp = SelectedTrialist;
+                SelectedTrialist = null;
+                DoRealmAction(() => _realm.Remove(temp));
+            }
         });
 
         /// <summary>
@@ -52,8 +59,11 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand EditDataEntryCommand => new MvxCommand(() =>
         {
-            _updateTransaction = _realm.BeginWrite();
-            IsEditDialogOpen = true;
+            if (CanEditDataEntry)
+            {
+                IsEditDialogOpen = true;
+                _editTransaction = _realm.BeginWrite();
+            }
         });
 
         /// <summary>
@@ -61,20 +71,26 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         public IMvxCommand CloseEditDialogCommand => new MvxCommand(() =>
         {
-            _updateTransaction.Commit();
-            _updateTransaction.Dispose();
+            _realm.Add(SelectedTrialist, true);
+            _editTransaction.Commit();
+            _editTransaction.Dispose();
+            DoRealmAction(null);
             IsEditDialogOpen = false;
         });
 
         /// <summary>
         /// Deletes a dog from the currently edited trialist
         /// </summary>
-        public IMvxCommand DeleteDogCommand => new MvxCommand<Dog>((d) => SelectedTrialist.SafeRemoveDog(d));
+        public IMvxCommand DeleteDogCommand => new MvxCommand<Dog>((d) =>
+        {
+            if (CanDeleteDataEntries)
+                SelectedTrialist.SafeRemoveDog(d);
+        });
 
         /// <summary>
         /// Adds a dog to the currently edited trialist
         /// </summary>
-        public IMvxCommand AddDogCommand => new MvxCommand(() => SelectedTrialist.Dogs.Add(Dog.Default));
+        public IMvxCommand AddDogCommand => new MvxCommand(() => SelectedTrialist.SafeAddDog(Dog.Default));
 
         #endregion
 
@@ -83,7 +99,22 @@ namespace TrialManager.Core.ViewModels
         /// <summary>
         /// Gets the local view of trialists
         /// </summary>
-        public IQueryable<Trialist> Trialists { get; }
+        public List<Trialist> Trialists
+        {
+            get => _trialists;
+            set
+            {
+                SetProperty(ref _trialists, value);
+                RaisePropertyChanged(nameof(CanEditDataEntry));
+                RaisePropertyChanged(nameof(CanDeleteDataEntries));
+            }
+        }
+
+        //public List<Dog> SelectedDogs
+        //{
+        //    get => _selectedDogs;
+        //    set => SetProperty(ref _selectedDogs, value);
+        //}
 
         /// <summary>
         /// Gets a value indicating whether or not a data entry selection can be edited
@@ -101,6 +132,7 @@ namespace TrialManager.Core.ViewModels
             set
             {
                 SetProperty(ref _selectedTrialist, value);
+                //SelectedDogs = value?.Dogs.ToList();
                 RaisePropertyChanged(nameof(CanEditDataEntry));
                 RaisePropertyChanged(nameof(CanDeleteDataEntries));
             }
@@ -141,9 +173,10 @@ namespace TrialManager.Core.ViewModels
             : base(navigationService)
         {
             _realm = RealmHelpers.GetRealmInstance();
-            Trialists = _realm.All<Trialist>();
             _messagingService = messagingService;
             _importService = importService;
+
+            DoRealmAction(null);
         }
 
         /// <summary>
@@ -151,7 +184,7 @@ namespace TrialManager.Core.ViewModels
         /// </summary>
         private void OnImportDataRequested()
         {
-            if (Trialists.Any())
+            if (Trialists.Count > 0)
             {
                 void ResultCallback(DialogMessage.DialogButton d)
                 {
@@ -209,6 +242,7 @@ namespace TrialManager.Core.ViewModels
                     });
                 }
 
+                await AsyncDispatcher.ExecuteOnMainThreadAsync(() => DoRealmAction(null)).ConfigureAwait(false);
                 CanUseEditControls = true;
                 ListOpacity = 1;
 
@@ -220,6 +254,13 @@ namespace TrialManager.Core.ViewModels
                 Title = "Import data file",
                 Callback = callback
             });
+        }
+
+        private void DoRealmAction(Action action)
+        {
+            if (action != null)
+                _realm.Write(action);
+            Trialists = _realm.All<Trialist>().ToList();
         }
     }
 }

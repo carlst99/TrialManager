@@ -62,8 +62,7 @@ namespace TrialManager.Core.Model.TrialistDb
         public override bool Equals(object obj)
         {
             return obj is Dog dog
-                && dog.Name.Equals(Name)
-                && dog.Status.Equals(Status);
+                && dog.Id.Equals(Id);
         }
 
         public override int GetHashCode()
@@ -71,21 +70,26 @@ namespace TrialManager.Core.Model.TrialistDb
             unchecked
             {
                 int hash = 13;
-                hash = (hash * 7) + Status.GetHashCode();
-                return (hash * 7) + Name.GetHashCode();
+                return (hash * 7) + Id.GetHashCode();
             }
         }
 
-        public static bool operator ==(Dog one, Dog two)
-        {
-            return one.Equals(two);
-        }
-
-        public static bool operator !=(Dog one, Dog two)
-        {
-            return !one.Equals(two);
-        }
-
         #endregion
+
+        public bool ContentEquals(Dog dog)
+        {
+            return dog.Name.Equals(Name)
+                && dog.Status.Equals(Status);
+        }
+
+        public int GetContentHashCode()
+        {
+            unchecked
+            {
+                int hash = 13;
+                hash = (hash * 7) + Name.GetHashCode();
+                return (hash * 7) + Status.GetHashCode();
+            }
+        }
     }
 }
