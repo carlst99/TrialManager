@@ -11,7 +11,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using TrialManager.Core.ViewModels;
 
-[assembly: InternalsVisibleTo("MvvmCrossCoreTestProject")]
+[assembly: InternalsVisibleTo("TrialManager.Core.Tests")]
 
 namespace TrialManager.Core
 {
@@ -28,7 +28,6 @@ namespace TrialManager.Core
 
             RegisterAppStart<HomeViewModel>();
 
-            Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
             Mvx.IoCProvider.RegisterSingleton<IntraMessaging.IIntraMessenger>(IntraMessaging.IntraMessenger.Instance);
 
             Log.Logger = new LoggerConfiguration()
@@ -39,6 +38,7 @@ namespace TrialManager.Core
 
             if (CrossDeviceInfo.IsSupported)
             {
+                Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
                 Log.Information("Started on {model} running {platform} {version}",
                     CrossDeviceInfo.Current.Model,
                     CrossDeviceInfo.Current.Platform,
@@ -99,20 +99,32 @@ namespace TrialManager.Core
         public static string GetPlatformAppdataPath()
         {
             string path;
-            switch (Mvx.IoCProvider.GetSingleton<IDeviceInfo>().Platform)
+
+            if (CrossDeviceInfo.IsSupported)
             {
-                case Platform.Android:
-                    path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                    break;
-                case Platform.iOS:
-                    path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                    break;
-                default:
-                    path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                    break;
+                switch (Mvx.IoCProvider.GetSingleton<IDeviceInfo>().Platform)
+                {
+                    case Platform.Android:
+                        path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                        break;
+                    case Platform.iOS:
+                        path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                        break;
+                    default:
+                        path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                        break;
+                }
+            }
+            else
+            {
+                path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             }
 
-			return Path.Combine(path, "TrialManager");
+            path = Path.Combine(path, "TrialManager");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            return path;
         }
 
         /// <summary>

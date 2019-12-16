@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\FodyHelpers.6.0.5\build\FodyHelpers.props" Condition="Exists('..\packages\FodyHelpers.6.0.5\build\FodyHelpers.props')" />
   <Import Project="..\packages\Realm.4.2.0\build\Realm.props" Condition="Exists('..\packages\Realm.4.2.0\build\Realm.props')" />
   <Import Project="..\packages\Realm.Fody.4.2.0\build\Realm.Fody.props" Condition="Exists('..\packages\Realm.Fody.4.2.0\build\Realm.Fody.props')" />
-  <Import Project="..\packages\FodyHelpers.6.0.0\build\FodyHelpers.props" Condition="Exists('..\packages\FodyHelpers.6.0.0\build\FodyHelpers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -59,32 +59,31 @@
       <HintPath>..\libraries\AmRoMessageDialog.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=12.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.12.1.2\lib\net45\CsvHelper.dll</HintPath>
+      <HintPath>..\packages\CsvHelper.12.2.2\lib\net47\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="FodyHelpers, Version=6.0.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.6.0.0\lib\netstandard2.0\FodyHelpers.dll</HintPath>
+    <Reference Include="FodyHelpers, Version=6.0.5.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
+      <HintPath>..\packages\FodyHelpers.6.0.5\lib\netstandard2.0\FodyHelpers.dll</HintPath>
     </Reference>
     <Reference Include="IntraMessaging, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IntraMessaging.1.0.3\lib\netstandard2.0\IntraMessaging.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignColors, Version=1.2.0.325, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignColors.1.2.0\lib\net45\MaterialDesignColors.dll</HintPath>
+    <Reference Include="MaterialDesignColors, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.1.2.1\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignExtensions, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignExtensions.2.7.0\lib\net45\MaterialDesignExtensions.dll</HintPath>
+    <Reference Include="MaterialDesignExtensions, Version=2.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignExtensions.2.8.0\lib\net45\MaterialDesignExtensions.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignThemes.Wpf, Version=2.6.0.325, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignThemes.2.6.0\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.3.0.0\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="MessagePack, Version=1.7.3.7, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
-      <HintPath>..\packages\MessagePack.1.7.3.7\lib\net45\MessagePack.dll</HintPath>
+    <Reference Include="MessagePack, Version=1.8.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
+      <HintPath>..\packages\MessagePack.1.8.80\lib\net47\MessagePack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.DotNet.PlatformAbstractions.3.0.0\lib\net45\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=3.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.DotNet.PlatformAbstractions.3.1.0\lib\net45\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
@@ -96,13 +95,13 @@
       <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.11.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.6.0.0\lib\netstandard2.0\Mono.Cecil.dll</HintPath>
+      <HintPath>..\packages\FodyHelpers.6.0.5\lib\netstandard2.0\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil.Pdb, Version=0.11.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.6.0.0\lib\netstandard2.0\Mono.Cecil.Pdb.dll</HintPath>
+      <HintPath>..\packages\FodyHelpers.6.0.5\lib\netstandard2.0\Mono.Cecil.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil.Rocks, Version=0.11.0.0, Culture=neutral, PublicKeyToken=1ca091877d12ca03, processorArchitecture=MSIL">
-      <HintPath>..\packages\FodyHelpers.6.0.0\lib\netstandard2.0\Mono.Cecil.Rocks.dll</HintPath>
+      <HintPath>..\packages\FodyHelpers.6.0.5\lib\netstandard2.0\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="MvvmCross, Version=6.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmCross.6.4.1\lib\net461\MvvmCross.dll</HintPath>
@@ -120,7 +119,7 @@
       <HintPath>..\libraries\MvvmCrossExtensions.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Nito.AsyncEx.Context, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Nito.AsyncEx.Context.5.0.0\lib\netstandard2.0\Nito.AsyncEx.Context.dll</HintPath>
@@ -142,25 +141,23 @@
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
+      <HintPath>..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Sinks.Debug, Version=1.0.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.Debug.1.0.1\lib\net46\Serilog.Sinks.Debug.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.File.4.0.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
+      <HintPath>..\packages\Serilog.Sinks.File.4.1.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Collections.Immutable, Version=1.2.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.6.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Collections.Immutable, Version=1.2.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.7.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ComponentModel.Annotations.4.6.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\System.ComponentModel.Annotations.4.7.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Console, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -169,9 +166,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.6.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Interactive.Async, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
@@ -188,12 +184,17 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -312,16 +313,18 @@
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Fody.6.0.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.0.0\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.6.0.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.0.0\build\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\FodyHelpers.6.0.0\build\FodyHelpers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\FodyHelpers.6.0.0\build\FodyHelpers.props'))" />
-    <Error Condition="!Exists('..\packages\FodyHelpers.6.0.0\build\FodyHelpers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\FodyHelpers.6.0.0\build\FodyHelpers.targets'))" />
     <Error Condition="!Exists('..\packages\Realm.Fody.4.2.0\build\Realm.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Realm.Fody.4.2.0\build\Realm.Fody.props'))" />
     <Error Condition="!Exists('..\packages\Realm.4.2.0\build\Realm.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Realm.4.2.0\build\Realm.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.6.0.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.0.5\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\FodyHelpers.6.0.5\build\FodyHelpers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\FodyHelpers.6.0.5\build\FodyHelpers.props'))" />
+    <Error Condition="!Exists('..\packages\FodyHelpers.6.0.5\build\FodyHelpers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\FodyHelpers.6.0.5\build\FodyHelpers.targets'))" />
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.3.0.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.3.0.0\build\MaterialDesignThemes.targets'))" />
   </Target>
-  <Import Project="..\packages\FodyHelpers.6.0.0\build\FodyHelpers.targets" Condition="Exists('..\packages\FodyHelpers.6.0.0\build\FodyHelpers.targets')" />
+  <Import Project="..\packages\Fody.6.0.5\build\Fody.targets" Condition="Exists('..\packages\Fody.6.0.5\build\Fody.targets')" />
+  <Import Project="..\packages\FodyHelpers.6.0.5\build\FodyHelpers.targets" Condition="Exists('..\packages\FodyHelpers.6.0.5\build\FodyHelpers.targets')" />
+  <Import Project="..\packages\MaterialDesignThemes.3.0.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.0.0\build\MaterialDesignThemes.targets')" />
 </Project>
