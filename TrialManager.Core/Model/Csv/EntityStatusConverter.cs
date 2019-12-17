@@ -11,7 +11,7 @@ namespace TrialManager.Core.Model.Csv
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
             if (string.IsNullOrEmpty(text))
-                return EntityStatus.Maiden;
+                return EntityStatus.None;
             else
                 return Enum.Parse(typeof(EntityStatus), text);
         }

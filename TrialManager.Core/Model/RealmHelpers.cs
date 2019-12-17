@@ -1,8 +1,6 @@
 ﻿using Realms;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using TrialManager.Core.Model.TrialistDb;
 
 namespace TrialManager.Core.Model
@@ -13,9 +11,7 @@ namespace TrialManager.Core.Model
 
         public static Realm GetRealmInstance()
         {
-            string assemPath = Assembly.GetEntryAssembly().Location;
-            assemPath = Path.GetDirectoryName(assemPath);
-            string realmPath = Path.Combine(assemPath, "TrialManager.realm");
+            string realmPath = App.GetAppdataFilePath("TrialManager.realm");
 
             RealmConfiguration config = new RealmConfiguration(realmPath)
             {
