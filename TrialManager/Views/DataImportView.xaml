@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="TrialManager.Views.DataImportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:TrialManager.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+             xmlns:mdem="clr-namespace:MaterialDesignExtensions.Model;assembly=MaterialDesignExtensions"
+             xmlns:s="https://github.com/canton7/Stylet"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
+
+    <Grid Margin="16">
+        <!--<mde:Stepper IsLinear="True"
+                     Layout="Vertical">
+            <mdem:Step HasValidationErrors="True">
+                <mdem:Step.Header>
+                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                               Text="{Binding DataContext.[Header_SelectDataFile], Mode=OneTime, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                </mdem:Step.Header>
+                <mdem:Step.Content>
+                    <StackPanel>
+                        <Button Command="{s:Action OpenFileSelectionDialog}"
+                                Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
+                        <TextBlock Margin="0,8,0,0"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}">
+                            <Run Text="Selected Data File: "/>
+                            <Run FontWeight="Bold"
+                                 Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                        </TextBlock>
+                        <mde:StepButtonBar Continue="CONTINUE"/>
+                    </StackPanel>
+                </mdem:Step.Content>
+            </mdem:Step>
+            <mdem:Step HasValidationErrors="True">
+                <mdem:Step.Header>
+                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                               Text="Setup Mappings"/>
+                </mdem:Step.Header>
+                <mdem:Step.Content>
+                    <StackPanel>
+                        <mde:StepButtonBar Back="BACK"
+                                           Continue="CONTINUE"/>
+                    </StackPanel>
+                </mdem:Step.Content>
+            </mdem:Step>
+        </mde:Stepper>-->
+        <mde:TabControlStepper IsLinear="True"
+                               Layout="Vertical">
+            <!-- Import File section -->
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                               Text="{Binding DataContext.[Header_SelectDataFile], Mode=OneTime, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                </TabItem.Header>
+                <StackPanel>
+                    <Button Command="{s:Action OpenFileSelectionDialog}"
+                            Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=Grid}}"
+                            Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
+                    <TextBlock Margin="0,8,0,0"
+                               Style="{StaticResource MaterialDesignBody1TextBlock}">
+                        <Run Text="Selected Data File: "/>
+                        <Run FontWeight="Bold"
+                             Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                    </TextBlock>
+                    <mde:StepButtonBar Continue="CONTINUE"
+                                       IsContinueEnabled="{Binding DataContext.IsImportDataStepValid, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                </StackPanel>
+            </TabItem>
+            <!-- Setup Mappings section -->
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                               Text="Setup Mappings"/>
+                </TabItem.Header>
+                <mde:StepButtonBar Back="BACK"
+                                   Continue="CONTINUE"/>
+            </TabItem>
+
+            <!-- Correct Duplicates section -->
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                               Text="Correct Duplicates"/>
+                </TabItem.Header>
+                <mde:StepButtonBar Back="BACK"
+                                   Continue="CONTINUE"/>
+            </TabItem>
+        </mde:TabControlStepper>
+    </Grid>
+</UserControl>
