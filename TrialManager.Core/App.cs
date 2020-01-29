@@ -38,7 +38,6 @@ namespace TrialManager.Core
 
             if (CrossDeviceInfo.IsSupported)
             {
-                Mvx.IoCProvider.RegisterSingleton(CrossDeviceInfo.Current);
                 Log.Information("Started on {model} running {platform} {version}",
                     CrossDeviceInfo.Current.Model,
                     CrossDeviceInfo.Current.Platform,
@@ -102,7 +101,7 @@ namespace TrialManager.Core
 
             if (CrossDeviceInfo.IsSupported)
             {
-                switch (Mvx.IoCProvider.GetSingleton<IDeviceInfo>().Platform)
+                switch (CrossDeviceInfo.Current.Platform)
                 {
                     case Platform.Android:
                         path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
