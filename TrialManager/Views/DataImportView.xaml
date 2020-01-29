@@ -12,41 +12,6 @@
              mc:Ignorable="d">
 
     <Grid Margin="16">
-        <!--<mde:Stepper IsLinear="True"
-                     Layout="Vertical">
-            <mdem:Step HasValidationErrors="True">
-                <mdem:Step.Header>
-                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                               Text="{Binding DataContext.[Header_SelectDataFile], Mode=OneTime, RelativeSource={RelativeSource AncestorType=Grid}}"/>
-                </mdem:Step.Header>
-                <mdem:Step.Content>
-                    <StackPanel>
-                        <Button Command="{s:Action OpenFileSelectionDialog}"
-                                Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=Grid}}"
-                                Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
-                        <TextBlock Margin="0,8,0,0"
-                                   Style="{StaticResource MaterialDesignBody1TextBlock}">
-                            <Run Text="Selected Data File: "/>
-                            <Run FontWeight="Bold"
-                                 Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Grid}}"/>
-                        </TextBlock>
-                        <mde:StepButtonBar Continue="CONTINUE"/>
-                    </StackPanel>
-                </mdem:Step.Content>
-            </mdem:Step>
-            <mdem:Step HasValidationErrors="True">
-                <mdem:Step.Header>
-                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                               Text="Setup Mappings"/>
-                </mdem:Step.Header>
-                <mdem:Step.Content>
-                    <StackPanel>
-                        <mde:StepButtonBar Back="BACK"
-                                           Continue="CONTINUE"/>
-                    </StackPanel>
-                </mdem:Step.Content>
-            </mdem:Step>
-        </mde:Stepper>-->
         <mde:TabControlStepper IsLinear="True"
                                Layout="Vertical">
             <!-- Import File section -->
