@@ -5,6 +5,7 @@ using MvvmCross.Navigation;
 using Realms;
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -203,7 +204,7 @@ namespace TrialManager.Core.ViewModels
                     try
                     {
                         using (StreamWriter sw = new StreamWriter(path))
-                        using (CsvWriter cw = new CsvWriter(sw))
+                        using (CsvWriter cw = new CsvWriter(sw, CultureInfo.InvariantCulture))
                         {
                             cw.Configuration.RegisterClassMap<TrialistDrawEntryMapping>();
                             cw.WriteRecords(RunsEntered);

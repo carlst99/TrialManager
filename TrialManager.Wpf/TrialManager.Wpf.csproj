@@ -54,10 +54,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AmRoMessageDialog, Version=1.1.8.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libraries\AmRoMessageDialog.dll</HintPath>
-    </Reference>
     <Reference Include="CsvHelper, Version=13.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.13.0.0\lib\net47\CsvHelper.dll</HintPath>
     </Reference>

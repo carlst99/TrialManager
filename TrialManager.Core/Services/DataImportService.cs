@@ -2,6 +2,7 @@
 using Realms;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -139,7 +140,7 @@ namespace TrialManager.Core.Services
         private IEnumerable<MappedTrialist> EnumerateCsv(string path)
         {
             using (StreamReader reader = new StreamReader(path))
-            using (CsvReader csv = new CsvReader(reader))
+            using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
                 csv.Configuration.RegisterClassMap<TrialistMapping>();
