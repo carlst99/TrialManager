@@ -9,9 +9,7 @@ namespace TrialManager.Model.Csv
             Map(m => m.FullName).Index(2);
             Map(m => m.Status).Index(3);
             Map(m => m.Address).Index(4);
-            Map(m => m.PhoneNumber).Index(5);
-            Map(m => m.Email).Index(1);
-            Map(m => m.PreferredDay).Index(7);
+            Map(m => m.PreferredDayString).Index(7);
             Map(m => m.TravellingPartner).Index(8);
 
             Map(m => m.DogOneName).Index(9);

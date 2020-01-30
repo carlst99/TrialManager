@@ -11,9 +11,7 @@ namespace TrialManager.Model
 
         public static Realm GetRealmInstance()
         {
-            string realmPath = Bootstrapper.GetAppdataFilePath("TrialManager.realm");
-
-            RealmConfiguration config = new RealmConfiguration(realmPath)
+            InMemoryConfiguration config = new InMemoryConfiguration("trialists")
             {
                 ObjectClasses = new[] { typeof(Trialist), typeof(Dog) }
             };

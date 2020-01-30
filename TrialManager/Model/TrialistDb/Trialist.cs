@@ -14,8 +14,6 @@ namespace TrialManager.Model.TrialistDb
             Id = RealmHelpers.GetNextId<Trialist>(),
             Name = "Full Name",
             Status = EntityStatus.Maiden,
-            PhoneNumber = "012 345 6789",
-            Email = "email@email.com",
             Address = "32 Hopeful Lane, Tamahere, Waikato",
             Dogs = { Dog.Default },
             Location = new Gd2000Coordinate()
@@ -42,16 +40,6 @@ namespace TrialManager.Model.TrialistDb
         [Required]
         [Indexed]
         public string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the phone number of the trialist
-        /// </summary>
-        public string PhoneNumber { get; set; }
-
-        /// <summary>
-        /// Gets or sets the email of the trialist
-        /// </summary>
-        public string Email { get; set; }
 
         /// <summary>
         /// Gets or sets the home address of the trialist

@@ -43,7 +43,15 @@
                 <mde:StepButtonBar Back="BACK"
                                    Continue="CONTINUE"/>
             </TabItem>
-
+            <!-- Map preferred day section -->
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                               Text="Map 'Preferred Day' Dates"/>
+                </TabItem.Header>
+                <mde:StepButtonBar Back="BACK"
+                                   Continue="CONTINUE"/>
+            </TabItem>
             <!-- Correct Duplicates section -->
             <TabItem>
                 <TabItem.Header>
