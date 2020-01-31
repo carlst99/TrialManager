@@ -22,7 +22,6 @@ namespace TrialManager.Model.TrialistDb
         private BindableCollection<Dog> _dogs;
         private Gd2000Coordinate _coordinatePoint;
         private DateTimeOffset _preferredDay;
-        private Trialist _travellingPartner;
 
         #endregion
 
@@ -62,15 +61,6 @@ namespace TrialManager.Model.TrialistDb
         {
             get => _preferredDay;
             set => SetProperty(ref _preferredDay, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the travelling partner of this trialist
-        /// </summary>
-        public Trialist TravellingPartner
-        {
-            get => _travellingPartner;
-            set => SetProperty(ref _travellingPartner, value);
         }
 
         #endregion
