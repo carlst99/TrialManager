@@ -20,7 +20,10 @@ namespace TrialManager.Services
         /// <param name="path">The path to the file</param>
         /// <param name="merge">Whether the import should be merged with existing data</param>
         /// <exception cref="IOException"></exception>
-        public async Task<bool> ImportFromCsv(string path, bool merge)
+        public async Task<bool> ImportFromCsv(
+            string path,
+            bool merge,
+            Dictionary<string, DateTimeOffset> preferredDayMappings)
         {
             try
             {
@@ -43,7 +46,7 @@ namespace TrialManager.Services
                 {
                     foreach (MappedTrialist mt in EnumerateCsv(path))
                     {
-                        Trialist trialist = mt.ToTrialist(tempRealm);
+                        Trialist trialist = mt.ToTrialist(tempRealm, preferredDayMappings);
 
                         if (trialistHashes.Add(trialist.GetContentHashCode()))
                             tempRealm.Add(trialist);

@@ -1,4 +1,6 @@
 ﻿using Realms;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace TrialManager.Services
@@ -11,7 +13,10 @@ namespace TrialManager.Services
         /// <param name="path">The path to the file</param>
         /// <param name="merge">Whether the import should be merged with existing data</param>
         /// <exception cref="IOException"></exception>
-        Task<bool> ImportFromCsv(string path, bool merge);
+        Task<bool> ImportFromCsv(
+            string path,
+            bool merge,
+            Dictionary<string, DateTimeOffset> preferredDayMappings);
 
         /// <summary>
         /// Clears existing data in the database
