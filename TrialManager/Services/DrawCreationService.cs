@@ -102,12 +102,12 @@ namespace TrialManager.Services
                 if (i == 1)
                 {
                     dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                    .OrderBy(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation));
+                    .OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
                 }
                 else
                 {
                     dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                    .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation));
+                    .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
                 }
             }
         }

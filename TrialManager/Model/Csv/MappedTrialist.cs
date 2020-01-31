@@ -72,7 +72,7 @@ namespace TrialManager.Model.Csv
 
             // Setup location
             if (_locationService.TryResolve(Address, out ILocation location))
-                trialist.Location = location.Location;
+                trialist.CoordinatePoint = location.Location;
 
             return trialist;
         }

@@ -1,26 +1,12 @@
 ﻿namespace TrialManager.Model.TrialistDb
 {
-    public class Dog : IContextItem
+    public class Dog : ContextItem
     {
         public static Dog Default => new Dog
         {
             Name = "Dog",
             Status = EntityStatus.Maiden
         };
-
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the name of the dog
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the status of the dog
-        /// </summary>
-        public EntityStatus Status { get; set; }
-
-        #endregion
 
         #region Constructors
 
@@ -35,11 +21,6 @@
         #endregion
 
         #region Object Overrides
-
-        public override string ToString()
-        {
-            return Name;
-        }
 
         public override bool Equals(object obj)
         {

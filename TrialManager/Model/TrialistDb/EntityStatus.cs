@@ -5,9 +5,8 @@
     /// </summary>
     public enum EntityStatus
     {
-        None = 0,
-        Maiden = 1,
-        Intermediate = 2,
-        Open = 3
+        Maiden = 0,
+        Intermediate = 1,
+        Open = 2
     }
 }
