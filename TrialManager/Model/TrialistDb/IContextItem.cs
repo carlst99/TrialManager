@@ -1,8 +1,9 @@
-﻿namespace TrialManager.Model.TrialistDb
+﻿using System.ComponentModel;
+
+namespace TrialManager.Model.TrialistDb
 {
-    public interface IContextItem
+    public interface IContextItem : INotifyPropertyChanged
     {
-        int Id { get; set; }
         EntityStatus Status { get; set; }
         string Name { get; set; }
     }

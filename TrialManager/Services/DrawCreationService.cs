@@ -41,13 +41,11 @@ namespace TrialManager.Services
             _locationService = locationService;
         }
 
-        public IEnumerable<TrialistDrawEntry> CreateDraw(int maxRunsPerDay, DateTime startDay, string address)
+        public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRunsPerDay, DateTime startDay, string address)
         {
-            Realm realm = RealmHelpers.GetRealmInstance();
             _locationService.TryResolve(address, out ILocation trialLocation);
 
             // Get trialists and order by number of dogs, so those with more dogs are run earlier in the day
-            IEnumerable<Trialist> trialists = realm.All<Trialist>();
             trialists = trialists.OrderByDescending(t => t.Dogs.Count);
 
             // Split the trialist list by day
@@ -60,7 +58,7 @@ namespace TrialManager.Services
             // Fill days if needed and generate final list
             IEnumerable<Trialist> finalList = GenerateFinalList(dayTrialistPairs, maxRunsPerDay);
 
-            foreach (TrialistDrawEntry value in SpreadAndGenerateRuns(finalList, realm, maxRunsPerDay, 0))
+            foreach (TrialistDrawEntry value in SpreadAndGenerateRuns(finalList, maxRunsPerDay, 0))
                 yield return value;
         }
 
@@ -102,12 +100,12 @@ namespace TrialManager.Services
                 if (i == 1)
                 {
                     dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                    .OrderBy(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation));
+                    .OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
                 }
                 else
                 {
                     dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                    .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.Location, trialLocation));
+                    .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
                 }
             }
         }
@@ -166,9 +164,13 @@ namespace TrialManager.Services
         /// <param name="maxRunsPerDay"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        private IEnumerable<TrialistDrawEntry> SpreadAndGenerateRuns(IEnumerable<Trialist> trialists, Realm realm, int maxRunsPerDay, int count)
+        private IEnumerable<TrialistDrawEntry> SpreadAndGenerateRuns(IEnumerable<Trialist> trialists, int maxRunsPerDay, int count)
         {
-            TrialistDrawEntry[] draw = new TrialistDrawEntry[realm.All<Dog>().Count() * 2];
+            int dogCount = 0;
+            foreach (Trialist trialist in trialists)
+                dogCount += trialist.Dogs.Count;
+
+            TrialistDrawEntry[] draw = new TrialistDrawEntry[dogCount * 2];
             HashSet<int> usedNumbers = new HashSet<int>();
             int startCount = count;
 
