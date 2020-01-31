@@ -1,10 +1,7 @@
-﻿using CsvHelper;
-using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using Stylet;
 using System;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using TrialManager.Services;
 using TrialManager.ViewModels.Base;
 
