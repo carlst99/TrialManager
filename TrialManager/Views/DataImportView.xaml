@@ -13,8 +13,7 @@
              mc:Ignorable="d">
 
     <Grid Margin="16">
-        <mde:TabControlStepper MaxHeight="{Binding Path=Height, RelativeSource={RelativeSource AncestorType=Grid}}"
-                               IsLinear="True"
+        <mde:TabControlStepper IsLinear="True"
                                Layout="Horizontal">
             <!-- Import File section -->
             <TabItem>

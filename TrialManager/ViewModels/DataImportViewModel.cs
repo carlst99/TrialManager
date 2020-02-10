@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using MaterialDesignThemes.Wpf;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Stylet;
 using System;
@@ -15,6 +16,8 @@ namespace TrialManager.ViewModels
 {
     public class DataImportViewModel : ViewModelBase
     {
+        private readonly ISnackbarMessageQueue _messageQueue;
+
         private string _filePath;
         private ReadOnlyCollection<string> _csvHeaders;
         private List<PropertyHeaderPair> _mappedProperties;
@@ -67,9 +70,13 @@ namespace TrialManager.ViewModels
 
         #endregion
 
-        public DataImportViewModel(IEventAggregator eventAggregator, INavigationService navigationService)
+        public DataImportViewModel(
+            IEventAggregator eventAggregator,
+            INavigationService navigationService,
+            ISnackbarMessageQueue messageQueue)
             : base(eventAggregator, navigationService)
         {
+            _messageQueue = messageQueue;
         }
 
         public void OpenFileSelectionDialog()

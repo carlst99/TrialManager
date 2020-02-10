@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using MaterialDesignThemes.Wpf;
+using Serilog;
 using Serilog.Events;
 using StyletIoC;
 using System;
@@ -29,6 +30,7 @@ namespace TrialManager
             builder.Bind<IDrawCreationService>().To<DrawCreationService>().InSingletonScope();
             builder.Bind<ILocationService>().To<LocationService>().InSingletonScope();
             builder.Bind<INavigationService>().To<NavigationService>().InSingletonScope();
+            builder.Bind<ISnackbarMessageQueue>().To<SnackbarMessageQueue>().InSingletonScope();
 
             base.ConfigureIoC(builder);
         }
