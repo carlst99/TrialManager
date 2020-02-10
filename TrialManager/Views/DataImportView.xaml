@@ -12,9 +12,10 @@
              d:DesignWidth="800"
              mc:Ignorable="d">
 
-    <ScrollViewer Margin="16">
-        <mde:TabControlStepper IsLinear="True"
-                               Layout="Vertical">
+    <Grid Margin="16">
+        <mde:TabControlStepper MaxHeight="{Binding Path=Height, RelativeSource={RelativeSource AncestorType=Grid}}"
+                               IsLinear="True"
+                               Layout="Horizontal">
             <!-- Import File section -->
             <TabItem>
                 <TabItem.Header>
@@ -35,14 +36,28 @@
                                        IsContinueEnabled="{Binding DataContext.IsImportDataStepValid, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                 </StackPanel>
             </TabItem>
+
             <!-- Setup Mappings section -->
-            <TabItem>
+            <TabItem MaxHeight="200">
                 <TabItem.Header>
                     <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
                                Text="Setup Mappings"/>
                 </TabItem.Header>
-                <StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
                     <ListView ItemsSource="{Binding DataContext.MappedProperties, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <!-- Allow vertical content alignment on the GridView -->
+                        <ListView.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource MaterialDesignGridViewItem}"
+                                   TargetType="ListViewItem">
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Width="Auto"
@@ -77,17 +92,13 @@
                                 </GridViewColumn>
                             </GridView>
                         </ListView.View>
-                        <ListView.ItemContainerStyle>
-                            <Style BasedOn="{StaticResource MaterialDesignGridViewItem}"
-                                   TargetType="ListViewItem">
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
                     </ListView>
-                    <mde:StepButtonBar Back="BACK"
+                    <mde:StepButtonBar Grid.Row="1"
+                                       Back="BACK"
                                        Continue="CONTINUE"/>
-                </StackPanel>
+                </Grid>
             </TabItem>
+
             <!-- Map preferred day section -->
             <TabItem>
                 <TabItem.Header>
@@ -97,6 +108,7 @@
                 <mde:StepButtonBar Back="BACK"
                                    Continue="CONTINUE"/>
             </TabItem>
+
             <!-- Correct Duplicates section -->
             <TabItem>
                 <TabItem.Header>
@@ -107,5 +119,5 @@
                                    Continue="CONTINUE"/>
             </TabItem>
         </mde:TabControlStepper>
-    </ScrollViewer>
+    </Grid>
 </UserControl>
