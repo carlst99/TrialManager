@@ -1,8 +1,6 @@
-﻿using Realms;
-using Serilog;
+﻿using Serilog;
 using Stylet;
 using System;
-using TrialManager.Model;
 using TrialManager.Resources;
 using TrialManager.Services;
 
@@ -10,17 +8,9 @@ namespace TrialManager.ViewModels.Base
 {
     public abstract class ViewModelBase : Screen, IViewModelBase
     {
-        private Realm _realmInstance;
-
         public string this[string index] => AppStrings.ResourceManager.GetString(index);
         public IEventAggregator EventAggregator { get; }
         public INavigationService NavigationService { get; }
-
-        public Realm RealmInstance
-        {
-            get => _realmInstance ?? (_realmInstance = RealmHelpers.GetRealmInstance());
-            set => _realmInstance = value;
-        }
 
         protected ViewModelBase(IEventAggregator eventAggregator, INavigationService navigationService)
         {
@@ -33,17 +23,9 @@ namespace TrialManager.ViewModels.Base
 
     public abstract class ViewModelConductorBase : Conductor<Screen>, IViewModelBase
     {
-        private Realm _realmInstance;
-
         public string this[string index] => AppStrings.ResourceManager.GetString(index);
         public IEventAggregator EventAggregator { get; }
         public INavigationService NavigationService { get; }
-
-        public Realm RealmInstance
-        {
-            get => _realmInstance ?? (_realmInstance = RealmHelpers.GetRealmInstance());
-            set => _realmInstance = value;
-        }
 
         protected ViewModelConductorBase(IEventAggregator eventAggregator, INavigationService navigationService)
         {

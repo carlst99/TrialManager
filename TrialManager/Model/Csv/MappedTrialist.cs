@@ -1,5 +1,5 @@
-﻿using Realms;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using TrialManager.Model.LocationDb;
 using TrialManager.Model.TrialistDb;
 using TrialManager.Services;
@@ -8,17 +8,14 @@ namespace TrialManager.Model.Csv
 {
     internal class MappedTrialist
     {
-        private ILocationService _locationService;
+        private readonly ILocationService _locationService;
 
         #region Mapped Properties
 
         public string FullName;
         public EntityStatus Status;
         public string Address;
-        public string PhoneNumber;
-        public string Email;
-        public string PreferredDay;
-        public string TravellingPartner;
+        public string PreferredDayString;
 
         public string DogOneName;
         public EntityStatus DogOneStatus;
@@ -42,28 +39,20 @@ namespace TrialManager.Model.Csv
         /// Converts this <see cref="MappedTrialist"/> to a <see cref="Trialist"/>. Does not fill <see cref="Trialist.TravellingPartner"/>
         /// </summary>
         /// <returns></returns>
-        public Trialist ToTrialist(Realm realm)
+        public Trialist ToTrialist(Dictionary<string, DateTimeOffset> preferredDayMappings)
         {
             Trialist trialist = new Trialist
             {
-                Id = RealmHelpers.GetNextId<Trialist>(realm),
                 Name = FullName,
                 Status = Status,
-                Address = Address,
-                PhoneNumber = PhoneNumber,
-                Email = Email,
-                TravellingPartner = null
+                Address = Address
             };
 
             // Parse preferred day
-            DateTimeOffset preferredDay;
-            if (PreferredDay == "Friday 27th September")
-                preferredDay = new DateTimeOffset(2019, 9, 27, 7, 0, 0, TimeSpan.Zero);
-            else if (PreferredDay == "Saturday 28th September")
-                preferredDay = new DateTimeOffset(2019, 9, 28, 7, 0, 0, TimeSpan.Zero);
+            if (preferredDayMappings.ContainsKey(PreferredDayString))
+                trialist.PreferredDay = preferredDayMappings[PreferredDayString];
             else
-                preferredDay = DateTimeOffset.MinValue;
-            trialist.PreferredDay = preferredDay;
+                trialist.PreferredDay = DateTimeOffset.MinValue;
 
             // Add dogs
             if (!string.IsNullOrEmpty(DogOneName))
@@ -79,7 +68,7 @@ namespace TrialManager.Model.Csv
 
             // Setup location
             if (_locationService.TryResolve(Address, out ILocation location))
-                trialist.Location = location.Location;
+                trialist.CoordinatePoint = location.Location;
 
             return trialist;
         }

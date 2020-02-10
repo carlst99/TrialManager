@@ -241,4 +241,8 @@
     <value>Right click to edit entry</value>
     <comment>This tooltip appears on an editable data entry which can be edited by right clicking</comment>
   </data>
+  <data name="ToolTip_ViewDocumentation" xml:space="preserve">
+    <value>Help</value>
+    <comment>This tooltip appears over a control which opens the application documentation</comment>
+  </data>
 </root>

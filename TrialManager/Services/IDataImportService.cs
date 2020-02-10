@@ -1,5 +1,10 @@
 ﻿using Realms;
+using Stylet;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using TrialManager.Model.Csv;
+using TrialManager.Model.TrialistDb;
 
 namespace TrialManager.Services
 {
@@ -11,12 +16,6 @@ namespace TrialManager.Services
         /// <param name="path">The path to the file</param>
         /// <param name="merge">Whether the import should be merged with existing data</param>
         /// <exception cref="IOException"></exception>
-        Task<bool> ImportFromCsv(string path, bool merge);
-
-        /// <summary>
-        /// Clears existing data in the database
-        /// </summary>
-        /// <returns></returns>
-        Task ClearExistingData(Realm realm = null);
+        Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, Dictionary<string, DateTimeOffset> preferredDayMappings);
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using TrialManager.Model;
+using TrialManager.Model.TrialistDb;
 
 namespace TrialManager.Services
 {
     public interface IDrawCreationService
     {
-        IEnumerable<TrialistDrawEntry> CreateDraw(int maxRuns, DateTime startDay, string address);
+        IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRuns, DateTime startDay, string address);
     }
 }

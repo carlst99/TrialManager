@@ -338,5 +338,14 @@ namespace TrialManager.Resources {
                 return ResourceManager.GetString("ToolTip_EditRightClickShortcutHint", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        public static string ToolTip_ViewDocumentation {
+            get {
+                return ResourceManager.GetString("ToolTip_ViewDocumentation", resourceCulture);
+            }
+        }
     }
 }
