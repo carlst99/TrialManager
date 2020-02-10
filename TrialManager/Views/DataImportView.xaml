@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:TrialManager.Views"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
              xmlns:mdem="clr-namespace:MaterialDesignExtensions.Model;assembly=MaterialDesignExtensions"
              xmlns:s="https://github.com/canton7/Stylet"
@@ -11,27 +12,27 @@
              d:DesignWidth="800"
              mc:Ignorable="d">
 
-    <Grid Margin="16">
+    <ScrollViewer Margin="16">
         <mde:TabControlStepper IsLinear="True"
                                Layout="Vertical">
             <!-- Import File section -->
             <TabItem>
                 <TabItem.Header>
                     <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                               Text="{Binding DataContext.[Header_SelectDataFile], Mode=OneTime, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                               Text="{Binding DataContext.[Header_SelectDataFile], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                 </TabItem.Header>
                 <StackPanel>
                     <Button Command="{s:Action OpenFileSelectionDialog}"
-                            Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=Grid}}"
+                            Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
                     <TextBlock Margin="0,8,0,0"
                                Style="{StaticResource MaterialDesignBody1TextBlock}">
                         <Run Text="Selected Data File: "/>
                         <Run FontWeight="Bold"
-                             Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                             Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                     </TextBlock>
                     <mde:StepButtonBar Continue="CONTINUE"
-                                       IsContinueEnabled="{Binding DataContext.IsImportDataStepValid, Mode=OneWay, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                                       IsContinueEnabled="{Binding DataContext.IsImportDataStepValid, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                 </StackPanel>
             </TabItem>
             <!-- Setup Mappings section -->
@@ -40,8 +41,52 @@
                     <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
                                Text="Setup Mappings"/>
                 </TabItem.Header>
-                <mde:StepButtonBar Back="BACK"
-                                   Continue="CONTINUE"/>
+                <StackPanel>
+                    <ListView ItemsSource="{Binding DataContext.MappedProperties, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="Auto"
+                                                Header="TrialManager Property">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Margin="0,0,8,0">
+                                                <Run FontWeight="Bold"
+                                                     Text="{Binding MappedProperty, Mode=OneTime}"/>
+                                                <Run Text=":"/>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="Auto">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}"
+                                                         Kind="ArrowBackCircle"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="Auto"
+                                                Header="Data File Property">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Background="{StaticResource MaterialDesignPaper}"
+                                                      ItemsSource="{Binding DataContext.CsvHeaders, Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      SelectedItem="{Binding DataFileProperty}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource MaterialDesignGridViewItem}"
+                                   TargetType="ListViewItem">
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                    <mde:StepButtonBar Back="BACK"
+                                       Continue="CONTINUE"/>
+                </StackPanel>
             </TabItem>
             <!-- Map preferred day section -->
             <TabItem>
@@ -62,5 +107,5 @@
                                    Continue="CONTINUE"/>
             </TabItem>
         </mde:TabControlStepper>
-    </Grid>
+    </ScrollViewer>
 </UserControl>
