@@ -14,15 +14,37 @@ using TrialManager.ViewModels.Base;
 
 namespace TrialManager.ViewModels
 {
+    public enum ImportSection
+    {
+        ImportFile,
+        SetupMappings,
+        PreferredDay,
+        Duplicates
+    }
+
     public class DataImportViewModel : ViewModelBase
     {
+        #region Fields
+
         private readonly ISnackbarMessageQueue _messageQueue;
 
         private string _filePath;
         private ReadOnlyCollection<string> _csvHeaders;
         private List<PropertyHeaderPair> _mappedProperties;
 
-        #region Import Data Properties
+        #endregion
+
+        #region Step Validation Fields
+
+        private bool _isImportFileSectionValid;
+        private bool _isImportFileSectionExpanded;
+        private bool _isSetupMappingsSectionExpanded;
+        private bool _isPreferredDaySectionExpanded;
+        private bool _isDuplicatesSectionExpanded;
+
+        #endregion
+
+        #region Import File Properties
 
         /// <summary>
         /// Gets or sets the path to the imported file
@@ -34,7 +56,6 @@ namespace TrialManager.ViewModels
             {
                 SetAndNotify(ref _filePath, value);
                 NotifyOfPropertyChange(nameof(FileName));
-                NotifyOfPropertyChange(nameof(IsImportDataStepValid));
             }
         }
 
@@ -66,7 +87,38 @@ namespace TrialManager.ViewModels
 
         #region Step Validation Properties
 
-        public bool IsImportDataStepValid => CheckValidCsvFile();
+        /// <summary>
+        /// Gets or sets a value indicating whether the Import File Section is valid
+        /// </summary>
+        public bool IsImportFileSectionValid
+        {
+            get => _isImportFileSectionValid;
+            set => SetAndNotify(ref _isImportFileSectionValid, value);
+        }
+
+        public bool IsImportFileSectionExpanded
+        {
+            get => _isImportFileSectionExpanded;
+            set => SetAndNotify(ref _isImportFileSectionExpanded, value);
+        }
+
+        public bool IsSetupMappingsSectionExpanded
+        {
+            get => _isSetupMappingsSectionExpanded;
+            set => SetAndNotify(ref _isSetupMappingsSectionExpanded, value);
+        }
+
+        public bool IsPreferredDaySectionExpanded
+        {
+            get => _isPreferredDaySectionExpanded;
+            set => SetAndNotify(ref _isPreferredDaySectionExpanded, value);
+        }
+
+        public bool IsDuplicatesSectionExpanded
+        {
+            get => _isDuplicatesSectionExpanded;
+            set => SetAndNotify(ref _isDuplicatesSectionExpanded, value);
+        }
 
         #endregion
 
@@ -77,9 +129,10 @@ namespace TrialManager.ViewModels
             : base(eventAggregator, navigationService)
         {
             _messageQueue = messageQueue;
+            IsImportFileSectionExpanded = true;
         }
 
-        public void OpenFileSelectionDialog()
+        public async void OpenFileSelectionDialog()
         {
             CommonOpenFileDialog cofd = new CommonOpenFileDialog()
             {
@@ -87,19 +140,29 @@ namespace TrialManager.ViewModels
                 DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 Filters = { new CommonFileDialogFilter("Google Forms File", "*.csv") },
             };
-            switch (cofd.ShowDialog())
+            if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                case CommonFileDialogResult.Ok:
+                if (await DataImportService.IsValidCsvFile(cofd.FileName).ConfigureAwait(false))
+                {
                     FilePath = cofd.FileName;
-                    break;
+                    IsImportFileSectionValid = true;
+                    PrepareSetupMappingsSection();
+                }
+                else
+                {
+                    IsImportFileSectionValid = false;
+                    _messageQueue.Enqueue("Please select a valid CSV file");
+                }
             }
-            PrepareSetupMappings();
         }
 
-        public void PrepareSetupMappings()
+        public void PrepareSetupMappingsSection()
         {
             if (!File.Exists(FilePath))
-                MessageBox.Show("The file you have selected no longer exists. Please select a file again");
+            {
+                _messageQueue.Enqueue("The file you have selected no longer exists. Please select a file again");
+                return;
+            }
 
             using StreamReader reader = new StreamReader(FilePath);
             using CsvReader csv = new CsvReader(reader, CultureInfo.CurrentCulture);
@@ -118,18 +181,49 @@ namespace TrialManager.ViewModels
             MappedProperties = mappings;
         }
 
-        /// <summary>
-        /// Performs a basic check for a CSV file by looking for the separator chars (; or ,)
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckValidCsvFile()
+        public async void ValidateAndContinue(ImportSection section)
         {
-            if (string.IsNullOrEmpty(FilePath))
-                return false;
+            switch (section)
+            {
+                case ImportSection.ImportFile:
+                    if (!await DataImportService.IsValidCsvFile(FilePath).ConfigureAwait(false))
+                    {
+                        _messageQueue.Enqueue("Please select a valid CSV file!");
+                        break;
+                    }
+                    IsImportFileSectionExpanded = false;
+                    IsSetupMappingsSectionExpanded = true;
+                    break;
+                case ImportSection.SetupMappings:
+                    _messageQueue.Enqueue("Setup mappings validation Carl!");
+                    IsSetupMappingsSectionExpanded = false;
+                    IsPreferredDaySectionExpanded = true;
+                    break;
+                case ImportSection.PreferredDay:
+                    _messageQueue.Enqueue("Setup preferred day validation Carl!");
+                    IsPreferredDaySectionExpanded = false;
+                    IsDuplicatesSectionExpanded = true;
+                    break;
+            }
+        }
 
-            using StreamReader sr = new StreamReader(FilePath);
-            string line = sr.ReadLine();
-            return line.Contains(';') || line.Contains(',');
+        public void StepBack(ImportSection section)
+        {
+            switch (section)
+            {
+                case ImportSection.SetupMappings:
+                    IsSetupMappingsSectionExpanded = false;
+                    IsImportFileSectionExpanded = true;
+                    break;
+                case ImportSection.PreferredDay:
+                    IsPreferredDaySectionExpanded = false;
+                    IsSetupMappingsSectionExpanded = true;
+                    break;
+                case ImportSection.Duplicates:
+                    IsDuplicatesSectionExpanded = false;
+                    IsPreferredDaySectionExpanded = true;
+                    break;
+            }
         }
     }
 }

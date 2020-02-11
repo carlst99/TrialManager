@@ -7,116 +7,369 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
              xmlns:mdem="clr-namespace:MaterialDesignExtensions.Model;assembly=MaterialDesignExtensions"
+             xmlns:model="clr-namespace:TrialManager.ViewModels"
              xmlns:s="https://github.com/canton7/Stylet"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
 
-    <Grid Margin="16">
-        <mde:TabControlStepper IsLinear="True"
-                               Layout="Horizontal">
-            <!-- Import File section -->
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                               Text="{Binding DataContext.[Header_SelectDataFile], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                </TabItem.Header>
-                <StackPanel>
-                    <Button Command="{s:Action OpenFileSelectionDialog}"
-                            Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
-                    <TextBlock Margin="0,8,0,0"
-                               Style="{StaticResource MaterialDesignBody1TextBlock}">
-                        <Run Text="Selected Data File: "/>
-                        <Run FontWeight="Bold"
-                             Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                    </TextBlock>
-                    <mde:StepButtonBar Continue="CONTINUE"
-                                       IsContinueEnabled="{Binding DataContext.IsImportDataStepValid, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                </StackPanel>
-            </TabItem>
+    <UserControl.Resources>
+        <Style x:Key="MaterialDesignDisabledExpander"
+               TargetType="{x:Type Expander}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
+            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <Setter Property="md:ExpanderAssist.DownHeaderPadding" Value="24,12,24,12"/>
+            <Setter Property="md:ExpanderAssist.UpHeaderPadding" Value="24,12,24,12"/>
+            <Setter Property="md:ExpanderAssist.LeftHeaderPadding" Value="12,24,12,24"/>
+            <Setter Property="md:ExpanderAssist.RightHeaderPadding" Value="12,24,12,24"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Expander}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <DockPanel Background="{TemplateBinding Background}">
+                                <ToggleButton Name="HeaderSite"
+                                              BorderThickness="0"
+                                              Content="{TemplateBinding Header}"
+                                              ContentStringFormat="{TemplateBinding HeaderStringFormat}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                                              Cursor="Hand"
+                                              DockPanel.Dock="Top"
+                                              Focusable="False"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              IsEnabled="False"
+                                              IsTabStop="False"
+                                              Opacity=".87"
+                                              Style="{StaticResource MaterialDesignExpanderDownHeaderStyle}"
+                                              TextElement.FontSize="15"/>
+                                <Border Name="ContentSite">
+                                    <Grid Name="ContentPanel"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                        <ContentPresenter Name="PART_Content"
+                                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                                          Focusable="False"
+                                                          Opacity="0"/>
+                                    </Grid>
+                                </Border>
+                            </DockPanel>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="ExpansionStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="0"
+                                                          To="Expanded">
+                                            <VisualTransition.GeneratedEasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </VisualTransition.GeneratedEasingFunction>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Content"
+                                                                               Storyboard.TargetProperty="Visibility">
+                                                    <DiscreteObjectKeyFrame KeyTime="0"
+                                                                            Value="{x:Static Visibility.Visible}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="PART_Content"
+                                                                 Storyboard.TargetProperty="Opacity"
+                                                                 To="1"
+                                                                 Duration="0:0:0.3"/>
+                                            </Storyboard>
+                                        </VisualTransition>
+                                        <VisualTransition GeneratedDuration="0"
+                                                          To="Collapsed">
+                                            <VisualTransition.GeneratedEasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </VisualTransition.GeneratedEasingFunction>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Content"
+                                                                               Storyboard.TargetProperty="Visibility">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0.3"
+                                                                            Value="{x:Static Visibility.Hidden}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="PART_Content"
+                                                                 Storyboard.TargetProperty="Opacity"
+                                                                 To="0"
+                                                                 Duration="0:0:0.3"/>
+                                            </Storyboard>
+                                        </VisualTransition>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Expanded">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="PART_Content"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="1"
+                                                             Duration="0"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Content"
+                                                                           Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Collapsed">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="PART_Content"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0"
+                                                             Duration="0"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Content"
+                                                                           Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{x:Static Visibility.Hidden}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ExpandDirection" Value="Right">
+                                <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Left"/>
+                                <Setter TargetName="ContentPanel" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform CenterX="1" CenterY="0.5" ScaleX="{Binding Opacity, ElementName=PART_Content}"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="ContentPanel" Property="Height" Value="Auto"/>
+                                <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource MaterialDesignExpanderRightHeaderStyle}"/>
+                            </Trigger>
 
-            <!-- Setup Mappings section -->
-            <TabItem MaxHeight="200">
-                <TabItem.Header>
-                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                               Text="Setup Mappings"/>
-                </TabItem.Header>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                            <Trigger Property="ExpandDirection" Value="Left">
+                                <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Right"/>
+                                <Setter TargetName="ContentPanel" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform CenterX="0" CenterY="0.5" ScaleX="{Binding Opacity, ElementName=PART_Content}"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="ContentPanel" Property="Height" Value="Auto"/>
+                                <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource MaterialDesignExpanderLeftHeaderStyle}"/>
+                            </Trigger>
 
-                    <ListView ItemsSource="{Binding DataContext.MappedProperties, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
-                        <!-- Allow vertical content alignment on the GridView -->
-                        <ListView.ItemContainerStyle>
-                            <Style BasedOn="{StaticResource MaterialDesignGridViewItem}"
-                                   TargetType="ListViewItem">
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
+                            <Trigger Property="ExpandDirection" Value="Up">
+                                <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Bottom"/>
+                                <Setter TargetName="ContentPanel" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform CenterX="0.5" CenterY="1" ScaleY="{Binding Opacity, ElementName=PART_Content}"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="ContentPanel" Property="Width" Value="Auto"/>
+                                <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource MaterialDesignExpanderUpHeaderStyle}"/>
+                            </Trigger>
 
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Width="Auto"
-                                                Header="TrialManager Property">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="0,0,8,0">
-                                                <Run FontWeight="Bold"
-                                                     Text="{Binding MappedProperty, Mode=OneTime}"/>
-                                                <Run Text=":"/>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Width="Auto">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}"
-                                                         Kind="ArrowBackCircle"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Width="Auto"
-                                                Header="Data File Property">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ComboBox Background="{StaticResource MaterialDesignPaper}"
-                                                      ItemsSource="{Binding DataContext.CsvHeaders, Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                      SelectedItem="{Binding DataFileProperty}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                    <mde:StepButtonBar Grid.Row="1"
-                                       Back="BACK"
-                                       Continue="CONTINUE"/>
-                </Grid>
-            </TabItem>
+                            <Trigger Property="ExpandDirection" Value="Down">
+                                <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Top"/>
+                                <Setter TargetName="ContentPanel" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform CenterX="0.5" CenterY="0" ScaleY="{Binding Opacity, ElementName=PART_Content}"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="ContentPanel" Property="Width" Value="Auto"/>
+                                <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource MaterialDesignExpanderDownHeaderStyle}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
-            <!-- Map preferred day section -->
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                               Text="Map 'Preferred Day' Dates"/>
-                </TabItem.Header>
-                <mde:StepButtonBar Back="BACK"
-                                   Continue="CONTINUE"/>
-            </TabItem>
+    <md:Card Margin="16">
+        <ScrollViewer x:Name="ScrlVwrMain">
+            <StackPanel>
+                <!-- Import Data Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsImportFileSectionExpanded, Mode=OneWay}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="{Binding [Header_SelectDataFile], Mode=OneTime}"
+                                     Icon="1"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Margin="24,8,24,16">
+                        <Button Command="{s:Action OpenFileSelectionDialog}"
+                                Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
+                        <TextBlock Margin="0,8,0,0"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}">
+                            <Run Text="Selected Data File: "/>
+                            <Run FontWeight="Bold"
+                                 Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </TextBlock>
+                        <Button Margin="0,8,0,0"
+                                HorizontalAlignment="Left"
+                                Command="{s:Action ValidateAndContinue}"
+                                CommandParameter="{x:Static model:ImportSection.ImportFile}"
+                                Content="CONTINUE"
+                                IsEnabled="{Binding IsImportFileSectionValid}"/>
+                    </StackPanel>
+                </Expander>
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
 
-            <!-- Correct Duplicates section -->
-            <TabItem>
-                <TabItem.Header>
-                    <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                               Text="Correct Duplicates"/>
-                </TabItem.Header>
-                <mde:StepButtonBar Back="BACK"
-                                   Continue="CONTINUE"/>
-            </TabItem>
-        </mde:TabControlStepper>
-    </Grid>
+                <!-- Setup Mappings Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsSetupMappingsSectionExpanded, Mode=OneWay}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="Setup Property Mappings"
+                                     Icon="2"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Margin="24,8,24,16">
+                        <ListView ItemsSource="{Binding MappedProperties, Mode=OneWay}"
+                                  PreviewMouseWheel="ListView_PreviewMouseWheel">
+                            <ListView.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource MaterialDesignGridViewItem}"
+                                       TargetType="ListViewItem">
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="Auto"
+                                                    Header="TrialManager Property">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Margin="0,0,8,0">
+                                                    <Run FontWeight="Bold"
+                                                         Text="{Binding MappedProperty, Mode=OneTime}"/>
+                                                    <Run Text=":"/>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="Auto">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}"
+                                                             Kind="ArrowBackCircle"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="Auto"
+                                                    Header="Data File Property">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox Background="{StaticResource MaterialDesignPaper}"
+                                                          ItemsSource="{Binding DataContext.CsvHeaders, Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                          SelectedItem="{Binding DataFileProperty}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                        <StackPanel Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <Button Margin="0,0,12,0"
+                                    Command="{s:Action StepBack}"
+                                    CommandParameter="{x:Static model:ImportSection.SetupMappings}"
+                                    Content="BACK"
+                                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                            <Button Command="{s:Action ValidateAndContinue}"
+                                    CommandParameter="{x:Static model:ImportSection.SetupMappings}"
+                                    Content="CONTINUE"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
+
+                <!-- Preferred Day Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsPreferredDaySectionExpanded}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="Map 'Preferred Day' Dates"
+                                     Icon="3"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Margin="24,8,24,16">
+                        <Button Command="{s:Action OpenFileSelectionDialog}"
+                                Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
+                        <TextBlock Margin="0,8,0,0"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}">
+                            <Run Text="Selected Data File: "/>
+                            <Run FontWeight="Bold"
+                                 Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </TextBlock>
+
+                        <StackPanel Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <Button Margin="0,0,12,0"
+                                    Command="{s:Action StepBack}"
+                                    CommandParameter="{x:Static model:ImportSection.PreferredDay}"
+                                    Content="BACK"
+                                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                            <Button Command="{s:Action ValidateAndContinue}"
+                                    CommandParameter="{x:Static model:ImportSection.PreferredDay}"
+                                    Content="CONTINUE"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
+
+                <!-- Correct Duplicates Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsDuplicatesSectionExpanded}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="Correct Duplicates"
+                                     Icon="4"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Margin="24,8,24,16">
+                        <Button Command="{s:Action OpenFileSelectionDialog}"
+                                Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
+                        <TextBlock Margin="0,8,0,0"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}">
+                            <Run Text="Selected Data File: "/>
+                            <Run FontWeight="Bold"
+                                 Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </TextBlock>
+
+                        <StackPanel Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <Button Margin="0,0,12,0"
+                                    Command="{s:Action StepBack}"
+                                    CommandParameter="{x:Static model:ImportSection.Duplicates}"
+                                    Content="BACK"
+                                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                            <Button Command="{s:Action ValidateAndContinue}"
+                                    CommandParameter="{x:Static model:ImportSection.Duplicates}"
+                                    Content="CONTINUE"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
+            </StackPanel>
+        </ScrollViewer>
+    </md:Card>
 </UserControl>
