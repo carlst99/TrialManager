@@ -180,7 +180,7 @@
     </UserControl.Resources>
 
     <md:Card Margin="16">
-        <ScrollViewer>
+        <ScrollViewer x:Name="ScrlVwrMain">
             <StackPanel>
                 <!-- Import Data Section -->
                 <Expander HorizontalAlignment="Stretch"
@@ -226,7 +226,8 @@
                         </StackPanel>
                     </Expander.Header>
                     <StackPanel Margin="24,8,24,16">
-                        <ListView ItemsSource="{Binding MappedProperties, Mode=OneWay}">
+                        <ListView ItemsSource="{Binding MappedProperties, Mode=OneWay}"
+                                  PreviewMouseWheel="ListView_PreviewMouseWheel">
                             <ListView.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource MaterialDesignGridViewItem}"
                                        TargetType="ListViewItem">
