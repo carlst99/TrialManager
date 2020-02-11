@@ -53,6 +53,20 @@ namespace TrialManager.Services
         }
 
         /// <summary>
+        /// Performs a basic check for a CSV file by looking for the separator chars (; or ,)
+        /// </summary>
+        /// <returns>True if the file appears to be of a valid CSV structure</returns>
+        public static async Task<bool> IsValidCsvFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+                return false;
+
+            using StreamReader sr = new StreamReader(filePath);
+            string line = await sr.ReadLineAsync().ConfigureAwait(false);
+            return line.Contains(';') || line.Contains(',');
+        }
+
+        /// <summary>
         /// Packages the functionality for mapping and enumerating a CSV file
         /// </summary>
         /// <param name="path">The path to the CSV file</param>
