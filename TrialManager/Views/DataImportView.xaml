@@ -181,18 +181,9 @@
 
     <md:Card Margin="16">
         <ScrollViewer>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <StackPanel>
                 <!-- Import Data Section -->
-                <Expander Grid.Row="0"
-                          HorizontalAlignment="Stretch"
+                <Expander HorizontalAlignment="Stretch"
                           IsExpanded="{Binding IsImportFileSectionExpanded, Mode=OneWay}"
                           Style="{StaticResource MaterialDesignDisabledExpander}">
                     <Expander.Header>
@@ -219,15 +210,13 @@
                                 IsEnabled="{Binding IsImportFileSectionValid}"/>
                     </StackPanel>
                 </Expander>
-                <Border Grid.Row="1"
-                        Height="1"
+                <Border Height="1"
                         HorizontalAlignment="Stretch"
                         Background="{DynamicResource MaterialDesignDivider}"
                         SnapsToDevicePixels="True"/>
 
                 <!-- Setup Mappings Section -->
-                <Expander Grid.Row="2"
-                          HorizontalAlignment="Stretch"
+                <Expander HorizontalAlignment="Stretch"
                           IsExpanded="{Binding IsSetupMappingsSectionExpanded, Mode=OneWay}"
                           Style="{StaticResource MaterialDesignDisabledExpander}">
                     <Expander.Header>
@@ -236,14 +225,8 @@
                                      Icon="2"/>
                         </StackPanel>
                     </Expander.Header>
-                    <Grid Margin="24,8,24,16">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <ListView Grid.Row="0"
-                                  ItemsSource="{Binding MappedProperties, Mode=OneWay}">
+                    <StackPanel Margin="24,8,24,16">
+                        <ListView ItemsSource="{Binding MappedProperties, Mode=OneWay}">
                             <ListView.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource MaterialDesignGridViewItem}"
                                        TargetType="ListViewItem">
@@ -287,8 +270,7 @@
                             </ListView.View>
                         </ListView>
 
-                        <StackPanel Grid.Row="1"
-                                    Margin="0,8,0,0"
+                        <StackPanel Margin="0,8,0,0"
                                     HorizontalAlignment="Left"
                                     Orientation="Horizontal">
                             <Button Margin="0,0,12,0"
@@ -300,16 +282,15 @@
                                     CommandParameter="{x:Static model:ImportSection.SetupMappings}"
                                     Content="CONTINUE"/>
                         </StackPanel>
-                    </Grid>
+                    </StackPanel>
                 </Expander>
-                <Border Grid.Row="3"
-                        Height="1"
+                <Border Height="1"
                         HorizontalAlignment="Stretch"
                         Background="{DynamicResource MaterialDesignDivider}"
                         SnapsToDevicePixels="True"/>
 
-                <Expander Grid.Row="4"
-                          HorizontalAlignment="Stretch"
+                <!-- Preferred Day Section -->
+                <Expander HorizontalAlignment="Stretch"
                           IsExpanded="{Binding IsPreferredDaySectionExpanded}"
                           Style="{StaticResource MaterialDesignDisabledExpander}">
                     <Expander.Header>
@@ -343,23 +324,51 @@
                         </StackPanel>
                     </StackPanel>
                 </Expander>
-                <Border Grid.Row="5"
-                        Height="1"
+                <Border Height="1"
                         HorizontalAlignment="Stretch"
                         Background="{DynamicResource MaterialDesignDivider}"
                         SnapsToDevicePixels="True"/>
-            </Grid>
+
+                <!-- Correct Duplicates Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsDuplicatesSectionExpanded}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="Correct Duplicates"
+                                     Icon="4"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Margin="24,8,24,16">
+                        <Button Command="{s:Action OpenFileSelectionDialog}"
+                                Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
+                        <TextBlock Margin="0,8,0,0"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}">
+                            <Run Text="Selected Data File: "/>
+                            <Run FontWeight="Bold"
+                                 Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </TextBlock>
+
+                        <StackPanel Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <Button Margin="0,0,12,0"
+                                    Command="{s:Action StepBack}"
+                                    CommandParameter="{x:Static model:ImportSection.Duplicates}"
+                                    Content="BACK"
+                                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                            <Button Command="{s:Action ValidateAndContinue}"
+                                    CommandParameter="{x:Static model:ImportSection.Duplicates}"
+                                    Content="CONTINUE"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
+            </StackPanel>
         </ScrollViewer>
     </md:Card>
-    <!--<mde:TabControlStepper IsLinear="True"
-                               Layout="Horizontal">
-        <TabItem>
-            <TabItem.Header>
-                <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                            Text="Correct Duplicates"/>
-            </TabItem.Header>
-            <mde:StepButtonBar Back="BACK"
-                                Continue="CONTINUE"/>
-        </TabItem>
-    </mde:TabControlStepper>-->
 </UserControl>

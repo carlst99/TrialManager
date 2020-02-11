@@ -18,7 +18,8 @@ namespace TrialManager.ViewModels
     {
         ImportFile,
         SetupMappings,
-        PreferredDay
+        PreferredDay,
+        Duplicates
     }
 
     public class DataImportViewModel : ViewModelBase
@@ -39,6 +40,7 @@ namespace TrialManager.ViewModels
         private bool _isImportFileSectionExpanded;
         private bool _isSetupMappingsSectionExpanded;
         private bool _isPreferredDaySectionExpanded;
+        private bool _isDuplicatesSectionExpanded;
 
         #endregion
 
@@ -110,6 +112,12 @@ namespace TrialManager.ViewModels
         {
             get => _isPreferredDaySectionExpanded;
             set => SetAndNotify(ref _isPreferredDaySectionExpanded, value);
+        }
+
+        public bool IsDuplicatesSectionExpanded
+        {
+            get => _isDuplicatesSectionExpanded;
+            set => SetAndNotify(ref _isDuplicatesSectionExpanded, value);
         }
 
         #endregion
@@ -187,9 +195,14 @@ namespace TrialManager.ViewModels
                     IsSetupMappingsSectionExpanded = true;
                     break;
                 case ImportSection.SetupMappings:
-                    _messageQueue.Enqueue("Setup validation Carl!");
+                    _messageQueue.Enqueue("Setup mappings validation Carl!");
                     IsSetupMappingsSectionExpanded = false;
                     IsPreferredDaySectionExpanded = true;
+                    break;
+                case ImportSection.PreferredDay:
+                    _messageQueue.Enqueue("Setup preferred day validation Carl!");
+                    IsPreferredDaySectionExpanded = false;
+                    IsDuplicatesSectionExpanded = true;
                     break;
             }
         }
@@ -205,6 +218,10 @@ namespace TrialManager.ViewModels
                 case ImportSection.PreferredDay:
                     IsPreferredDaySectionExpanded = false;
                     IsSetupMappingsSectionExpanded = true;
+                    break;
+                case ImportSection.Duplicates:
+                    IsDuplicatesSectionExpanded = false;
+                    IsPreferredDaySectionExpanded = true;
                     break;
             }
         }
