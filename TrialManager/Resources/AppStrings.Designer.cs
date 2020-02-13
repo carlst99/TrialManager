@@ -106,6 +106,15 @@ namespace TrialManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        public static string Command_ViewDocumentation {
+            get {
+                return ResourceManager.GetString("Command_ViewDocumentation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Address.
         /// </summary>
         public static string Header_Address {
@@ -340,7 +349,7 @@ namespace TrialManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Help.
+        ///   Looks up a localized string similar to View TrialManager&apos;s documentation.
         /// </summary>
         public static string ToolTip_ViewDocumentation {
             get {

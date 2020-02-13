@@ -5,10 +5,9 @@
              xmlns:local="clr-namespace:TrialManager.Views"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
-             xmlns:mdem="clr-namespace:MaterialDesignExtensions.Model;assembly=MaterialDesignExtensions"
-             xmlns:model="clr-namespace:TrialManager.ViewModels"
+             xmlns:model="clr-namespace:TrialManager.Model"
              xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:vm="clr-namespace:TrialManager.ViewModels"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
@@ -194,18 +193,18 @@
                     </Expander.Header>
                     <StackPanel Margin="24,8,24,16">
                         <Button Command="{s:Action OpenFileSelectionDialog}"
-                                Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Content="{Binding [Command_ImportData], Mode=OneTime}"
                                 Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
                         <TextBlock Margin="0,8,0,0"
                                    Style="{StaticResource MaterialDesignBody1TextBlock}">
                             <Run Text="Selected Data File: "/>
                             <Run FontWeight="Bold"
-                                 Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                 Text="{Binding FileName, Mode=OneWay}"/>
                         </TextBlock>
                         <Button Margin="0,8,0,0"
                                 HorizontalAlignment="Left"
                                 Command="{s:Action ValidateAndContinue}"
-                                CommandParameter="{x:Static model:ImportSection.ImportFile}"
+                                CommandParameter="{x:Static vm:ImportSection.ImportFile}"
                                 Content="CONTINUE"
                                 IsEnabled="{Binding IsImportFileSectionValid}"/>
                     </StackPanel>
@@ -226,8 +225,15 @@
                         </StackPanel>
                     </Expander.Header>
                     <StackPanel Margin="24,8,24,16">
-                        <ListView ItemsSource="{Binding MappedProperties, Mode=OneWay}"
-                                  PreviewMouseWheel="ListView_PreviewMouseWheel">
+                        <TextBlock TextWrapping="Wrap">
+                            To perform its job correctly, TrialManager needs to work with certain 'properties', or data fields such as a trialist's name, address and dogs.
+                            TrialManager can automatically get this data from the CSV file that you downloaded from Google Forms.
+                            However, what TrialManager cannot do automatically is determine which questions in your Google Form hold the properties that it requires.
+                            This requires you to manually 'map' the properties in your CSV file to the properties that TrialManager requires.
+                            If you aren't sure where the CSV file properties come from, take a look at your Google Form. Each CSV file property will match the title of a question in your Google Form.
+                        </TextBlock>
+                        <ListView ItemsSource="{Binding MappedProperties}">
+                            <!-- Fix for VerticalContentAlignment -->
                             <ListView.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource MaterialDesignGridViewItem}"
                                        TargetType="ListViewItem">
@@ -241,11 +247,9 @@
                                                     Header="TrialManager Property">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Margin="0,0,8,0">
-                                                    <Run FontWeight="Bold"
-                                                         Text="{Binding MappedProperty, Mode=OneTime}"/>
-                                                    <Run Text=":"/>
-                                                </TextBlock>
+                                                <TextBlock Margin="0,0,8,0"
+                                                           FontWeight="Bold"
+                                                           Text="{Binding MappedProperty, Mode=OneTime}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -257,13 +261,14 @@
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    <GridViewColumn Width="Auto"
-                                                    Header="Data File Property">
+                                    <GridViewColumn Width="200"
+                                                    Header="CSV File Property">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <ComboBox Background="{StaticResource MaterialDesignPaper}"
+                                            <DataTemplate DataType="{x:Type model:PropertyHeaderPair}">
+                                                <ComboBox MinWidth="100"
+                                                          Background="{StaticResource MaterialDesignPaper}"
                                                           ItemsSource="{Binding DataContext.CsvHeaders, Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                          SelectedItem="{Binding DataFileProperty}"/>
+                                                          SelectedItem="{Binding DataFileProperty, Mode=TwoWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -276,11 +281,11 @@
                                     Orientation="Horizontal">
                             <Button Margin="0,0,12,0"
                                     Command="{s:Action StepBack}"
-                                    CommandParameter="{x:Static model:ImportSection.SetupMappings}"
+                                    CommandParameter="{x:Static vm:ImportSection.SetupMappings}"
                                     Content="BACK"
                                     Style="{StaticResource MaterialDesignFlatButton}"/>
                             <Button Command="{s:Action ValidateAndContinue}"
-                                    CommandParameter="{x:Static model:ImportSection.SetupMappings}"
+                                    CommandParameter="{x:Static vm:ImportSection.SetupMappings}"
                                     Content="CONTINUE"/>
                         </StackPanel>
                     </StackPanel>
@@ -316,15 +321,16 @@
                                     Orientation="Horizontal">
                             <Button Margin="0,0,12,0"
                                     Command="{s:Action StepBack}"
-                                    CommandParameter="{x:Static model:ImportSection.PreferredDay}"
+                                    CommandParameter="{x:Static vm:ImportSection.PreferredDay}"
                                     Content="BACK"
                                     Style="{StaticResource MaterialDesignFlatButton}"/>
                             <Button Command="{s:Action ValidateAndContinue}"
-                                    CommandParameter="{x:Static model:ImportSection.PreferredDay}"
+                                    CommandParameter="{x:Static vm:ImportSection.PreferredDay}"
                                     Content="CONTINUE"/>
                         </StackPanel>
                     </StackPanel>
                 </Expander>
+
                 <Border Height="1"
                         HorizontalAlignment="Stretch"
                         Background="{DynamicResource MaterialDesignDivider}"
@@ -356,11 +362,11 @@
                                     Orientation="Horizontal">
                             <Button Margin="0,0,12,0"
                                     Command="{s:Action StepBack}"
-                                    CommandParameter="{x:Static model:ImportSection.Duplicates}"
+                                    CommandParameter="{x:Static vm:ImportSection.Duplicates}"
                                     Content="BACK"
                                     Style="{StaticResource MaterialDesignFlatButton}"/>
                             <Button Command="{s:Action ValidateAndContinue}"
-                                    CommandParameter="{x:Static model:ImportSection.Duplicates}"
+                                    CommandParameter="{x:Static vm:ImportSection.Duplicates}"
                                     Content="CONTINUE"/>
                         </StackPanel>
                     </StackPanel>

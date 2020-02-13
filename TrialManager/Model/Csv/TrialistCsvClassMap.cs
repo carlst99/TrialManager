@@ -2,9 +2,9 @@
 
 namespace TrialManager.Model.Csv
 {
-    internal class TrialistMapping : ClassMap<MappedTrialist>
+    public class TrialistCsvClassMap : ClassMap<MappedTrialist>
     {
-        public TrialistMapping()
+        public TrialistCsvClassMap()
         {
             Map(m => m.FullName).Index(2);
             Map(m => m.Status).Index(3);

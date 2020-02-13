@@ -16,6 +16,6 @@ namespace TrialManager.Services
         /// <param name="path">The path to the file</param>
         /// <param name="merge">Whether the import should be merged with existing data</param>
         /// <exception cref="IOException"></exception>
-        Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, Dictionary<string, DateTimeOffset> preferredDayMappings);
+        Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, Dictionary<string, DateTimeOffset> preferredDayMappings, TrialistCsvClassMap classMap);
     }
 }

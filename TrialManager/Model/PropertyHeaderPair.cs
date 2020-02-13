@@ -1,9 +1,9 @@
 ﻿namespace TrialManager.Model
 {
     /// <summary>
-    /// Contains a local <see cref="MappedProperty"/> and a string header from a CSV file
+    /// Used to pair up a <see cref="MappedProperty"/> and a string header from a CSV file
     /// </summary>
-    public struct PropertyHeaderPair
+    public class PropertyHeaderPair
     {
         public MappedProperty MappedProperty { get; set; }
         public string DataFileProperty { get; set; }
@@ -11,7 +11,6 @@
         public PropertyHeaderPair(MappedProperty property)
         {
             MappedProperty = property;
-            DataFileProperty = string.Empty;
         }
 
         public PropertyHeaderPair(MappedProperty property, string dataFileProperty)
@@ -35,16 +34,6 @@
                 hash = (hash * 7) + MappedProperty.GetHashCode();
                 return (hash * 7) + DataFileProperty.GetHashCode();
             }
-        }
-
-        public static bool operator ==(PropertyHeaderPair left, PropertyHeaderPair right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(PropertyHeaderPair left, PropertyHeaderPair right)
-        {
-            return !(left == right);
         }
     }
 }

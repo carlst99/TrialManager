@@ -45,13 +45,18 @@
                         </Canvas>
                     </Viewbox>
                 </mde:AppBar.AppIcon>
-                <Button Padding="0"
+                <Button md:ButtonAssist.CornerRadius="10"
                         Command="{s:Action OnDocumentationRequested}"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"
+                        Style="{StaticResource MaterialDesignRaisedAccentButton}"
                         ToolTip="{Binding [ToolTip_ViewDocumentation], Mode=OneTime}">
-                    <md:PackIcon Width="20"
-                                 Height="20"
-                                 Kind="HelpCircle"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="0,0,8,0"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding [Command_ViewDocumentation], Mode=OneTime}"/>
+                        <md:PackIcon Width="20"
+                                     Height="20"
+                                     Kind="HelpCircle"/>
+                    </StackPanel>
                 </Button>
             </mde:AppBar>
 

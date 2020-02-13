@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using Stylet;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace TrialManager.Services
         /// <param name="path">The path to the file</param>
         /// <param name="preferredDayMappings">Maps a day string to a defined preferred day object</param>
         /// <exception cref="IOException"></exception>
-        public async Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, Dictionary<string, DateTimeOffset> preferredDayMappings)
+        public async Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, Dictionary<string, DateTimeOffset> preferredDayMappings, TrialistCsvClassMap classMap)
         {
             try
             {
@@ -27,7 +28,7 @@ namespace TrialManager.Services
                 BindableCollection<Trialist> trialists = new BindableCollection<Trialist>();
                 BindableCollection<DuplicateTrialistEntry> duplicates = new BindableCollection<DuplicateTrialistEntry>();
 
-                await foreach (MappedTrialist mt in EnumerateCsv(path))
+                await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
                 {
                     Trialist trialist = mt.ToTrialist(preferredDayMappings);
 
@@ -67,17 +68,29 @@ namespace TrialManager.Services
         }
 
         /// <summary>
+        /// Gets a CSV reader capable of 
+        /// </summary>
+        /// <param name="filePath">The path to the file upon which a CSV reader should be open</param>
+        /// <param name="classMap">The classmap to use</param>
+        /// <returns></returns>
+        public static CsvReader GetCsvReader(string filePath, ClassMap<MappedTrialist> classMap = null)
+        {
+            StreamReader reader = new StreamReader(filePath);
+            CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
+            if (classMap != null)
+                csv.Configuration.RegisterClassMap(classMap);
+            return csv;
+        }
+
+        /// <summary>
         /// Packages the functionality for mapping and enumerating a CSV file
         /// </summary>
-        /// <param name="path">The path to the CSV file</param>
+        /// <param name="filePath">The path to the CSV file</param>
         /// <returns></returns>
-        private async IAsyncEnumerable<MappedTrialist> EnumerateCsv(string path)
+        private async IAsyncEnumerable<MappedTrialist> EnumerateCsv(string filePath, TrialistCsvClassMap classMap)
         {
-            using StreamReader reader = new StreamReader(path);
-            using CsvReader csv = new CsvReader(reader, CultureInfo.CurrentCulture);
-            csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
-            csv.Configuration.RegisterClassMap<TrialistMapping>();
-
+            using CsvReader csv = GetCsvReader(filePath, classMap);
             await foreach (MappedTrialist mt in csv.GetRecordsAsync<MappedTrialist>())
                 yield return mt;
         }

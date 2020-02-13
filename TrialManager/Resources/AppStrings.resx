@@ -137,6 +137,10 @@
     <value>Print Draw</value>
     <comment>This label appears on a control allowing the draw to be printed</comment>
   </data>
+  <data name="Command_ViewDocumentation" xml:space="preserve">
+    <value>Help</value>
+    <comment>This label appears over a control which opens the application documentation</comment>
+  </data>
   <data name="Header_Address" xml:space="preserve">
     <value>Address</value>
     <comment>This header appears above a address</comment>
@@ -242,7 +246,7 @@
     <comment>This tooltip appears on an editable data entry which can be edited by right clicking</comment>
   </data>
   <data name="ToolTip_ViewDocumentation" xml:space="preserve">
-    <value>Help</value>
-    <comment>This tooltip appears over a control which opens the application documentation</comment>
+    <value>View TrialManager's documentation</value>
+    <comment>This tooltip appears on a control which leads the user to the application documentation</comment>
   </data>
 </root>

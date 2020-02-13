@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Windows;
 using TrialManager.Model;
 using TrialManager.Services;
 using TrialManager.ViewModels.Base;
@@ -24,13 +23,15 @@ namespace TrialManager.ViewModels
 
     public class DataImportViewModel : ViewModelBase
     {
+        private const string DEFAULT_PROPERTY_INDICATOR = "Select Value";
+
         #region Fields
 
         private readonly ISnackbarMessageQueue _messageQueue;
 
         private string _filePath;
         private ReadOnlyCollection<string> _csvHeaders;
-        private List<PropertyHeaderPair> _mappedProperties;
+        private BindableCollection<PropertyHeaderPair> _mappedProperties;
 
         #endregion
 
@@ -77,7 +78,7 @@ namespace TrialManager.ViewModels
             set => SetAndNotify(ref _csvHeaders, value);
         }
 
-        public List<PropertyHeaderPair> MappedProperties
+        public BindableCollection<PropertyHeaderPair> MappedProperties
         {
             get => _mappedProperties;
             set => SetAndNotify(ref _mappedProperties, value);
@@ -175,10 +176,19 @@ namespace TrialManager.ViewModels
                 return;
             CsvHeaders = new ReadOnlyCollection<string>(headerRecord);
 
-           List<PropertyHeaderPair> mappings = new List<PropertyHeaderPair>();
+            MappedProperties = new BindableCollection<PropertyHeaderPair>();
+            MappedProperty[] mappedPropertyEnumValues = (MappedProperty[])Enum.GetValues(typeof(MappedProperty));
+#if DEBUG
+            for (int i = 0; i < mappedPropertyEnumValues.Length; i++)
+            {
+                MappedProperty property = mappedPropertyEnumValues[i];
+                string header = CsvHeaders[i];
+                MappedProperties.Add(new PropertyHeaderPair(property, header));
+            }
+#else
             foreach (MappedProperty value in Enum.GetValues(typeof(MappedProperty)))
-                mappings.Add(new PropertyHeaderPair(value, CsvHeaders[0]));
-            MappedProperties = mappings;
+                MappedProperties.Add(new PropertyHeaderPair(value, DEFAULT_PROPERTY_INDICATOR));
+#endif
         }
 
         public async void ValidateAndContinue(ImportSection section)
@@ -189,13 +199,33 @@ namespace TrialManager.ViewModels
                     if (!await DataImportService.IsValidCsvFile(FilePath).ConfigureAwait(false))
                     {
                         _messageQueue.Enqueue("Please select a valid CSV file!");
-                        break;
+                        return;
                     }
                     IsImportFileSectionExpanded = false;
                     IsSetupMappingsSectionExpanded = true;
                     break;
                 case ImportSection.SetupMappings:
-                    _messageQueue.Enqueue("Setup mappings validation Carl!");
+                    // Check for default/no mappings
+                    foreach (PropertyHeaderPair mapping in MappedProperties)
+                    {
+                        if (mapping.DataFileProperty == DEFAULT_PROPERTY_INDICATOR)
+                        {
+                            _messageQueue.Enqueue("Please map every TrialManager property to a property from your CSV file");
+                            return;
+                        }
+                    }
+                    // Check for duplicate/reused mappings
+                    foreach (PropertyHeaderPair mapping in MappedProperties)
+                    {
+                        foreach (PropertyHeaderPair mapping2 in MappedProperties)
+                        {
+                            if (mapping.DataFileProperty == mapping2.DataFileProperty && mapping.MappedProperty != mapping2.MappedProperty)
+                            {
+                                _messageQueue.Enqueue("You have duplicate mappings!");
+                                return;
+                            }
+                        }
+                    }
                     IsSetupMappingsSectionExpanded = false;
                     IsPreferredDaySectionExpanded = true;
                     break;

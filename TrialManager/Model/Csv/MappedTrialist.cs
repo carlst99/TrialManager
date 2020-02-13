@@ -6,7 +6,7 @@ using TrialManager.Services;
 
 namespace TrialManager.Model.Csv
 {
-    internal class MappedTrialist
+    public class MappedTrialist
     {
         private readonly ILocationService _locationService;
 
@@ -18,14 +18,14 @@ namespace TrialManager.Model.Csv
         public string PreferredDayString;
 
         public string DogOneName;
-        public EntityStatus DogOneStatus;
         public string DogTwoName;
-        public EntityStatus DogTwoStatus;
         public string DogThreeName;
-        public EntityStatus DogThreeStatus;
         public string DogFourName;
-        public EntityStatus DogFourStatus;
         public string DogFiveName;
+        public EntityStatus DogOneStatus;
+        public EntityStatus DogTwoStatus;
+        public EntityStatus DogThreeStatus;
+        public EntityStatus DogFourStatus;
         public EntityStatus DogFiveStatus;
 
         #endregion
