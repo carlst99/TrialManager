@@ -37,7 +37,8 @@
                         s:View.ActionTarget="{Binding}"
                         Command="{s:Action OpenHelpUrl}"
                         Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                        ToolTip="Help">
+                        ToolTip="Help"
+                        Visibility="{Binding HelpUrl, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                     <md:PackIcon Width="24"
                                  Height="24"
                                  Kind="HelpCircleOutline"/>

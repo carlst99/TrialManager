@@ -147,16 +147,24 @@ namespace TrialManager.ViewModels
             };
             if (ofd.ShowDialog() == true)
             {
-                if (await DataImportService.IsValidCsvFile(ofd.FileName).ConfigureAwait(false))
+                try
                 {
-                    FilePath = ofd.FileName;
-                    IsImportFileSectionValid = true;
-                    PrepareSetupMappingsSection();
+                    if (await DataImportService.IsValidCsvFile(ofd.FileName).ConfigureAwait(false))
+                    {
+                        FilePath = ofd.FileName;
+                        IsImportFileSectionValid = true;
+                        PrepareSetupMappingsSection();
+                    }
+                    else
+                    {
+                        IsImportFileSectionValid = false;
+                        _messageQueue.Enqueue("Please select a valid CSV file");
+                    }
                 }
-                else
+                catch (IOException ioex)
                 {
-                    IsImportFileSectionValid = false;
-                    _messageQueue.Enqueue("Please select a valid CSV file");
+                    Log.Error(ioex, "Could not open CSV file");
+                    _messageQueue.Enqueue("Could not open the selected file! Please check that no other programs are using it");
                 }
             }
         }
@@ -280,7 +288,23 @@ namespace TrialManager.ViewModels
             }
             try
             {
-                CsvReader csvReader = DataImportService.GetCsvReader(FilePath, CreateClassMap());
+                CsvReader csvReader = null;
+                try
+                {
+                    csvReader = DataImportService.GetCsvReader(FilePath, CreateClassMap());
+                }
+                catch (IOException ioex)
+                {
+                    Log.Error(ioex, "Could not open CSV file");
+                    MessageDialog messageDialog = new MessageDialog()
+                    {
+                        Title = "File Error",
+                        Message = "TrialManager could not open the CSV file that you have selected. Please ensure that no other programs are using the file and try again",
+                        HelpUrl = null
+                    };
+                    await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+                    return false;
+                }
                 csvReader.Read();
                 MappedTrialist record = csvReader.GetRecord<MappedTrialist>();
 

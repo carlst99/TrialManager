@@ -9,17 +9,11 @@ namespace TrialManager.Views
     /// </summary>
     public partial class MessageDialog : UserControl
     {
-        private string _helpUrl;
-
         public string Title { get; set; }
         public string Message { get; set; }
         public string OkayButtonContent { get; set; }
         public string CancelButtonContent { get; set; }
-        public string HelpUrl
-        {
-            get => _helpUrl;
-            set => _helpUrl = value.Replace("&", "^&");
-        }
+        public string HelpUrl { get; set; }
 
         public MessageDialog()
         {
