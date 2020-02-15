@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TrialManager.Model;
 using TrialManager.Model.Csv;
 using TrialManager.Model.TrialistDb;
 
@@ -20,7 +21,7 @@ namespace TrialManager.Services
         /// <param name="path">The path to the file</param>
         /// <param name="preferredDayMappings">Maps a day string to a defined preferred day object</param>
         /// <exception cref="IOException"></exception>
-        public async Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, Dictionary<string, DateTimeOffset> preferredDayMappings, TrialistCsvClassMap classMap)
+        public async Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, IList<PreferredDayDateTimePair> preferredDayMappings, TrialistCsvClassMap classMap)
         {
             try
             {
@@ -68,7 +69,7 @@ namespace TrialManager.Services
         }
 
         /// <summary>
-        /// Gets a CSV reader capable of 
+        /// Gets a CSV reader setup with an <see cref="EntityStatusConverter"/> and provided classmap
         /// </summary>
         /// <param name="filePath">The path to the file upon which a CSV reader should be open</param>
         /// <param name="classMap">The classmap to use</param>

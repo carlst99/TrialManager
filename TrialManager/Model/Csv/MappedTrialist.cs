@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TrialManager.Model.LocationDb;
 using TrialManager.Model.TrialistDb;
 using TrialManager.Services;
@@ -47,7 +48,7 @@ namespace TrialManager.Model.Csv
         /// Converts this <see cref="MappedTrialist"/> to a <see cref="Trialist"/>. Does not fill <see cref="Trialist.TravellingPartner"/>
         /// </summary>
         /// <returns></returns>
-        public Trialist ToTrialist(Dictionary<string, DateTimeOffset> preferredDayMappings)
+        public Trialist ToTrialist(IList<PreferredDayDateTimePair> preferredDayMappings)
         {
             Trialist trialist = new Trialist
             {
@@ -56,11 +57,7 @@ namespace TrialManager.Model.Csv
                 Address = Address
             };
 
-            // Parse preferred day
-            if (preferredDayMappings.ContainsKey(PreferredDayString))
-                trialist.PreferredDay = preferredDayMappings[PreferredDayString];
-            else
-                trialist.PreferredDay = DateTimeOffset.MinValue;
+            trialist.PreferredDay = preferredDayMappings.First(t => t.PreferredDay == PreferredDayString).Day;
 
             // Add dogs
             if (!string.IsNullOrEmpty(DogOneName))

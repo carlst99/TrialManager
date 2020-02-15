@@ -1,8 +1,8 @@
-﻿using Realms;
-using Stylet;
+﻿using Stylet;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TrialManager.Model;
 using TrialManager.Model.Csv;
 using TrialManager.Model.TrialistDb;
 
@@ -16,6 +16,6 @@ namespace TrialManager.Services
         /// <param name="path">The path to the file</param>
         /// <param name="merge">Whether the import should be merged with existing data</param>
         /// <exception cref="IOException"></exception>
-        Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, Dictionary<string, DateTimeOffset> preferredDayMappings, TrialistCsvClassMap classMap);
+        Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, IList<PreferredDayDateTimePair> preferredDayMappings, TrialistCsvClassMap classMap);
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using Serilog;
 using Stylet;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -37,6 +38,24 @@ namespace TrialManager.ViewModels
         private string _filePath;
         private ReadOnlyCollection<string> _csvHeaders;
         private BindableCollection<PropertyHeaderPair> _mappedProperties;
+        private BindableCollection<MappedTrialist> _trialists;
+        private BindableCollection<PreferredDayDateTimePair> _preferredDayMappings;
+
+        #endregion
+
+        #region Properties
+
+        public BindableCollection<MappedTrialist> Trialists
+        {
+            get => _trialists;
+            set => SetAndNotify(ref _trialists, value);
+        }
+
+        public BindableCollection<PreferredDayDateTimePair> PreferredDayMappings
+        {
+            get => _preferredDayMappings;
+            set => SetAndNotify(ref _preferredDayMappings, value);
+        }
 
         #endregion
 
@@ -153,7 +172,6 @@ namespace TrialManager.ViewModels
                     {
                         FilePath = ofd.FileName;
                         IsImportFileSectionValid = true;
-                        PrepareSetupMappingsSection();
                     }
                     else
                     {
@@ -169,7 +187,70 @@ namespace TrialManager.ViewModels
             }
         }
 
-        public void PrepareSetupMappingsSection()
+        /// <summary>
+        /// Validates each section and moves to the next consecutive section
+        /// </summary>
+        /// <param name="section">The current section</param>
+        /// <returns></returns>
+        public async Task ValidateAndContinue(ImportSection section)
+        {
+            switch (section)
+            {
+                case ImportSection.ImportFile:
+                    if (!await DataImportService.IsValidCsvFile(FilePath).ConfigureAwait(false))
+                    {
+                        _messageQueue.Enqueue("Please select a valid CSV file!");
+                        return;
+                    }
+                    PrepareSetupMappingsSection();
+                    IsImportFileSectionExpanded = false;
+                    IsSetupMappingsSectionExpanded = true;
+                    break;
+                case ImportSection.SetupMappings:
+                    if (!await ValidateSetupMappingsSection().ConfigureAwait(false))
+                        return;
+                    await GetAllTrialists().ConfigureAwait(false);
+                    PreparePreferredDaySection();
+                    IsSetupMappingsSectionExpanded = false;
+                    IsPreferredDaySectionExpanded = true;
+                    break;
+                case ImportSection.PreferredDay:
+                    _messageQueue.Enqueue("Setup preferred day validation Carl!");
+                    IsPreferredDaySectionExpanded = false;
+                    IsDuplicatesSectionExpanded = true;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// When invoked this method will reverse the user to the last setup section
+        /// </summary>
+        /// <param name="section">The current section</param>
+        public void StepBack(ImportSection section)
+        {
+            switch (section)
+            {
+                case ImportSection.SetupMappings:
+                    IsSetupMappingsSectionExpanded = false;
+                    IsImportFileSectionExpanded = true;
+                    break;
+                case ImportSection.PreferredDay:
+                    IsPreferredDaySectionExpanded = false;
+                    IsSetupMappingsSectionExpanded = true;
+                    break;
+                case ImportSection.Duplicates:
+                    IsDuplicatesSectionExpanded = false;
+                    IsPreferredDaySectionExpanded = true;
+                    break;
+            }
+        }
+
+        public void ResetDateCommand(PreferredDayDateTimePair pair)
+        {
+            pair.Day = DateTimeOffset.MinValue;
+        }
+
+        private void PrepareSetupMappingsSection()
         {
             if (!File.Exists(FilePath))
             {
@@ -205,61 +286,6 @@ namespace TrialManager.ViewModels
         }
 
         /// <summary>
-        /// Validates each section and moves to the next consecutive section
-        /// </summary>
-        /// <param name="section">The current section</param>
-        /// <returns></returns>
-        public async Task ValidateAndContinue(ImportSection section)
-        {
-            switch (section)
-            {
-                case ImportSection.ImportFile:
-                    if (!await DataImportService.IsValidCsvFile(FilePath).ConfigureAwait(false))
-                    {
-                        _messageQueue.Enqueue("Please select a valid CSV file!");
-                        return;
-                    }
-                    IsImportFileSectionExpanded = false;
-                    IsSetupMappingsSectionExpanded = true;
-                    break;
-                case ImportSection.SetupMappings:
-                    if (!await ValidateSetupMappingsSection().ConfigureAwait(false))
-                        return;
-                    IsSetupMappingsSectionExpanded = false;
-                    IsPreferredDaySectionExpanded = true;
-                    break;
-                case ImportSection.PreferredDay:
-                    _messageQueue.Enqueue("Setup preferred day validation Carl!");
-                    IsPreferredDaySectionExpanded = false;
-                    IsDuplicatesSectionExpanded = true;
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// When invoked this method will reverse the user to the last setup section
-        /// </summary>
-        /// <param name="section">The current section</param>
-        public void StepBack(ImportSection section)
-        {
-            switch (section)
-            {
-                case ImportSection.SetupMappings:
-                    IsSetupMappingsSectionExpanded = false;
-                    IsImportFileSectionExpanded = true;
-                    break;
-                case ImportSection.PreferredDay:
-                    IsPreferredDaySectionExpanded = false;
-                    IsSetupMappingsSectionExpanded = true;
-                    break;
-                case ImportSection.Duplicates:
-                    IsDuplicatesSectionExpanded = false;
-                    IsPreferredDaySectionExpanded = true;
-                    break;
-            }
-        }
-
-        /// <summary>
         /// Validates the user input of the Setup Mappings section and ensures that the CSV file can be successfully parsed
         /// </summary>
         /// <returns></returns>
@@ -286,12 +312,12 @@ namespace TrialManager.ViewModels
                     }
                 }
             }
+            CsvReader csvReader = null;
             try
             {
-                CsvReader csvReader = null;
                 try
                 {
-                    csvReader = DataImportService.GetCsvReader(FilePath, CreateClassMap());
+                    csvReader = DataImportService.GetCsvReader(FilePath, BuildClassMap());
                 }
                 catch (IOException ioex)
                 {
@@ -343,13 +369,32 @@ namespace TrialManager.ViewModels
                 await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
                 return false;
             }
+            finally
+            {
+                csvReader.Dispose();
+            }
+        }
+
+        private async Task GetAllTrialists()
+        {
+            Trialists = new BindableCollection<MappedTrialist>();
+            using CsvReader csvReader = DataImportService.GetCsvReader(FilePath, BuildClassMap());
+            await foreach (MappedTrialist trialist in csvReader.GetRecordsAsync<MappedTrialist>())
+                Trialists.Add(trialist);
+        }
+
+        private void PreparePreferredDaySection()
+        {
+            PreferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
+            foreach (string element in Trialists.Select(t => t.PreferredDayString).Distinct())
+                PreferredDayMappings.Add(new PreferredDayDateTimePair(element));
         }
 
         /// <summary>
         /// Creates a class map based on user mappings input
         /// </summary>
         /// <returns></returns>
-        private TrialistCsvClassMap CreateClassMap()
+        private TrialistCsvClassMap BuildClassMap()
         {
             TrialistCsvClassMap classMap = new TrialistCsvClassMap();
             System.Reflection.PropertyInfo[] properties = classMap.GetType().GetProperties();
