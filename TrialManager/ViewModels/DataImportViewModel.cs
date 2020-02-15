@@ -1,15 +1,20 @@
 ﻿using CsvHelper;
 using MaterialDesignThemes.Wpf;
-using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.Win32;
+using Serilog;
 using Stylet;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using TrialManager.Model;
+using TrialManager.Model.Csv;
+using TrialManager.Model.TrialistDb;
 using TrialManager.Services;
 using TrialManager.ViewModels.Base;
+using TrialManager.Views;
 
 namespace TrialManager.ViewModels
 {
@@ -133,19 +138,18 @@ namespace TrialManager.ViewModels
             IsImportFileSectionExpanded = true;
         }
 
-        public async void OpenFileSelectionDialog()
+        public async Task OpenFileSelectionDialog()
         {
-            CommonOpenFileDialog cofd = new CommonOpenFileDialog()
+            OpenFileDialog ofd = new OpenFileDialog()
             {
-                Title = "Open data file",
-                DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                Filters = { new CommonFileDialogFilter("Google Forms File", "*.csv") },
+                Filter = "Google Forms Files (*.csv)|*.csv|All Files (*.*)|*.*",
+                Title = "Open data file"
             };
-            if (cofd.ShowDialog() == CommonFileDialogResult.Ok)
+            if (ofd.ShowDialog() == true)
             {
-                if (await DataImportService.IsValidCsvFile(cofd.FileName).ConfigureAwait(false))
+                if (await DataImportService.IsValidCsvFile(ofd.FileName).ConfigureAwait(false))
                 {
-                    FilePath = cofd.FileName;
+                    FilePath = ofd.FileName;
                     IsImportFileSectionValid = true;
                     PrepareSetupMappingsSection();
                 }
@@ -179,6 +183,7 @@ namespace TrialManager.ViewModels
             MappedProperties = new BindableCollection<PropertyHeaderPair>();
             MappedProperty[] mappedPropertyEnumValues = (MappedProperty[])Enum.GetValues(typeof(MappedProperty));
 #if DEBUG
+            // Automatically map for debug mode
             for (int i = 0; i < mappedPropertyEnumValues.Length; i++)
             {
                 MappedProperty property = mappedPropertyEnumValues[i];
@@ -191,7 +196,12 @@ namespace TrialManager.ViewModels
 #endif
         }
 
-        public async void ValidateAndContinue(ImportSection section)
+        /// <summary>
+        /// Validates each section and moves to the next consecutive section
+        /// </summary>
+        /// <param name="section">The current section</param>
+        /// <returns></returns>
+        public async Task ValidateAndContinue(ImportSection section)
         {
             switch (section)
             {
@@ -205,27 +215,8 @@ namespace TrialManager.ViewModels
                     IsSetupMappingsSectionExpanded = true;
                     break;
                 case ImportSection.SetupMappings:
-                    // Check for default/no mappings
-                    foreach (PropertyHeaderPair mapping in MappedProperties)
-                    {
-                        if (mapping.DataFileProperty == DEFAULT_PROPERTY_INDICATOR)
-                        {
-                            _messageQueue.Enqueue("Please map every TrialManager property to a property from your CSV file");
-                            return;
-                        }
-                    }
-                    // Check for duplicate/reused mappings
-                    foreach (PropertyHeaderPair mapping in MappedProperties)
-                    {
-                        foreach (PropertyHeaderPair mapping2 in MappedProperties)
-                        {
-                            if (mapping.DataFileProperty == mapping2.DataFileProperty && mapping.MappedProperty != mapping2.MappedProperty)
-                            {
-                                _messageQueue.Enqueue("You have duplicate mappings!");
-                                return;
-                            }
-                        }
-                    }
+                    if (!await ValidateSetupMappingsSection().ConfigureAwait(false))
+                        return;
                     IsSetupMappingsSectionExpanded = false;
                     IsPreferredDaySectionExpanded = true;
                     break;
@@ -237,6 +228,10 @@ namespace TrialManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// When invoked this method will reverse the user to the last setup section
+        /// </summary>
+        /// <param name="section">The current section</param>
         public void StepBack(ImportSection section)
         {
             switch (section)
@@ -254,6 +249,93 @@ namespace TrialManager.ViewModels
                     IsPreferredDaySectionExpanded = true;
                     break;
             }
+        }
+
+        /// <summary>
+        /// Validates the user input of the Setup Mappings section and ensures that the CSV file can be successfully parsed
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> ValidateSetupMappingsSection()
+        {
+            // Check for default/no mappings
+            foreach (PropertyHeaderPair mapping in MappedProperties)
+            {
+                if (mapping.DataFileProperty == DEFAULT_PROPERTY_INDICATOR)
+                {
+                    _messageQueue.Enqueue("Please map every TrialManager property to a property from your CSV file");
+                    return false;
+                }
+            }
+            // Check for duplicate/reused mappings
+            foreach (PropertyHeaderPair mapping in MappedProperties)
+            {
+                foreach (PropertyHeaderPair mapping2 in MappedProperties)
+                {
+                    if (mapping.DataFileProperty == mapping2.DataFileProperty && mapping.MappedProperty != mapping2.MappedProperty)
+                    {
+                        _messageQueue.Enqueue("You have duplicate mappings!");
+                        return false;
+                    }
+                }
+            }
+            try
+            {
+                CsvReader csvReader = DataImportService.GetCsvReader(FilePath, CreateClassMap());
+                csvReader.Read();
+                MappedTrialist record = csvReader.GetRecord<MappedTrialist>();
+
+                // Check that the enum value has been parsed
+                if (record.Status == EntityStatus.None)
+                {
+                    // Build a string list of all the possible EntityStatus values, to inform the user
+                    string statusCombination = string.Empty;
+                    string[] statusEnumNames = Enum.GetNames(typeof(EntityStatus));
+                    for (int i = 0; i < statusEnumNames.Length; i++)
+                    {
+                        if (statusEnumNames[i] != nameof(EntityStatus.None))
+                        {
+                            statusCombination += statusEnumNames[i];
+                            if (i + 1 != statusEnumNames.Length)
+                                statusCombination += ", ";
+                        }
+                    }
+                    MessageDialog messageDialog = new MessageDialog()
+                    {
+                        Title = "Status Parse Error",
+                        Message = "TrialManager could not parse the status columns in your CSV file. Please make sure that each status entry matches one of the following values: " + statusCombination
+                    };
+                    await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Could not read CSV file");
+                MessageDialog messageDialog = new MessageDialog()
+                {
+                    Message = "TrialManager could not import data from this CSV file. Please check that you have:\n  • Selected the correct CSV file\n  • Correctly mapped the CSV file properties to TrialManager properties"
+                };
+                await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Creates a class map based on user mappings input
+        /// </summary>
+        /// <returns></returns>
+        private TrialistCsvClassMap CreateClassMap()
+        {
+            TrialistCsvClassMap classMap = new TrialistCsvClassMap();
+            System.Reflection.PropertyInfo[] properties = classMap.GetType().GetProperties();
+            foreach (PropertyHeaderPair pair in MappedProperties)
+            {
+                System.Reflection.PropertyInfo property = properties.First(p => p.Name == pair.MappedProperty.ToString());
+                property.SetValue(classMap, pair.DataFileProperty);
+            }
+            classMap.SetupMappings();
+            return classMap;
         }
     }
 }

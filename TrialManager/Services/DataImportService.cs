@@ -76,7 +76,7 @@ namespace TrialManager.Services
         public static CsvReader GetCsvReader(string filePath, ClassMap<MappedTrialist> classMap = null)
         {
             StreamReader reader = new StreamReader(filePath);
-            CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            CsvReader csv = new CsvReader(reader, CultureInfo.CurrentCulture);
             csv.Configuration.TypeConverterCache.AddConverter<EntityStatus>(new EntityStatusConverter());
             if (classMap != null)
                 csv.Configuration.RegisterClassMap(classMap);

@@ -225,13 +225,6 @@
                         </StackPanel>
                     </Expander.Header>
                     <StackPanel Margin="24,8,24,16">
-                        <TextBlock TextWrapping="Wrap">
-                            To perform its job correctly, TrialManager needs to work with certain 'properties', or data fields such as a trialist's name, address and dogs.
-                            TrialManager can automatically get this data from the CSV file that you downloaded from Google Forms.
-                            However, what TrialManager cannot do automatically is determine which questions in your Google Form hold the properties that it requires.
-                            This requires you to manually 'map' the properties in your CSV file to the properties that TrialManager requires.
-                            If you aren't sure where the CSV file properties come from, take a look at your Google Form. Each CSV file property will match the title of a question in your Google Form.
-                        </TextBlock>
                         <ListView ItemsSource="{Binding MappedProperties}">
                             <!-- Fix for VerticalContentAlignment -->
                             <ListView.ItemContainerStyle>

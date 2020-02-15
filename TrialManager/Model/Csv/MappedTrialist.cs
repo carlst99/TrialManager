@@ -30,6 +30,14 @@ namespace TrialManager.Model.Csv
 
         #endregion
 
+        /// <summary>
+        /// Stores CSV file data
+        /// </summary>
+        /// <remarks>This parameterless constructor is required for CSVHelper to instantiate the object</remarks>
+        public MappedTrialist()
+        {
+        }
+
         public MappedTrialist(ILocationService locationService)
         {
             _locationService = locationService;
