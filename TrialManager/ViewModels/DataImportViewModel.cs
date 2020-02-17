@@ -205,7 +205,8 @@ namespace TrialManager.ViewModels
                         _messageQueue.Enqueue("Please select a valid CSV file!");
                         return;
                     }
-                    PrepareSetupMappingsSection();
+                    if (!PrepareSetupMappingsSection())
+                        return;
                     IsImportFileSectionExpanded = false;
                     IsSetupMappingsSectionExpanded = true;
                     break;
@@ -257,24 +258,27 @@ namespace TrialManager.ViewModels
 
         #endregion
 
-        private void PrepareSetupMappingsSection()
+        /// <summary>
+        /// Prepares the Setup Mappings section
+        /// </summary>
+        /// <returns>A value indicating whether preparation was successful</returns>
+        private bool PrepareSetupMappingsSection()
         {
             if (!File.Exists(FilePath))
             {
                 _messageQueue.Enqueue("The file you have selected no longer exists. Please select a file again");
-                return;
+                return false;
             }
-
-            using StreamReader reader = new StreamReader(FilePath);
-            using CsvReader csv = new CsvReader(reader, CultureInfo.CurrentCulture);
-
-            // Get the headers
-            csv.Read();
-            csv.ReadHeader();
-            string[] headerRecord = csv.Context.HeaderRecord;
-            if (headerRecord.Length == 0)
-                return;
-            CsvHeaders = new ReadOnlyCollection<string>(headerRecord);
+            try
+            {
+                CsvHeaders = DataImportService.GetCsvHeaders(FilePath);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Could not get header row from CSV file");
+                _messageQueue.Enqueue("Could not read header data from the CSV file. Please try again");
+                return false;
+            }
 
             MappedProperties = new BindableCollection<PropertyHeaderPair>();
             MappedProperty[] mappedPropertyEnumValues = (MappedProperty[])Enum.GetValues(typeof(MappedProperty));
@@ -290,6 +294,7 @@ namespace TrialManager.ViewModels
             foreach (MappedProperty value in Enum.GetValues(typeof(MappedProperty)))
                 MappedProperties.Add(new PropertyHeaderPair(value, DEFAULT_PROPERTY_INDICATOR));
 #endif
+            return true;
         }
 
         /// <summary>

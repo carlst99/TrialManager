@@ -3,6 +3,7 @@ using CsvHelper.Configuration;
 using Stylet;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -99,6 +100,20 @@ namespace TrialManager.Services
             }
             classMap.SetupMappings();
             return classMap;
+        }
+
+        /// <summary>
+        /// Gets the header record, if present, from a CSV file
+        /// </summary>
+        /// <param name="filePath">The path to the CSV file</param>
+        /// <returns></returns>
+        public static ReadOnlyCollection<string> GetCsvHeaders(string filePath)
+        {
+            using CsvReader csvReader = GetCsvReader(filePath);
+            csvReader.Read();
+            csvReader.ReadHeader();
+            string[] headerRecord = csvReader.Context.HeaderRecord;
+            return new ReadOnlyCollection<string>(headerRecord);
         }
 
         /// <summary>
