@@ -235,10 +235,9 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Width="Auto"
                                                     Binding="{Binding MappedProperty, Mode=OneTime}"
-                                                    FontWeight="Normal"
                                                     Header="TrialManager Property"
                                                     IsReadOnly="True"/>
-                                <DataGridTemplateColumn>
+                                <DataGridTemplateColumn IsReadOnly="True">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}"
@@ -292,30 +291,46 @@
                     <StackPanel Margin="24,8,24,16">
                         <TextBlock Text="For preferred day values that indicate either: no preference, or spread over multiple days; leave the mapped date on the minimum possible value. The reset button can be used to achieve this."
                                    TextWrapping="Wrap"/>
-                        <ItemsControl Margin="0,16"
-                                      ItemsSource="{Binding PreferredDayMappings}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal"
-                                                Visibility="{Binding PreferredDay, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
-                                        <TextBlock VerticalAlignment="Center"
-                                                   FontWeight="Bold">
-                                            <Run Text="{Binding PreferredDay}"/>
-                                            <Run Text=":"/>
-                                        </TextBlock>
-                                        <DatePicker Margin="16,0"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="14"
-                                                    SelectedDate="{Binding Day, Converter={StaticResource DateTimeConverter}}"/>
-                                        <Button VerticalAlignment="Center"
-                                                Command="{s:Action ResetDateCommand}"
-                                                CommandParameter="{Binding}"
-                                                Content="{md:PackIcon Kind=Refresh}"
-                                                Style="{StaticResource MaterialDesignFlatButton}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <DataGrid Margin="0,16"
+                                  AutoGenerateColumns="False"
+                                  CellStyle="{StaticResource DataGridVerticalAlignmentCell}"
+                                  ItemsSource="{Binding PreferredDayMappings}"
+                                  Style="{StaticResource DataGridNoScroll}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="Auto"
+                                                    Binding="{Binding PreferredDay, Mode=OneTime}"
+                                                    Header="Date in CSV File"
+                                                    IsReadOnly="True"/>
+                                <DataGridTemplateColumn IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}"
+                                                         Kind="ArrowBackCircle"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="Auto"
+                                                        Header="Mapped Date">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type model:PreferredDayDateTimePair}">
+                                            <DatePicker FontSize="14"
+                                                        SelectedDate="{Binding Day, Converter={StaticResource DateTimeConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Reset">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{s:Action ResetDateCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="{md:PackIcon Kind=Refresh}"
+                                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                                    ToolTip="Reset Date"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
 
                         <StackPanel Margin="0,8,0,0"
                                     HorizontalAlignment="Left"

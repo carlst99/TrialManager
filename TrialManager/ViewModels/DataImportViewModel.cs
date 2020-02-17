@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using TrialManager.Model;
 using TrialManager.Model.Csv;
 using TrialManager.Model.TrialistDb;
+using TrialManager.Resources;
 using TrialManager.Services;
 using TrialManager.ViewModels.Base;
 using TrialManager.Views;
@@ -157,6 +158,8 @@ namespace TrialManager.ViewModels
             IsImportFileSectionExpanded = true;
         }
 
+        #region UI Methods
+
         public async Task OpenFileSelectionDialog()
         {
             OpenFileDialog ofd = new OpenFileDialog()
@@ -216,6 +219,8 @@ namespace TrialManager.ViewModels
                     break;
                 case ImportSection.PreferredDay:
                     _messageQueue.Enqueue("Setup preferred day validation Carl!");
+                    if (!await ValidatePreferredDaySection().ConfigureAwait(false))
+                        return;
                     IsPreferredDaySectionExpanded = false;
                     IsDuplicatesSectionExpanded = true;
                     break;
@@ -249,6 +254,8 @@ namespace TrialManager.ViewModels
         {
             pair.Day = DateTimeOffset.MinValue;
         }
+
+        #endregion
 
         private void PrepareSetupMappingsSection()
         {
@@ -322,12 +329,12 @@ namespace TrialManager.ViewModels
                 catch (IOException ioex)
                 {
                     Log.Error(ioex, "Could not open CSV file");
-                    MessageDialog messageDialog = new MessageDialog()
+                    MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
                     {
                         Title = "File Error",
                         Message = "TrialManager could not open the CSV file that you have selected. Please ensure that no other programs are using the file and try again",
                         HelpUrl = null
-                    };
+                    });
                     await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
                     return false;
                 }
@@ -349,11 +356,11 @@ namespace TrialManager.ViewModels
                                 statusCombination += ", ";
                         }
                     }
-                    MessageDialog messageDialog = new MessageDialog()
+                    MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
                     {
                         Title = "Status Parse Error",
                         Message = "TrialManager could not parse the status columns in your CSV file. Please make sure that each status entry matches one of the following values: " + statusCombination
-                    };
+                    });
                     await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
                     return false;
                 }
@@ -362,10 +369,10 @@ namespace TrialManager.ViewModels
             catch (Exception ex)
             {
                 Log.Error(ex, "Could not read CSV file");
-                MessageDialog messageDialog = new MessageDialog()
+                MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
                 {
                     Message = "TrialManager could not import data from this CSV file. Please check that you have:\n  • Selected the correct CSV file\n  • Correctly mapped the CSV file properties to TrialManager properties"
-                };
+                });
                 await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
                 return false;
             }
@@ -375,19 +382,41 @@ namespace TrialManager.ViewModels
             }
         }
 
+        private void PreparePreferredDaySection()
+        {
+            PreferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
+            foreach (string element in Trialists.Select(t => t.PreferredDayString).Distinct())
+                PreferredDayMappings.Add(new PreferredDayDateTimePair(element));
+        }
+
+        private async Task<bool> ValidatePreferredDaySection()
+        {
+            bool isAtLeastOneSet = false;
+            foreach (PreferredDayDateTimePair pair in PreferredDayMappings)
+            {
+                if (!pair.Day.Equals(DateTimeOffset.MinValue))
+                    isAtLeastOneSet = true;
+            }
+            if (!isAtLeastOneSet)
+            {
+                MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
+                {
+                    Message = "You have left all preferred day mappings on the default value. This means that no the preferred day of each trialist will not be respected when TrialManager puts them in the draw. Are you sure you want to continue?",
+                    OkayButtonContent = "Yes",
+                    CancelButtonContent = "No",
+                    HelpUrl = HelpUrls.PreferredDayMapping
+                });
+                return (bool)await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+            }
+            return true;
+        }
+
         private async Task GetAllTrialists()
         {
             Trialists = new BindableCollection<MappedTrialist>();
             using CsvReader csvReader = DataImportService.GetCsvReader(FilePath, BuildClassMap());
             await foreach (MappedTrialist trialist in csvReader.GetRecordsAsync<MappedTrialist>())
                 Trialists.Add(trialist);
-        }
-
-        private void PreparePreferredDaySection()
-        {
-            PreferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
-            foreach (string element in Trialists.Select(t => t.PreferredDayString).Distinct())
-                PreferredDayMappings.Add(new PreferredDayDateTimePair(element));
         }
 
         /// <summary>

@@ -120,4 +120,7 @@
   <data name="Default" xml:space="preserve">
     <value>https://www.github.com/carlst99/TrialManager</value>
   </data>
+  <data name="PreferredDayMapping" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -68,5 +68,14 @@ namespace TrialManager.Resources {
                 return ResourceManager.GetString("Default", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PreferredDayMapping {
+            get {
+                return ResourceManager.GetString("PreferredDayMapping", resourceCulture);
+            }
+        }
     }
 }

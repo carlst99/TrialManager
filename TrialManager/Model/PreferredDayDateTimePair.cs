@@ -1,14 +1,22 @@
-﻿using System;
+﻿using Stylet;
+using System;
 
 namespace TrialManager.Model
 {
     /// <summary>
     /// Used to pair up a preferred day string to a <see cref="DateTimeOffset"/> object
     /// </summary>
-    public class PreferredDayDateTimePair
+    public class PreferredDayDateTimePair : PropertyChangedBase
     {
-        public string PreferredDay { get; set; }
-        public DateTimeOffset Day { get; set; }
+        private DateTimeOffset _day;
+
+        public string PreferredDay { get; }
+
+        public DateTimeOffset Day
+        {
+            get => _day;
+            set => SetAndNotify(ref _day, value);
+        }
 
         public PreferredDayDateTimePair(string preferredDay)
         {

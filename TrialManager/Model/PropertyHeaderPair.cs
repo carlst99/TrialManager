@@ -1,12 +1,21 @@
-﻿namespace TrialManager.Model
+﻿using Stylet;
+
+namespace TrialManager.Model
 {
     /// <summary>
     /// Used to pair up a <see cref="MappedProperty"/> and a string header from a CSV file
     /// </summary>
-    public class PropertyHeaderPair
+    public class PropertyHeaderPair : PropertyChangedBase
     {
-        public MappedProperty MappedProperty { get; set; }
-        public string DataFileProperty { get; set; }
+        private string _dataFileProperty;
+
+        public MappedProperty MappedProperty { get; }
+
+        public string DataFileProperty
+        {
+            get => _dataFileProperty;
+            set => SetAndNotify(ref _dataFileProperty, value);
+        }
 
         public PropertyHeaderPair(MappedProperty property)
         {

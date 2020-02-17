@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows.Controls;
 using TrialManager.Resources;
+using TrialManager.ViewModels;
 
 namespace TrialManager.Views
 {
@@ -24,6 +26,19 @@ namespace TrialManager.Views
             OkayButtonContent = "Okay";
             CancelButtonContent = null;
             HelpUrl = HelpUrls.Default;
+        }
+
+        public MessageDialog(MessageDialogViewModel vm)
+            : this()
+        {
+            if (vm == null)
+                throw new ArgumentNullException(nameof(vm));
+
+            Title = vm.Title;
+            Message = vm.Message;
+            OkayButtonContent = vm.OkayButtonContent;
+            CancelButtonContent = vm.CancelButtonContent;
+            HelpUrl = vm.HelpUrl;
         }
 
         public void OpenHelpUrl()
