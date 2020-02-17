@@ -85,6 +85,23 @@ namespace TrialManager.Services
         }
 
         /// <summary>
+        /// Creates a class map based on user mappings input
+        /// </summary>
+        /// <returns></returns>
+        public static TrialistCsvClassMap BuildClassMap(IList<PropertyHeaderPair> mappedProperties)
+        {
+            TrialistCsvClassMap classMap = new TrialistCsvClassMap();
+            System.Reflection.PropertyInfo[] properties = classMap.GetType().GetProperties();
+            foreach (PropertyHeaderPair pair in mappedProperties)
+            {
+                System.Reflection.PropertyInfo property = properties.First(p => p.Name == pair.MappedProperty.ToString());
+                property.SetValue(classMap, pair.DataFileProperty);
+            }
+            classMap.SetupMappings();
+            return classMap;
+        }
+
+        /// <summary>
         /// Packages the functionality for mapping and enumerating a CSV file
         /// </summary>
         /// <param name="filePath">The path to the CSV file</param>

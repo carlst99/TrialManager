@@ -324,7 +324,7 @@ namespace TrialManager.ViewModels
             {
                 try
                 {
-                    csvReader = DataImportService.GetCsvReader(FilePath, BuildClassMap());
+                    csvReader = DataImportService.GetCsvReader(FilePath, DataImportService.BuildClassMap(MappedProperties));
                 }
                 catch (IOException ioex)
                 {
@@ -414,26 +414,9 @@ namespace TrialManager.ViewModels
         private async Task GetAllTrialists()
         {
             Trialists = new BindableCollection<MappedTrialist>();
-            using CsvReader csvReader = DataImportService.GetCsvReader(FilePath, BuildClassMap());
+            using CsvReader csvReader = DataImportService.GetCsvReader(FilePath, DataImportService.BuildClassMap(MappedProperties));
             await foreach (MappedTrialist trialist in csvReader.GetRecordsAsync<MappedTrialist>())
                 Trialists.Add(trialist);
-        }
-
-        /// <summary>
-        /// Creates a class map based on user mappings input
-        /// </summary>
-        /// <returns></returns>
-        private TrialistCsvClassMap BuildClassMap()
-        {
-            TrialistCsvClassMap classMap = new TrialistCsvClassMap();
-            System.Reflection.PropertyInfo[] properties = classMap.GetType().GetProperties();
-            foreach (PropertyHeaderPair pair in MappedProperties)
-            {
-                System.Reflection.PropertyInfo property = properties.First(p => p.Name == pair.MappedProperty.ToString());
-                property.SetValue(classMap, pair.DataFileProperty);
-            }
-            classMap.SetupMappings();
-            return classMap;
         }
     }
 }
