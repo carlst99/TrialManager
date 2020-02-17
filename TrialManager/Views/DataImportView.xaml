@@ -228,49 +228,37 @@
                         </StackPanel>
                     </Expander.Header>
                     <StackPanel Margin="24,8,24,16">
-                        <ListView ItemsSource="{Binding MappedProperties}">
-                            <!-- Fix for VerticalContentAlignment -->
-                            <ListView.ItemContainerStyle>
-                                <Style BasedOn="{StaticResource MaterialDesignGridViewItem}"
-                                       TargetType="ListViewItem">
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-                            </ListView.ItemContainerStyle>
-
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Width="Auto"
-                                                    Header="TrialManager Property">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Margin="0,0,8,0"
-                                                           FontWeight="Bold"
-                                                           Text="{Binding MappedProperty, Mode=OneTime}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="Auto">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}"
-                                                             Kind="ArrowBackCircle"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="200"
-                                                    Header="CSV File Property">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="{x:Type model:PropertyHeaderPair}">
-                                                <ComboBox MinWidth="100"
-                                                          Background="{StaticResource MaterialDesignPaper}"
-                                                          ItemsSource="{Binding DataContext.CsvHeaders, Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                          SelectedItem="{Binding DataFileProperty, Mode=TwoWay}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
+                        <DataGrid AutoGenerateColumns="False"
+                                  CellStyle="{StaticResource DataGridVerticalAlignmentCell}"
+                                  ItemsSource="{Binding MappedProperties}"
+                                  Style="{StaticResource DataGridNoScroll}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="Auto"
+                                                    Binding="{Binding MappedProperty, Mode=OneTime}"
+                                                    FontWeight="Normal"
+                                                    Header="TrialManager Property"
+                                                    IsReadOnly="True"/>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}"
+                                                         Kind="ArrowBackCircle"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="Auto"
+                                                        Header="CSV File Property">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type model:PropertyHeaderPair}">
+                                            <ComboBox MinWidth="100"
+                                                      Background="{StaticResource MaterialDesignPaper}"
+                                                      ItemsSource="{Binding DataContext.CsvHeaders, Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      SelectedItem="{Binding DataFileProperty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
 
                         <StackPanel Margin="0,8,0,0"
                                     HorizontalAlignment="Left"
@@ -360,16 +348,6 @@
                         </StackPanel>
                     </Expander.Header>
                     <StackPanel Margin="24,8,24,16">
-                        <Button Command="{s:Action OpenFileSelectionDialog}"
-                                Content="{Binding DataContext.[Command_ImportData], Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
-                        <TextBlock Margin="0,8,0,0"
-                                   Style="{StaticResource MaterialDesignBody1TextBlock}">
-                            <Run Text="Selected Data File: "/>
-                            <Run FontWeight="Bold"
-                                 Text="{Binding DataContext.FileName, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                        </TextBlock>
-
                         <StackPanel Margin="0,8,0,0"
                                     HorizontalAlignment="Left"
                                     Orientation="Horizontal">
