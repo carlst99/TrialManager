@@ -1,5 +1,8 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Stylet;
+using System;
+using System.Diagnostics;
+using TrialManager.Resources;
 using TrialManager.Services;
 using TrialManager.ViewModels.Base;
 
@@ -8,6 +11,7 @@ namespace TrialManager.ViewModels
     public class ShellViewModel : ViewModelConductorBase
     {
         private ISnackbarMessageQueue _messageQueue;
+        private DrawDisplayViewModel _drawDisplayViewModel;
 
         public ISnackbarMessageQueue MessageQueue
         {
@@ -19,16 +23,31 @@ namespace TrialManager.ViewModels
             IEventAggregator eventAggregator,
             INavigationService navigationService,
             DataImportViewModel dataImportViewModel,
+            DrawDisplayViewModel drawDisplayViewModel,
             ISnackbarMessageQueue messageQueue)
             : base (eventAggregator, navigationService)
         {
             MessageQueue = messageQueue;
+            _drawDisplayViewModel = drawDisplayViewModel;
             ActiveItem = dataImportViewModel;
         }
 
-        public void OnDocumentationRequested()
+        public static void OnDocumentationRequested()
         {
-            MessageQueue.Enqueue("Help documentation has not yet been added. Please wait for an upcoming update!");
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = HelpUrls.Default,
+                UseShellExecute = true
+            });
+        }
+
+        protected override void OnNavigationRequested(object sender, Type e, object p)
+        {
+            if (e == _drawDisplayViewModel.GetType())
+            {
+                _drawDisplayViewModel.Prepare(p);
+                ActiveItem = _drawDisplayViewModel;
+            }
         }
     }
 }

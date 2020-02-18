@@ -14,39 +14,54 @@ using TrialManager.Model.TrialistDb;
 
 namespace TrialManager.Services
 {
-    public class DataImportService : IDataImportService
+    public class CsvImportService : ICsvImportService
     {
+        private readonly ILocationService _locationService;
+
+        public CsvImportService(ILocationService locationService)
+        {
+            _locationService = locationService;
+        }
+
         /// <summary>
         /// Imports data from a CSV file, loading it to the database
         /// </summary>
         /// <param name="path">The path to the file</param>
         /// <param name="preferredDayMappings">Maps a day string to a defined preferred day object</param>
         /// <exception cref="IOException"></exception>
-        public async Task<Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>> ImportFromCsv(string path, IList<PreferredDayDateTimePair> preferredDayMappings, TrialistCsvClassMap classMap)
+        public async Task<BindableCollection<DuplicateTrialistPair>> GetMappedDuplicates(string path, TrialistCsvClassMap classMap)
         {
             try
             {
                 HashSet<int> trialistHashes = new HashSet<int>();
-                BindableCollection<Trialist> trialists = new BindableCollection<Trialist>();
-                BindableCollection<DuplicateTrialistEntry> duplicates = new BindableCollection<DuplicateTrialistEntry>();
+                List<MappedTrialist> tempStorageList = new List<MappedTrialist>();
+                BindableCollection<DuplicateTrialistPair> duplicates = new BindableCollection<DuplicateTrialistPair>();
 
+                // Note that this algorithm can result in multiple duplicate fields if the trialist has submitted more than two entries
+                // However as this is unlikely, the user should have enough short-term memory to realise that there are 'duplicate duplicates'
                 await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
                 {
-                    Trialist trialist = mt.ToTrialist(preferredDayMappings);
-
-                    // If we don't have a duplicate
-                    if (trialistHashes.Add(trialist.GetHashCode()))
+                    // If we can add the hash, then we have not yet discovered a potential duplicate
+                    if (trialistHashes.Add(mt.GetHashCode()))
                     {
-                        trialists.Add(trialist);
+                        tempStorageList.Add(mt);
                     }
                     else
                     {
-                        Trialist clash = trialists.First(t => t.GetHashCode().Equals(trialist.GetHashCode()));
-                        duplicates.Add(new DuplicateTrialistEntry(clash, trialist));
+                        MappedTrialist clash = tempStorageList.First(t => t.GetHashCode().Equals(mt.GetHashCode()));
+                        clash.HasDuplicateClash = true;
+                        duplicates.Add(new DuplicateTrialistPair(clash, mt));
                     }
                 }
+                // Now add every trialist that we haven't discovered a duplicate for
+                // If we have discovered a duplicate, the trialist is already in the list
+                foreach (MappedTrialist mt in tempStorageList)
+                {
+                    if (!mt.HasDuplicateClash)
+                        duplicates.Add(new DuplicateTrialistPair(mt));
+                }
 
-                return new Tuple<BindableCollection<Trialist>, BindableCollection<DuplicateTrialistEntry>>(trialists, duplicates);
+                return duplicates;
             }
             catch (Exception ex)
             {
@@ -55,11 +70,27 @@ namespace TrialManager.Services
             }
         }
 
+        public async Task<BindableCollection<Trialist>> FinaliseTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
+        {
+            return await Task.Run(() =>
+            {
+                BindableCollection<Trialist> trialists = new BindableCollection<Trialist>();
+                foreach (DuplicateTrialistPair pair in duplicates)
+                {
+                    if (pair.KeepFirstTrialist)
+                        trialists.Add(pair.FirstTrialist.ToTrialist(_locationService, preferredDayMappings));
+                    if (pair.KeepSecondTrialist)
+                        trialists.Add(pair.SecondTrialist.ToTrialist(_locationService, preferredDayMappings));
+                }
+                return trialists;
+            }).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Performs a basic check for a CSV file by looking for the separator chars (; or ,)
         /// </summary>
         /// <returns>True if the file appears to be of a valid CSV structure</returns>
-        public static async Task<bool> IsValidCsvFile(string filePath)
+        public async Task<bool> IsValidCsvFile(string filePath)
         {
             if (!File.Exists(filePath))
                 return false;
@@ -75,7 +106,7 @@ namespace TrialManager.Services
         /// <param name="filePath">The path to the file upon which a CSV reader should be open</param>
         /// <param name="classMap">The classmap to use</param>
         /// <returns></returns>
-        public static CsvReader GetCsvReader(string filePath, ClassMap<MappedTrialist> classMap = null)
+        public CsvReader GetCsvReader(string filePath, ClassMap<MappedTrialist> classMap = null)
         {
             StreamReader reader = new StreamReader(filePath);
             CsvReader csv = new CsvReader(reader, CultureInfo.CurrentCulture);
@@ -89,7 +120,7 @@ namespace TrialManager.Services
         /// Creates a class map based on user mappings input
         /// </summary>
         /// <returns></returns>
-        public static TrialistCsvClassMap BuildClassMap(IList<PropertyHeaderPair> mappedProperties)
+        public TrialistCsvClassMap BuildClassMap(IList<PropertyHeaderPair> mappedProperties)
         {
             TrialistCsvClassMap classMap = new TrialistCsvClassMap();
             System.Reflection.PropertyInfo[] properties = classMap.GetType().GetProperties();
@@ -107,7 +138,7 @@ namespace TrialManager.Services
         /// </summary>
         /// <param name="filePath">The path to the CSV file</param>
         /// <returns></returns>
-        public static ReadOnlyCollection<string> GetCsvHeaders(string filePath)
+        public ReadOnlyCollection<string> GetCsvHeaders(string filePath)
         {
             using CsvReader csvReader = GetCsvReader(filePath);
             csvReader.Read();
@@ -117,10 +148,10 @@ namespace TrialManager.Services
         }
 
         /// <summary>
-        /// Packages the functionality for mapping and enumerating a CSV file
+        /// Enumerates a collection of <see cref="MappedTrialist"/> objects from the specified CSV file
         /// </summary>
         /// <param name="filePath">The path to the CSV file</param>
-        /// <returns></returns>
+        /// <param name="classMap">The classmap used to create the <see cref="MappedTrialist"/> object</param>
         private async IAsyncEnumerable<MappedTrialist> EnumerateCsv(string filePath, TrialistCsvClassMap classMap)
         {
             using CsvReader csv = GetCsvReader(filePath, classMap);

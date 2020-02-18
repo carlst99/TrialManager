@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TrialManager.Model.LocationDb;
 using TrialManager.Model.TrialistDb;
@@ -9,25 +8,28 @@ namespace TrialManager.Model.Csv
 {
     public class MappedTrialist
     {
-        private readonly ILocationService _locationService;
+        /// <summary>
+        /// Used when importing data to help with identifying duplicates
+        /// </summary>
+        public bool HasDuplicateClash;
 
         #region Mapped Properties
 
-        public string FullName;
-        public EntityStatus Status;
-        public string Address;
-        public string PreferredDayString;
+        public string FullName { get; set; }
+        public EntityStatus Status { get; set; }
+        public string Address { get; set; }
+        public string PreferredDayString { get; set; }
 
-        public string DogOneName;
-        public string DogTwoName;
-        public string DogThreeName;
-        public string DogFourName;
-        public string DogFiveName;
-        public EntityStatus DogOneStatus;
-        public EntityStatus DogTwoStatus;
-        public EntityStatus DogThreeStatus;
-        public EntityStatus DogFourStatus;
-        public EntityStatus DogFiveStatus;
+        public string DogOneName { get; set; }
+        public string DogTwoName { get; set; }
+        public string DogThreeName { get; set; }
+        public string DogFourName { get; set; }
+        public string DogFiveName { get; set; }
+        public EntityStatus DogOneStatus { get; set; }
+        public EntityStatus DogTwoStatus { get; set; }
+        public EntityStatus DogThreeStatus { get; set; }
+        public EntityStatus DogFourStatus { get; set; }
+        public EntityStatus DogFiveStatus { get; set; }
 
         #endregion
 
@@ -39,25 +41,19 @@ namespace TrialManager.Model.Csv
         {
         }
 
-        public MappedTrialist(ILocationService locationService)
-        {
-            _locationService = locationService;
-        }
-
         /// <summary>
         /// Converts this <see cref="MappedTrialist"/> to a <see cref="Trialist"/>. Does not fill <see cref="Trialist.TravellingPartner"/>
         /// </summary>
         /// <returns></returns>
-        public Trialist ToTrialist(IList<PreferredDayDateTimePair> preferredDayMappings)
+        public Trialist ToTrialist(ILocationService locationService, IList<PreferredDayDateTimePair> preferredDayMappings)
         {
             Trialist trialist = new Trialist
             {
                 Name = FullName,
                 Status = Status,
-                Address = Address
+                Address = Address,
+                PreferredDay = preferredDayMappings.First(t => t.PreferredDay.Equals(PreferredDayString)).Day
             };
-
-            trialist.PreferredDay = preferredDayMappings.First(t => t.PreferredDay == PreferredDayString).Day;
 
             // Add dogs
             if (!string.IsNullOrEmpty(DogOneName))
@@ -72,10 +68,35 @@ namespace TrialManager.Model.Csv
                 trialist.Dogs.Add(new Dog(DogFiveName, DogFiveStatus));
 
             // Setup location
-            if (_locationService.TryResolve(Address, out ILocation location))
+            if (locationService.TryResolve(Address, out ILocation location))
                 trialist.CoordinatePoint = location.Location;
 
             return trialist;
         }
+
+        #region Object Overrides
+
+        public override string ToString() => nameof(MappedTrialist) + ": " + FullName;
+
+        public override bool Equals(object obj)
+        {
+            return obj is MappedTrialist mt
+                && mt.FullName.Equals(FullName)
+                && mt.Status.Equals(Status)
+                && mt.Address.Equals(Address);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 13;
+                hash = (hash * 7) + FullName.GetHashCode();
+                hash = (hash * 7) + Status.GetHashCode();
+                return (hash * 7) + Address.GetHashCode();
+            }
+        }
+
+        #endregion
     }
 }

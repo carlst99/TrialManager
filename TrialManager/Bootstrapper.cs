@@ -26,7 +26,7 @@ namespace TrialManager
 
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
-            builder.Bind<IDataImportService>().To<DataImportService>().InSingletonScope();
+            builder.Bind<ICsvImportService>().To<CsvImportService>().InSingletonScope();
             builder.Bind<IDrawCreationService>().To<DrawCreationService>().InSingletonScope();
             builder.Bind<ILocationService>().To<LocationService>().InSingletonScope();
             builder.Bind<INavigationService>().To<NavigationService>().InSingletonScope();

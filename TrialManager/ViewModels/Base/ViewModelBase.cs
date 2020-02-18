@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using Stylet;
 using System;
+using System.Threading.Tasks;
 using TrialManager.Resources;
 using TrialManager.Services;
 
@@ -19,6 +20,10 @@ namespace TrialManager.ViewModels.Base
 
             Log.Verbose("Navigated to " + GetType().Name);
         }
+
+        public virtual void Prepare(object payload)
+        {
+        }
     }
 
     public abstract class ViewModelConductorBase : Conductor<Screen>, IViewModelBase
@@ -34,6 +39,10 @@ namespace TrialManager.ViewModels.Base
 
             Log.Verbose("Navigated to " + GetType().Name);
             NavigationService.NavigationRequested += OnNavigationRequested;
+        }
+
+        public virtual void Prepare(object payload)
+        {
         }
 
         /// <summary>

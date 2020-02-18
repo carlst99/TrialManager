@@ -16,6 +16,11 @@ namespace TrialManager.Model.TrialistDb
             CoordinatePoint = new Gd2000Coordinate()
         };
 
+        public Trialist()
+        {
+            Dogs = new BindableCollection<Dog>();
+        }
+
         #region Fields
 
         private string _address;

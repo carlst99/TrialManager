@@ -1,5 +1,4 @@
-﻿using Realms;
-using Stylet;
+﻿using Stylet;
 using TrialManager.Services;
 
 namespace TrialManager.ViewModels.Base
@@ -9,5 +8,6 @@ namespace TrialManager.ViewModels.Base
         string this[string index] { get; }
         IEventAggregator EventAggregator { get; }
         INavigationService NavigationService { get; }
+        void Prepare(object payload);
     }
 }

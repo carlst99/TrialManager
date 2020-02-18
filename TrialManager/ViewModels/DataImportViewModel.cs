@@ -4,12 +4,11 @@ using Microsoft.Win32;
 using Serilog;
 using Stylet;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using TrialManager.Model;
 using TrialManager.Model.Csv;
 using TrialManager.Model.TrialistDb;
@@ -34,22 +33,30 @@ namespace TrialManager.ViewModels
 
         #region Fields
 
+        private readonly ICsvImportService _importService;
         private readonly ISnackbarMessageQueue _messageQueue;
 
+        private Cursor _windowCursor;
         private string _filePath;
         private ReadOnlyCollection<string> _csvHeaders;
         private BindableCollection<PropertyHeaderPair> _mappedProperties;
-        private BindableCollection<MappedTrialist> _trialists;
+        private BindableCollection<DuplicateTrialistPair> _duplicateTrialistPairs;
         private BindableCollection<PreferredDayDateTimePair> _preferredDayMappings;
 
         #endregion
 
         #region Properties
 
-        public BindableCollection<MappedTrialist> Trialists
+        public Cursor WindowCursor
         {
-            get => _trialists;
-            set => SetAndNotify(ref _trialists, value);
+            get => _windowCursor;
+            set => SetAndNotify(ref _windowCursor, value);
+        }
+
+        public BindableCollection<DuplicateTrialistPair> DuplicateTrialistPairs
+        {
+            get => _duplicateTrialistPairs;
+            set => SetAndNotify(ref _duplicateTrialistPairs, value);
         }
 
         public BindableCollection<PreferredDayDateTimePair> PreferredDayMappings
@@ -151,11 +158,14 @@ namespace TrialManager.ViewModels
         public DataImportViewModel(
             IEventAggregator eventAggregator,
             INavigationService navigationService,
+            ICsvImportService importService,
             ISnackbarMessageQueue messageQueue)
             : base(eventAggregator, navigationService)
         {
+            _importService = importService;
             _messageQueue = messageQueue;
             IsImportFileSectionExpanded = true;
+            WindowCursor = Cursors.Arrow;
         }
 
         #region UI Methods
@@ -171,7 +181,7 @@ namespace TrialManager.ViewModels
             {
                 try
                 {
-                    if (await DataImportService.IsValidCsvFile(ofd.FileName).ConfigureAwait(false))
+                    if (await _importService.IsValidCsvFile(ofd.FileName).ConfigureAwait(false))
                     {
                         FilePath = ofd.FileName;
                         IsImportFileSectionValid = true;
@@ -197,35 +207,46 @@ namespace TrialManager.ViewModels
         /// <returns></returns>
         public async Task ValidateAndContinue(ImportSection section)
         {
+            WindowCursor = Cursors.Wait;
             switch (section)
             {
                 case ImportSection.ImportFile:
-                    if (!await DataImportService.IsValidCsvFile(FilePath).ConfigureAwait(false))
+                    if (!await _importService.IsValidCsvFile(FilePath).ConfigureAwait(false))
                     {
                         _messageQueue.Enqueue("Please select a valid CSV file!");
-                        return;
+                        break;
                     }
                     if (!PrepareSetupMappingsSection())
-                        return;
+                        break;
                     IsImportFileSectionExpanded = false;
                     IsSetupMappingsSectionExpanded = true;
                     break;
                 case ImportSection.SetupMappings:
                     if (!await ValidateSetupMappingsSection().ConfigureAwait(false))
-                        return;
-                    await GetAllTrialists().ConfigureAwait(false);
-                    PreparePreferredDaySection();
+                        break;
+                    await PreparePreferredDaySection().ConfigureAwait(false);
                     IsSetupMappingsSectionExpanded = false;
                     IsPreferredDaySectionExpanded = true;
                     break;
                 case ImportSection.PreferredDay:
-                    _messageQueue.Enqueue("Setup preferred day validation Carl!");
                     if (!await ValidatePreferredDaySection().ConfigureAwait(false))
-                        return;
+                        break;
                     IsPreferredDaySectionExpanded = false;
                     IsDuplicatesSectionExpanded = true;
                     break;
+                case ImportSection.Duplicates:
+                    try
+                    {
+                        BindableCollection<Trialist> trialists = await _importService.FinaliseTrialistList(DuplicateTrialistPairs, PreferredDayMappings).ConfigureAwait(false);
+                        NavigationService.Navigate<DrawDisplayViewModel, BindableCollection<Trialist>>(this, trialists);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Could not finalise trialist list");
+                    }
+                    break;
             }
+            WindowCursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -251,7 +272,7 @@ namespace TrialManager.ViewModels
             }
         }
 
-        public void ResetDateCommand(PreferredDayDateTimePair pair)
+        public static void ResetDateCommand(PreferredDayDateTimePair pair)
         {
             pair.Day = DateTimeOffset.MinValue;
         }
@@ -271,7 +292,7 @@ namespace TrialManager.ViewModels
             }
             try
             {
-                CsvHeaders = DataImportService.GetCsvHeaders(FilePath);
+                CsvHeaders = _importService.GetCsvHeaders(FilePath);
             }
             catch (Exception ex)
             {
@@ -329,7 +350,7 @@ namespace TrialManager.ViewModels
             {
                 try
                 {
-                    csvReader = DataImportService.GetCsvReader(FilePath, DataImportService.BuildClassMap(MappedProperties));
+                    csvReader = _importService.GetCsvReader(FilePath, _importService.BuildClassMap(MappedProperties));
                 }
                 catch (IOException ioex)
                 {
@@ -387,13 +408,25 @@ namespace TrialManager.ViewModels
             }
         }
 
-        private void PreparePreferredDaySection()
+        /// <summary>
+        /// Prepares the Preferred Day section
+        /// </summary>
+        private async Task PreparePreferredDaySection()
         {
             PreferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
-            foreach (string element in Trialists.Select(t => t.PreferredDayString).Distinct())
-                PreferredDayMappings.Add(new PreferredDayDateTimePair(element));
+            DuplicateTrialistPairs = await _importService.GetMappedDuplicates(FilePath, _importService.BuildClassMap(MappedProperties)).ConfigureAwait(false);
+            PreferredDayMappings = await Task.Run(() =>
+            {
+                BindableCollection<PreferredDayDateTimePair> preferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
+                foreach (string element in DuplicateTrialistPairs.Select(t => t.FirstTrialist.PreferredDayString).Distinct())
+                    preferredDayMappings.Add(new PreferredDayDateTimePair(element));
+                return preferredDayMappings;
+            }).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Validates the Preferred Day section
+        /// </summary>
         private async Task<bool> ValidatePreferredDaySection()
         {
             bool isAtLeastOneSet = false;
@@ -414,14 +447,6 @@ namespace TrialManager.ViewModels
                 return (bool)await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
             }
             return true;
-        }
-
-        private async Task GetAllTrialists()
-        {
-            Trialists = new BindableCollection<MappedTrialist>();
-            using CsvReader csvReader = DataImportService.GetCsvReader(FilePath, DataImportService.BuildClassMap(MappedProperties));
-            await foreach (MappedTrialist trialist in csvReader.GetRecordsAsync<MappedTrialist>())
-                Trialists.Add(trialist);
         }
     }
 }
