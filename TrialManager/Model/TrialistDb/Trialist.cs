@@ -21,7 +21,7 @@ namespace TrialManager.Model.TrialistDb
         private string _address;
         private BindableCollection<Dog> _dogs;
         private Gd2000Coordinate _coordinatePoint;
-        private DateTimeOffset _preferredDay;
+        private DateTime _preferredDay;
 
         #endregion
 
@@ -57,7 +57,7 @@ namespace TrialManager.Model.TrialistDb
         /// <summary>
         /// Gets or sets the preferred run day
         /// </summary>
-        public DateTimeOffset PreferredDay
+        public DateTime PreferredDay
         {
             get => _preferredDay;
             set => SetProperty(ref _preferredDay, value);

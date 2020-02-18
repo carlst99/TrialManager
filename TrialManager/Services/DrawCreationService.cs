@@ -70,7 +70,7 @@ namespace TrialManager.Services
         {
             List<DayTrialistPair> dayTrialistPairs = new List<DayTrialistPair>();
             // Get all distinct days
-            List<DateTimeOffset> distinctDays = trialists.Distinct(new PreferredDayEqualityComparer())
+            List<DateTime> distinctDays = trialists.Distinct(new PreferredDayEqualityComparer())
                                                                 .OrderBy(t => t.PreferredDay)
                                                                 .Select(t => t.PreferredDay)
                                                                 .ToList();

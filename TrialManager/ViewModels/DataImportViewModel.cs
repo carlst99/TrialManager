@@ -274,7 +274,7 @@ namespace TrialManager.ViewModels
 
         public static void ResetDateCommand(PreferredDayDateTimePair pair)
         {
-            pair.Day = DateTimeOffset.MinValue;
+            pair.Day = DateTime.MinValue;
         }
 
         #endregion

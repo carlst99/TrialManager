@@ -8,11 +8,11 @@ namespace TrialManager.Model
     /// </summary>
     public class PreferredDayDateTimePair : PropertyChangedBase
     {
-        private DateTimeOffset _day;
+        private DateTime _day;
 
         public string PreferredDay { get; }
 
-        public DateTimeOffset Day
+        public DateTime Day
         {
             get => _day;
             set => SetAndNotify(ref _day, value);
@@ -21,10 +21,10 @@ namespace TrialManager.Model
         public PreferredDayDateTimePair(string preferredDay)
         {
             PreferredDay = preferredDay;
-            Day = DateTimeOffset.MinValue;
+            Day = DateTime.MinValue;
         }
 
-        public PreferredDayDateTimePair(string preferredDay, DateTimeOffset day)
+        public PreferredDayDateTimePair(string preferredDay, DateTime day)
         {
             PreferredDay = preferredDay;
             Day = day;
