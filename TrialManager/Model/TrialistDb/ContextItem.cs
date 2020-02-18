@@ -7,7 +7,7 @@ namespace TrialManager.Model.TrialistDb
     {
         #region Fields
 
-        private EntityStatus _status;
+        private string _status;
         private string _name;
 
         #endregion
@@ -17,7 +17,7 @@ namespace TrialManager.Model.TrialistDb
         /// <summary>
         /// Gets or sets the status of this entity
         /// </summary>
-        public EntityStatus Status
+        public string Status
         {
             get => _status;
             set => SetProperty(ref _status, value);

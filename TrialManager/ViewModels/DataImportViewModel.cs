@@ -366,30 +366,6 @@ namespace TrialManager.ViewModels
                 }
                 csvReader.Read();
                 MappedTrialist record = csvReader.GetRecord<MappedTrialist>();
-
-                // Check that the enum value has been parsed
-                if (record.Status == EntityStatus.None)
-                {
-                    // Build a string list of all the possible EntityStatus values, to inform the user
-                    string statusCombination = string.Empty;
-                    string[] statusEnumNames = Enum.GetNames(typeof(EntityStatus));
-                    for (int i = 0; i < statusEnumNames.Length; i++)
-                    {
-                        if (statusEnumNames[i] != nameof(EntityStatus.None))
-                        {
-                            statusCombination += statusEnumNames[i];
-                            if (i + 1 != statusEnumNames.Length)
-                                statusCombination += ", ";
-                        }
-                    }
-                    MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
-                    {
-                        Title = "Status Parse Error",
-                        Message = "TrialManager could not parse the status columns in your CSV file. Please make sure that each status entry matches one of the following values: " + statusCombination
-                    });
-                    await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
-                    return false;
-                }
                 return true;
             }
             catch (Exception ex)

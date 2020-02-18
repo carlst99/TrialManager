@@ -5,14 +5,14 @@
         public static Dog Default => new Dog
         {
             Name = "Dog",
-            Status = EntityStatus.Maiden
+            Status = "Maiden"
         };
 
         #region Constructors
 
         public Dog() { }
 
-        public Dog(string name, EntityStatus status)
+        public Dog(string name, string status)
         {
             Name = name;
             Status = status;

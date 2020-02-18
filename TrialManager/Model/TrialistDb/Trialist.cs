@@ -10,16 +10,11 @@ namespace TrialManager.Model.TrialistDb
         public static Trialist Default => new Trialist
         {
             Name = "Full Name",
-            Status = EntityStatus.Maiden,
+            Status = "Maiden",
             Address = "32 Hopeful Lane, Testing Grounds, Waitomo",
             Dogs = { Dog.Default },
             CoordinatePoint = new Gd2000Coordinate()
         };
-
-        public Trialist()
-        {
-            Dogs = new BindableCollection<Dog>();
-        }
 
         #region Fields
 
@@ -69,6 +64,11 @@ namespace TrialManager.Model.TrialistDb
         }
 
         #endregion
+
+        public Trialist()
+        {
+            Dogs = new BindableCollection<Dog>();
+        }
 
         #region Object Overrides
 

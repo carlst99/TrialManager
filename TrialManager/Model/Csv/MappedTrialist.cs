@@ -16,7 +16,7 @@ namespace TrialManager.Model.Csv
         #region Mapped Properties
 
         public string FullName { get; set; }
-        public EntityStatus Status { get; set; }
+        public string Status { get; set; }
         public string Address { get; set; }
         public string PreferredDayString { get; set; }
 
@@ -25,11 +25,11 @@ namespace TrialManager.Model.Csv
         public string DogThreeName { get; set; }
         public string DogFourName { get; set; }
         public string DogFiveName { get; set; }
-        public EntityStatus DogOneStatus { get; set; }
-        public EntityStatus DogTwoStatus { get; set; }
-        public EntityStatus DogThreeStatus { get; set; }
-        public EntityStatus DogFourStatus { get; set; }
-        public EntityStatus DogFiveStatus { get; set; }
+        public string DogOneStatus { get; set; }
+        public string DogTwoStatus { get; set; }
+        public string DogThreeStatus { get; set; }
+        public string DogFourStatus { get; set; }
+        public string DogFiveStatus { get; set; }
 
         #endregion
 
