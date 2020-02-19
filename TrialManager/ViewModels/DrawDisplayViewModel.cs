@@ -1,5 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Stylet;
+using System.Collections.Generic;
+using System.Linq;
 using TrialManager.Model.TrialistDb;
 using TrialManager.Services;
 using TrialManager.ViewModels.Base;
@@ -34,9 +36,12 @@ namespace TrialManager.ViewModels
             _messageQueue = messageQueue;
         }
 
-        public override void Prepare(object payload)
+        public override async void Prepare(object payload)
         {
-            Trialists = (BindableCollection<Trialist>)payload;
+            Trialists = new BindableCollection<Trialist>();
+            await foreach (Trialist element in (IAsyncEnumerable<Trialist>)payload)
+                Trialists.Add(element);
+            Trialists = new BindableCollection<Trialist>(Trialists.OrderBy(t => t.Name).ToList());
         }
     }
 }

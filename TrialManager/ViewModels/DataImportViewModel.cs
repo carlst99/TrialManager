@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using Serilog;
 using Stylet;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -233,8 +234,7 @@ namespace TrialManager.ViewModels
                 case ImportSection.Duplicates:
                     try
                     {
-                        BindableCollection<Trialist> trialists = await _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings).ConfigureAwait(false);
-                        NavigationService.Navigate<DrawDisplayViewModel, BindableCollection<Trialist>>(this, trialists);
+                        NavigationService.Navigate<DrawDisplayViewModel, IAsyncEnumerable<Trialist>>(this, _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings));
                     }
                     catch (Exception ex)
                     {
