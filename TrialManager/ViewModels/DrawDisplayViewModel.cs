@@ -14,6 +14,7 @@ namespace TrialManager.ViewModels
 
         private readonly ISnackbarMessageQueue _messageQueue;
         private BindableCollection<Trialist> _trialists;
+        private string _trialAddress;
 
         #endregion
 
@@ -23,6 +24,12 @@ namespace TrialManager.ViewModels
         {
             get => _trialists;
             set => SetAndNotify(ref _trialists, value);
+        }
+
+        public string TrialAddress
+        {
+            get => _trialAddress;
+            set => SetAndNotify(ref _trialAddress, value);
         }
 
         #endregion
