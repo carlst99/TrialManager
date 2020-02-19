@@ -97,7 +97,7 @@ namespace TrialManager.Services
 
             using StreamReader sr = new StreamReader(filePath);
             string line = await sr.ReadLineAsync().ConfigureAwait(false);
-            return line.Contains(';') || line.Contains(',');
+            return line?.Contains(';') == true || line?.Contains(',') == true;
         }
 
         /// <summary>

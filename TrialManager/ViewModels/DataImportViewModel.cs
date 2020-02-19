@@ -211,11 +211,6 @@ namespace TrialManager.ViewModels
             switch (section)
             {
                 case ImportSection.ImportFile:
-                    if (!await _importService.IsValidCsvFile(FilePath).ConfigureAwait(false))
-                    {
-                        _messageQueue.Enqueue("Please select a valid CSV file!");
-                        break;
-                    }
                     if (!PrepareSetupMappingsSection())
                         break;
                     IsImportFileSectionExpanded = false;
@@ -290,16 +285,7 @@ namespace TrialManager.ViewModels
                 _messageQueue.Enqueue("The file you have selected no longer exists. Please select a file again");
                 return false;
             }
-            try
-            {
-                CsvHeaders = _importService.GetCsvHeaders(FilePath);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Could not get header row from CSV file");
-                _messageQueue.Enqueue("Could not read header data from the CSV file. Please try again");
-                return false;
-            }
+            CsvHeaders = _importService.GetCsvHeaders(FilePath);
 
             MappedProperties = new BindableCollection<PropertyHeaderPair>();
             MappedProperty[] mappedPropertyEnumValues = (MappedProperty[])Enum.GetValues(typeof(MappedProperty));
