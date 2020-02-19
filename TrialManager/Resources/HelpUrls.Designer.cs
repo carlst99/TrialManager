@@ -72,6 +72,15 @@ namespace TrialManager.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string IOException {
+            get {
+                return ResourceManager.GetString("IOException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string PreferredDayMapping {
             get {
                 return ResourceManager.GetString("PreferredDayMapping", resourceCulture);
