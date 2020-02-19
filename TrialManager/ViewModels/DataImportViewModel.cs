@@ -364,6 +364,8 @@ namespace TrialManager.ViewModels
                     await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
                     return false;
                 }
+
+                // Check that we can read records
                 csvReader.Read();
                 MappedTrialist record = csvReader.GetRecord<MappedTrialist>();
                 return true;
