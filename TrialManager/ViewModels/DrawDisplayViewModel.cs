@@ -1,5 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Serilog;
 using Stylet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,7 +71,20 @@ namespace TrialManager.ViewModels
         public async Task CreateDraw()
         {
             ShowProgress = true;
-            Draw = await Task.Run(() => _drawService.CreateDraw(_trialists, RunsPerDay, TrialAddress).ToList()).ConfigureAwait(false);
+            try
+            {
+                Draw = await Task.Run(() => _drawService.CreateDraw(_trialists, RunsPerDay, TrialAddress).ToList()).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Could not create draw");
+                MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
+                {
+                    Title = "This is embarrassing...",
+                    Message = "TrialManager could not create the draw! Please try again"
+                });
+                await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+            }
             ShowProgress = false;
         }
 
