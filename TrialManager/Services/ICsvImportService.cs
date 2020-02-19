@@ -13,10 +13,18 @@ namespace TrialManager.Services
     public interface ICsvImportService
     {
         /// <summary>
+        /// Enumerates the distinct preferred day strings in a trialist CSV file
+        /// </summary>
+        /// <param name="path">The path to the CSV file</param>
+        /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
+        IAsyncEnumerable<string> GetDistinctPreferredDays(string path, ClassMap<MappedTrialist> classMap);
+
+        /// <summary>
         /// Imports data from a CSV file as a collection of <see cref="MappedTrialist"/> and builds a list of duplicates to resolve
         /// </summary>
         /// <param name="path">The path to the csv file</param>
-        IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, TrialistCsvClassMap classMap);
+        /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
+        IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, ClassMap<MappedTrialist> classMap);
 
         /// <summary>
         /// Compresses a <see cref="DuplicateTrialistPair"/> list and adds preferred day data
@@ -36,8 +44,7 @@ namespace TrialManager.Services
         /// Gets a CSV reader setup with an <see cref="EntityStatusConverter"/> and provided classmap
         /// </summary>
         /// <param name="filePath">The path to the file upon which a CSV reader should be open</param>
-        /// <param name="classMap">The classmap to use</param>
-        /// <returns></returns>
+        /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
         CsvReader GetCsvReader(string filePath, ClassMap<MappedTrialist> classMap = null);
 
         /// <summary>

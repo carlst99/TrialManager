@@ -219,9 +219,9 @@ namespace TrialManager.ViewModels
                 case ImportSection.SetupMappings:
                     if (!await ValidateSetupMappingsSection().ConfigureAwait(false))
                         break;
-                    await PreparePreferredDaySection().ConfigureAwait(false);
                     IsSetupMappingsSectionExpanded = false;
                     IsPreferredDaySectionExpanded = true;
+                    await PreparePreferredDaySection().ConfigureAwait(false);
                     break;
                 case ImportSection.PreferredDay:
                     if (!await ValidatePreferredDaySection().ConfigureAwait(false))

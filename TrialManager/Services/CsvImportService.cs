@@ -25,12 +25,26 @@ namespace TrialManager.Services
         }
 
         /// <summary>
-        /// Imports data from a CSV file, loading it to the database
+        /// Enumerates the distinct preferred day strings in a trialist CSV file
         /// </summary>
-        /// <param name="path">The path to the file</param>
-        /// <param name="preferredDayMappings">Maps a day string to a defined preferred day object</param>
-        /// <exception cref="IOException"></exception>
-        public async IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, TrialistCsvClassMap classMap)
+        /// <param name="path">The path to the CSV file</param>
+        /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
+        public async IAsyncEnumerable<string> GetDistinctPreferredDays(string path, ClassMap<MappedTrialist> classMap)
+        {
+            HashSet<int> dayHashes = new HashSet<int>();
+            await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
+            {
+                if (dayHashes.Add(mt.PreferredDayString.GetHashCode()))
+                    yield return mt.PreferredDayString;
+            }
+        }
+
+        /// <summary>
+        /// Imports data from a CSV file as a collection of <see cref="MappedTrialist"/> and builds a list of duplicates to resolve
+        /// </summary>
+        /// <param name="path">The path to the csv file</param>
+        /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
+        public async IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, ClassMap<MappedTrialist> classMap)
         {
             HashSet<int> trialistHashes = new HashSet<int>();
             List<MappedTrialist> tempStorageList = new List<MappedTrialist>();
@@ -135,7 +149,7 @@ namespace TrialManager.Services
         /// </summary>
         /// <param name="filePath">The path to the CSV file</param>
         /// <param name="classMap">The classmap used to create the <see cref="MappedTrialist"/> object</param>
-        private async IAsyncEnumerable<MappedTrialist> EnumerateCsv(string filePath, TrialistCsvClassMap classMap)
+        private async IAsyncEnumerable<MappedTrialist> EnumerateCsv(string filePath, ClassMap<MappedTrialist> classMap)
         {
             using CsvReader csv = GetCsvReader(filePath, classMap);
             await foreach (MappedTrialist mt in csv.GetRecordsAsync<MappedTrialist>())
