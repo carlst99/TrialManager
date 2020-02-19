@@ -1,7 +1,5 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using Stylet;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -17,6 +15,7 @@ namespace TrialManager.Services
     public class CsvImportService : ICsvImportService
     {
         private readonly ILocationService _locationService;
+        private IEnumerable<MappedTrialist> _tempStorageList;
 
         public CsvImportService(ILocationService locationService)
         {
@@ -24,66 +23,66 @@ namespace TrialManager.Services
         }
 
         /// <summary>
-        /// Imports data from a CSV file, loading it to the database
+        /// Enumerates the distinct preferred day strings in a trialist CSV file
         /// </summary>
-        /// <param name="path">The path to the file</param>
-        /// <param name="preferredDayMappings">Maps a day string to a defined preferred day object</param>
-        /// <exception cref="IOException"></exception>
-        public async Task<BindableCollection<DuplicateTrialistPair>> GetMappedDuplicates(string path, TrialistCsvClassMap classMap)
+        /// <param name="path">The path to the CSV file</param>
+        /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
+        public async IAsyncEnumerable<string> GetDistinctPreferredDays(string path, ClassMap<MappedTrialist> classMap)
         {
-            try
+            HashSet<int> dayHashes = new HashSet<int>();
+            await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
             {
-                HashSet<int> trialistHashes = new HashSet<int>();
-                List<MappedTrialist> tempStorageList = new List<MappedTrialist>();
-                BindableCollection<DuplicateTrialistPair> duplicates = new BindableCollection<DuplicateTrialistPair>();
-
-                // Note that this algorithm can result in multiple duplicate fields if the trialist has submitted more than two entries
-                // However as this is unlikely, the user should have enough short-term memory to realise that there are 'duplicate duplicates'
-                await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
-                {
-                    // If we can add the hash, then we have not yet discovered a potential duplicate
-                    if (trialistHashes.Add(mt.GetHashCode()))
-                    {
-                        tempStorageList.Add(mt);
-                    }
-                    else
-                    {
-                        MappedTrialist clash = tempStorageList.First(t => t.GetHashCode().Equals(mt.GetHashCode()));
-                        clash.HasDuplicateClash = true;
-                        duplicates.Add(new DuplicateTrialistPair(clash, mt));
-                    }
-                }
-                // Now add every trialist that we haven't discovered a duplicate for
-                // If we have discovered a duplicate, the trialist is already in the list
-                foreach (MappedTrialist mt in tempStorageList)
-                {
-                    if (!mt.HasDuplicateClash)
-                        duplicates.Add(new DuplicateTrialistPair(mt));
-                }
-
-                return duplicates;
-            }
-            catch (Exception ex)
-            {
-                Bootstrapper.LogError("Could not import data from CSV", ex);
-                return null;
+                if (dayHashes.Add(mt.PreferredDayString.GetHashCode()))
+                    yield return mt.PreferredDayString;
             }
         }
 
-        public async Task<BindableCollection<Trialist>> FinaliseTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
+        /// <summary>
+        /// Imports data from a CSV file as a collection of <see cref="MappedTrialist"/> and builds a list of duplicates to resolve
+        /// </summary>
+        /// <param name="path">The path to the csv file</param>
+        /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
+        public async IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, ClassMap<MappedTrialist> classMap)
         {
-            return await Task.Run(() =>
+            HashSet<int> trialistHashes = new HashSet<int>();
+            List<MappedTrialist> tempStorageList = new List<MappedTrialist>();
+
+            // Note that this algorithm can result in multiple duplicate fields if the trialist has submitted more than two entries
+            // However as this is unlikely, the user should have enough short-term memory to realise that there are 'duplicate duplicates'
+            await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
             {
-                BindableCollection<Trialist> trialists = new BindableCollection<Trialist>();
-                foreach (DuplicateTrialistPair pair in duplicates)
+                // If we can add the hash, then we have not yet discovered a potential duplicate
+                if (trialistHashes.Add(mt.GetHashCode()))
                 {
-                    if (pair.KeepFirstTrialist)
-                        trialists.Add(pair.FirstTrialist.ToTrialist(_locationService, preferredDayMappings));
-                    if (pair.KeepSecondTrialist)
-                        trialists.Add(pair.SecondTrialist.ToTrialist(_locationService, preferredDayMappings));
+                    tempStorageList.Add(mt);
                 }
-                return trialists;
-            }).ConfigureAwait(false);
+                else
+                {
+                    MappedTrialist clash = tempStorageList.First(t => t.GetHashCode().Equals(mt.GetHashCode()));
+                    clash.HasDuplicateClash = true;
+                    yield return new DuplicateTrialistPair(clash, mt);
+                }
+            }
+            _tempStorageList = tempStorageList.Where(t => !t.HasDuplicateClash);
+        }
+
+        /// <summary>
+        /// Builds a <see cref="Trialist"/> list, factoring in resolved duplicates
+        /// </summary>
+        /// <param name="duplicates">A list of resolved duplicates</param>
+        /// <param name="preferredDayMappings">Preferred day mappings</param>
+        public async IAsyncEnumerable<Trialist> BuildTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
+        {
+            foreach (MappedTrialist trialist in _tempStorageList)
+                yield return await trialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
+
+            foreach (DuplicateTrialistPair pair in duplicates)
+            {
+                if (pair.KeepFirstTrialist)
+                    yield return await pair.FirstTrialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
+                if (pair.KeepSecondTrialist)
+                    yield return await pair.SecondTrialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -151,7 +150,7 @@ namespace TrialManager.Services
         /// </summary>
         /// <param name="filePath">The path to the CSV file</param>
         /// <param name="classMap">The classmap used to create the <see cref="MappedTrialist"/> object</param>
-        private async IAsyncEnumerable<MappedTrialist> EnumerateCsv(string filePath, TrialistCsvClassMap classMap)
+        private async IAsyncEnumerable<MappedTrialist> EnumerateCsv(string filePath, ClassMap<MappedTrialist> classMap)
         {
             using CsvReader csv = GetCsvReader(filePath, classMap);
             await foreach (MappedTrialist mt in csv.GetRecordsAsync<MappedTrialist>())

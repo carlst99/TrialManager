@@ -6,15 +6,15 @@ namespace TrialManager.Model
 {
     public class DayTrialistPair
     {
-        public readonly DateTimeOffset Day;
+        public readonly DateTime Day;
         public IEnumerable<Trialist> Trialists { get; set; }
 
-        public DayTrialistPair(DateTimeOffset day)
+        public DayTrialistPair(DateTime day)
             : this (day, null)
         {
         }
 
-        public DayTrialistPair(DateTimeOffset day, IEnumerable<Trialist> trialists)
+        public DayTrialistPair(DateTime day, IEnumerable<Trialist> trialists)
         {
             Day = day;
             Trialists = trialists;

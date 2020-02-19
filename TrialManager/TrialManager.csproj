@@ -7,10 +7,15 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="15.0.0" />
     <PackageReference Include="IntraMessaging" Version="1.0.3" />
     <PackageReference Include="MaterialDesignColors" Version="1.2.2" />
+    <PackageReference Include="MaterialDesignExtensions" Version="3.0.0" />
     <PackageReference Include="MaterialDesignThemes" Version="3.0.1" />
     <PackageReference Include="MessagePack" Version="2.1.90" />
     <PackageReference Include="Realm" Version="4.3.0" />

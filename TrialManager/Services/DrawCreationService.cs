@@ -29,7 +29,7 @@ namespace TrialManager.Services
         /// <summary>
         /// Gets the marker used to define a non-preference of day
         /// </summary>
-        public static readonly DateTimeOffset NO_PREFERRED_DAY_MARKER = DateTimeOffset.MinValue;
+        public static readonly DateTime NO_PREFERRED_DAY_MARKER = DateTime.MinValue;
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace TrialManager.Services
             _locationService = locationService;
         }
 
-        public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRunsPerDay, DateTime startDay, string address)
+        public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRunsPerDay, string address)
         {
             _locationService.TryResolve(address, out ILocation trialLocation);
 
@@ -75,7 +75,7 @@ namespace TrialManager.Services
                                                                 .Select(t => t.PreferredDay)
                                                                 .ToList();
             // Setup list of trialists for each day
-            foreach (DateTimeOffset day in distinctDays)
+            foreach (DateTime day in distinctDays)
             {
                 IEnumerable<Trialist> trialistsForSaidDay = trialists.Where(t => t.PreferredDay.Equals(day));
                 dayTrialistPairs.Add(new DayTrialistPair(day, trialistsForSaidDay));
@@ -118,7 +118,7 @@ namespace TrialManager.Services
         /// <remarks>Fills days with trialists if said day is needing more runs to reach the maximum</remarks>
         private IEnumerable<Trialist> GenerateFinalList(List<DayTrialistPair> dayTrialistPairs, int maxRunsPerDay)
         {
-            IEnumerable<Trialist> finalList = null;
+            IEnumerable<Trialist> finalList = Enumerable.Empty<Trialist>();
             int noPrefPositionCounter = 0;
 
             // Take and remove the no preference pair

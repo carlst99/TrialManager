@@ -4,9 +4,9 @@ using Microsoft.Win32;
 using Serilog;
 using Stylet;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TrialManager.Model;
@@ -195,7 +195,7 @@ namespace TrialManager.ViewModels
                 catch (IOException ioex)
                 {
                     Log.Error(ioex, "Could not open CSV file");
-                    _messageQueue.Enqueue("Could not open the selected file! Please check that no other programs are using it");
+                    await DisplayIOExceptionDialog().ConfigureAwait(false);
                 }
             }
         }
@@ -211,7 +211,7 @@ namespace TrialManager.ViewModels
             switch (section)
             {
                 case ImportSection.ImportFile:
-                    if (!PrepareSetupMappingsSection())
+                    if (!await PrepareSetupMappingsSection().ConfigureAwait(false))
                         break;
                     IsImportFileSectionExpanded = false;
                     IsSetupMappingsSectionExpanded = true;
@@ -219,21 +219,28 @@ namespace TrialManager.ViewModels
                 case ImportSection.SetupMappings:
                     if (!await ValidateSetupMappingsSection().ConfigureAwait(false))
                         break;
-                    await PreparePreferredDaySection().ConfigureAwait(false);
                     IsSetupMappingsSectionExpanded = false;
                     IsPreferredDaySectionExpanded = true;
+                    await PreparePreferredDaySection().ConfigureAwait(false);
                     break;
                 case ImportSection.PreferredDay:
                     if (!await ValidatePreferredDaySection().ConfigureAwait(false))
                         break;
                     IsPreferredDaySectionExpanded = false;
                     IsDuplicatesSectionExpanded = true;
+                    await PrepareDuplicatesSection().ConfigureAwait(false);
                     break;
                 case ImportSection.Duplicates:
                     try
                     {
-                        BindableCollection<Trialist> trialists = await _importService.FinaliseTrialistList(DuplicateTrialistPairs, PreferredDayMappings).ConfigureAwait(false);
-                        NavigationService.Navigate<DrawDisplayViewModel, BindableCollection<Trialist>>(this, trialists);
+                        NavigationService.Navigate<DrawDisplayViewModel, IAsyncEnumerable<Trialist>>(this, _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings));
+                        IsDuplicatesSectionExpanded = false;
+                        IsImportFileSectionExpanded = true;
+                        DuplicateTrialistPairs = null;
+                        PreferredDayMappings = null;
+                        FilePath = string.Empty;
+                        MappedProperties = null;
+                        CsvHeaders = null;
                     }
                     catch (Exception ex)
                     {
@@ -278,14 +285,22 @@ namespace TrialManager.ViewModels
         /// Prepares the Setup Mappings section
         /// </summary>
         /// <returns>A value indicating whether preparation was successful</returns>
-        private bool PrepareSetupMappingsSection()
+        private async Task<bool> PrepareSetupMappingsSection()
         {
-            if (!File.Exists(FilePath))
+            try
             {
-                _messageQueue.Enqueue("The file you have selected no longer exists. Please select a file again");
-                return false;
+                CsvHeaders = _importService.GetCsvHeaders(FilePath);
             }
-            CsvHeaders = _importService.GetCsvHeaders(FilePath);
+            catch (IOException ioex)
+            {
+                Log.Error(ioex, "Could not read CSV file");
+                await DisplayIOExceptionDialog().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Could not read CSV header record");
+                await DisplayUnexpectedExceptionDialog().ConfigureAwait(false);
+            }
 
             MappedProperties = new BindableCollection<PropertyHeaderPair>();
             MappedProperty[] mappedPropertyEnumValues = (MappedProperty[])Enum.GetValues(typeof(MappedProperty));
@@ -334,34 +349,24 @@ namespace TrialManager.ViewModels
             CsvReader csvReader = null;
             try
             {
-                try
-                {
-                    csvReader = _importService.GetCsvReader(FilePath, _importService.BuildClassMap(MappedProperties));
-                }
-                catch (IOException ioex)
-                {
-                    Log.Error(ioex, "Could not open CSV file");
-                    MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
-                    {
-                        Title = "File Error",
-                        Message = "TrialManager could not open the CSV file that you have selected. Please ensure that no other programs are using the file and try again",
-                        HelpUrl = null
-                    });
-                    await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
-                    return false;
-                }
-
+                csvReader = _importService.GetCsvReader(FilePath, _importService.BuildClassMap(MappedProperties));
                 // Check that we can read records
                 csvReader.Read();
                 MappedTrialist record = csvReader.GetRecord<MappedTrialist>();
                 return true;
             }
+            catch (IOException ioex)
+            {
+                Log.Error(ioex, "Could not read CSV file");
+                await DisplayIOExceptionDialog().ConfigureAwait(false);
+                return false;
+            }
             catch (Exception ex)
             {
-                Log.Error(ex, "Could not read CSV file");
+                Log.Error(ex, "Could not read data from CSV file");
                 MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
                 {
-                    Message = "TrialManager could not import data from this CSV file. Please check that you have:\n  • Selected the correct CSV file\n  • Correctly mapped the CSV file properties to TrialManager properties"
+                    Message = "TrialManager could not read data from this CSV file. Please check that you have:\n  • Selected the correct CSV file\n  • Correctly mapped the CSV file properties to TrialManager properties"
                 });
                 await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
                 return false;
@@ -377,15 +382,22 @@ namespace TrialManager.ViewModels
         /// </summary>
         private async Task PreparePreferredDaySection()
         {
-            PreferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
-            DuplicateTrialistPairs = await _importService.GetMappedDuplicates(FilePath, _importService.BuildClassMap(MappedProperties)).ConfigureAwait(false);
-            PreferredDayMappings = await Task.Run(() =>
+            try
             {
-                BindableCollection<PreferredDayDateTimePair> preferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
-                foreach (string element in DuplicateTrialistPairs.Select(t => t.FirstTrialist.PreferredDayString).Distinct())
-                    preferredDayMappings.Add(new PreferredDayDateTimePair(element));
-                return preferredDayMappings;
-            }).ConfigureAwait(false);
+                PreferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
+                await foreach (string element in _importService.GetDistinctPreferredDays(FilePath, _importService.BuildClassMap(MappedProperties)))
+                    PreferredDayMappings.Add(new PreferredDayDateTimePair(element));
+            }
+            catch (IOException ioex)
+            {
+                Log.Error(ioex, "Could not read CSV file");
+                await DisplayIOExceptionDialog().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Could not setup preferred day mappings");
+                await DisplayUnexpectedExceptionDialog().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -396,7 +408,7 @@ namespace TrialManager.ViewModels
             bool isAtLeastOneSet = false;
             foreach (PreferredDayDateTimePair pair in PreferredDayMappings)
             {
-                if (!pair.Day.Equals(DateTimeOffset.MinValue))
+                if (!pair.Day.Equals(DateTime.MinValue))
                     isAtLeastOneSet = true;
             }
             if (!isAtLeastOneSet)
@@ -411,6 +423,57 @@ namespace TrialManager.ViewModels
                 return (bool)await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
             }
             return true;
+        }
+
+        /// <summary>
+        /// Prepares the Duplicates section
+        /// </summary>
+        private async Task PrepareDuplicatesSection()
+        {
+            try
+            {
+                DuplicateTrialistPairs = new BindableCollection<DuplicateTrialistPair>();
+                await foreach (DuplicateTrialistPair element in _importService.GetMappedDuplicates(FilePath, _importService.BuildClassMap(MappedProperties)))
+                    DuplicateTrialistPairs.Add(element);
+            }
+            catch (IOException ioex)
+            {
+                Log.Error(ioex, "Could not read CSV file");
+                await DisplayIOExceptionDialog().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Could not prepare duplicates section");
+                await DisplayUnexpectedExceptionDialog().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Displays a <see cref="MessageDialog"/> which alerts the user to an issue with reading the CSV file
+        /// </summary>
+        private async Task DisplayIOExceptionDialog()
+        {
+            MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
+            {
+                Title = "File Error",
+                Message = "TrialManager could not read the CSV file that you have selected. Please ensure that no other programs are using the file and try again",
+                HelpUrl = HelpUrls.IOException
+            });
+            await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Displays a <see cref="MessageDialog"/> which alers the user to an unexpected exception
+        /// </summary>
+        private async Task DisplayUnexpectedExceptionDialog()
+        {
+            MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
+            {
+                Title = "Woah!",
+                Message = "TrialManager encountered an unexpected exception when reading the CSV file. Please try again",
+                HelpUrl = HelpUrls.Default
+            });
+            await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
         }
     }
 }

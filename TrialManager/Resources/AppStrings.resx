@@ -130,7 +130,7 @@
     <comment>This label appears on a control which allows the user to export the draw</comment>
   </data>
   <data name="Command_ImportData" xml:space="preserve">
-    <value>Import Data</value>
+    <value>Import New Data</value>
     <comment>This label appears on a control which allows the user to import a new dataset</comment>
   </data>
   <data name="Command_PrintDraw" xml:space="preserve">
