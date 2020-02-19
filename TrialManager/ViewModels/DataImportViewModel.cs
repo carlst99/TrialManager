@@ -234,6 +234,13 @@ namespace TrialManager.ViewModels
                     try
                     {
                         NavigationService.Navigate<DrawDisplayViewModel, IAsyncEnumerable<Trialist>>(this, _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings));
+                        IsDuplicatesSectionExpanded = false;
+                        IsImportFileSectionExpanded = true;
+                        DuplicateTrialistPairs = null;
+                        PreferredDayMappings = null;
+                        FilePath = string.Empty;
+                        MappedProperties = null;
+                        CsvHeaders = null;
                     }
                     catch (Exception ex)
                     {

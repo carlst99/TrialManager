@@ -88,7 +88,7 @@ namespace TrialManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import Data.
+        ///   Looks up a localized string similar to Import New Data.
         /// </summary>
         public static string Command_ImportData {
             get {

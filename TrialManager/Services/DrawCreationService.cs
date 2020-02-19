@@ -40,7 +40,7 @@ namespace TrialManager.Services
             _locationService = locationService;
         }
 
-        public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRunsPerDay, DateTime startDay, string address)
+        public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRunsPerDay, string address)
         {
             _locationService.TryResolve(address, out ILocation trialLocation);
 
@@ -118,7 +118,7 @@ namespace TrialManager.Services
         /// <remarks>Fills days with trialists if said day is needing more runs to reach the maximum</remarks>
         private IEnumerable<Trialist> GenerateFinalList(List<DayTrialistPair> dayTrialistPairs, int maxRunsPerDay)
         {
-            IEnumerable<Trialist> finalList = null;
+            IEnumerable<Trialist> finalList = Enumerable.Empty<Trialist>();
             int noPrefPositionCounter = 0;
 
             // Take and remove the no preference pair
