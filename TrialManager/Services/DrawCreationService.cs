@@ -29,7 +29,7 @@ namespace TrialManager.Services
         /// <summary>
         /// Gets the marker used to define a non-preference of day
         /// </summary>
-        public static readonly DateTimeOffset NO_PREFERRED_DAY_MARKER = DateTimeOffset.MinValue;
+        public static readonly DateTime NO_PREFERRED_DAY_MARKER = DateTime.MinValue;
 
         #endregion
 
@@ -75,7 +75,7 @@ namespace TrialManager.Services
                                                                 .Select(t => t.PreferredDay)
                                                                 .ToList();
             // Setup list of trialists for each day
-            foreach (DateTimeOffset day in distinctDays)
+            foreach (DateTime day in distinctDays)
             {
                 IEnumerable<Trialist> trialistsForSaidDay = trialists.Where(t => t.PreferredDay.Equals(day));
                 dayTrialistPairs.Add(new DayTrialistPair(day, trialistsForSaidDay));

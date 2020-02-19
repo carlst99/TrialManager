@@ -16,7 +16,7 @@ namespace TrialManager.Services
         /// Imports data from a CSV file as a collection of <see cref="MappedTrialist"/> and builds a list of duplicates to resolve
         /// </summary>
         /// <param name="path">The path to the csv file</param>
-        Task<BindableCollection<DuplicateTrialistPair>> GetMappedDuplicates(string path, TrialistCsvClassMap classMap);
+        IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, TrialistCsvClassMap classMap);
 
         /// <summary>
         /// Compresses a <see cref="DuplicateTrialistPair"/> list and adds preferred day data

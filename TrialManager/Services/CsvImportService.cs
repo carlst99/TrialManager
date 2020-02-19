@@ -17,6 +17,7 @@ namespace TrialManager.Services
     public class CsvImportService : ICsvImportService
     {
         private readonly ILocationService _locationService;
+        private IEnumerable<MappedTrialist> _tempStorageList;
 
         public CsvImportService(ILocationService locationService)
         {
@@ -29,45 +30,28 @@ namespace TrialManager.Services
         /// <param name="path">The path to the file</param>
         /// <param name="preferredDayMappings">Maps a day string to a defined preferred day object</param>
         /// <exception cref="IOException"></exception>
-        public async Task<BindableCollection<DuplicateTrialistPair>> GetMappedDuplicates(string path, TrialistCsvClassMap classMap)
+        public async IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, TrialistCsvClassMap classMap)
         {
-            try
-            {
-                HashSet<int> trialistHashes = new HashSet<int>();
-                List<MappedTrialist> tempStorageList = new List<MappedTrialist>();
-                BindableCollection<DuplicateTrialistPair> duplicates = new BindableCollection<DuplicateTrialistPair>();
+            HashSet<int> trialistHashes = new HashSet<int>();
+            List<MappedTrialist> tempStorageList = new List<MappedTrialist>();
 
-                // Note that this algorithm can result in multiple duplicate fields if the trialist has submitted more than two entries
-                // However as this is unlikely, the user should have enough short-term memory to realise that there are 'duplicate duplicates'
-                await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
-                {
-                    // If we can add the hash, then we have not yet discovered a potential duplicate
-                    if (trialistHashes.Add(mt.GetHashCode()))
-                    {
-                        tempStorageList.Add(mt);
-                    }
-                    else
-                    {
-                        MappedTrialist clash = tempStorageList.First(t => t.GetHashCode().Equals(mt.GetHashCode()));
-                        clash.HasDuplicateClash = true;
-                        duplicates.Add(new DuplicateTrialistPair(clash, mt));
-                    }
-                }
-                // Now add every trialist that we haven't discovered a duplicate for
-                // If we have discovered a duplicate, the trialist is already in the list
-                foreach (MappedTrialist mt in tempStorageList)
-                {
-                    if (!mt.HasDuplicateClash)
-                        duplicates.Add(new DuplicateTrialistPair(mt));
-                }
-
-                return duplicates;
-            }
-            catch (Exception ex)
+            // Note that this algorithm can result in multiple duplicate fields if the trialist has submitted more than two entries
+            // However as this is unlikely, the user should have enough short-term memory to realise that there are 'duplicate duplicates'
+            await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
             {
-                Bootstrapper.LogError("Could not import data from CSV", ex);
-                return null;
+                // If we can add the hash, then we have not yet discovered a potential duplicate
+                if (trialistHashes.Add(mt.GetHashCode()))
+                {
+                    tempStorageList.Add(mt);
+                }
+                else
+                {
+                    MappedTrialist clash = tempStorageList.First(t => t.GetHashCode().Equals(mt.GetHashCode()));
+                    clash.HasDuplicateClash = true;
+                    yield return new DuplicateTrialistPair(clash, mt);
+                }
             }
+            _tempStorageList = tempStorageList.Where(t => !t.HasDuplicateClash);
         }
 
         public async Task<BindableCollection<Trialist>> FinaliseTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
