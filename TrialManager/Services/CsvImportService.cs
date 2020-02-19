@@ -68,20 +68,18 @@ namespace TrialManager.Services
             _tempStorageList = tempStorageList.Where(t => !t.HasDuplicateClash);
         }
 
-        public async Task<BindableCollection<Trialist>> FinaliseTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
+        public async IAsyncEnumerable<Trialist> BuildTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
         {
-            return await Task.Run(() =>
+            foreach (MappedTrialist trialist in _tempStorageList)
+                yield return await trialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
+
+            foreach (DuplicateTrialistPair pair in duplicates)
             {
-                BindableCollection<Trialist> trialists = new BindableCollection<Trialist>();
-                foreach (DuplicateTrialistPair pair in duplicates)
-                {
-                    if (pair.KeepFirstTrialist)
-                        trialists.Add(pair.FirstTrialist.ToTrialist(_locationService, preferredDayMappings));
-                    if (pair.KeepSecondTrialist)
-                        trialists.Add(pair.SecondTrialist.ToTrialist(_locationService, preferredDayMappings));
-                }
-                return trialists;
-            }).ConfigureAwait(false);
+                if (pair.KeepFirstTrialist)
+                    yield return await pair.FirstTrialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
+                if (pair.KeepSecondTrialist)
+                    yield return await pair.SecondTrialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
+            }
         }
 
         /// <summary>

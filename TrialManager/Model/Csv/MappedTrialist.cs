@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TrialManager.Model.LocationDb;
 using TrialManager.Model.TrialistDb;
 using TrialManager.Services;
@@ -45,33 +46,36 @@ namespace TrialManager.Model.Csv
         /// Converts this <see cref="MappedTrialist"/> to a <see cref="Trialist"/>. Does not fill <see cref="Trialist.TravellingPartner"/>
         /// </summary>
         /// <returns></returns>
-        public Trialist ToTrialist(ILocationService locationService, IList<PreferredDayDateTimePair> preferredDayMappings)
+        public async Task<Trialist> ToTrialist(ILocationService locationService, IList<PreferredDayDateTimePair> preferredDayMappings)
         {
-            Trialist trialist = new Trialist
+            return await Task.Run(() =>
             {
-                Name = FullName,
-                Status = Status,
-                Address = Address,
-                PreferredDay = preferredDayMappings.First(t => t.PreferredDay.Equals(PreferredDayString)).Day
-            };
+                Trialist trialist = new Trialist
+                {
+                    Name = FullName,
+                    Status = Status,
+                    Address = Address,
+                    PreferredDay = preferredDayMappings.First(t => t.PreferredDay.Equals(PreferredDayString)).Day
+                };
 
-            // Add dogs
-            if (!string.IsNullOrEmpty(DogOneName))
-                trialist.Dogs.Add(new Dog(DogOneName, DogOneStatus));
-            if (!string.IsNullOrEmpty(DogTwoName))
-                trialist.Dogs.Add(new Dog(DogTwoName, DogTwoStatus));
-            if (!string.IsNullOrEmpty(DogThreeName))
-                trialist.Dogs.Add(new Dog(DogThreeName, DogThreeStatus));
-            if (!string.IsNullOrEmpty(DogFourName))
-                trialist.Dogs.Add(new Dog(DogFourName, DogFourStatus));
-            if (!string.IsNullOrEmpty(DogFiveName))
-                trialist.Dogs.Add(new Dog(DogFiveName, DogFiveStatus));
+                // Add dogs
+                if (!string.IsNullOrEmpty(DogOneName))
+                    trialist.Dogs.Add(new Dog(DogOneName, DogOneStatus));
+                if (!string.IsNullOrEmpty(DogTwoName))
+                    trialist.Dogs.Add(new Dog(DogTwoName, DogTwoStatus));
+                if (!string.IsNullOrEmpty(DogThreeName))
+                    trialist.Dogs.Add(new Dog(DogThreeName, DogThreeStatus));
+                if (!string.IsNullOrEmpty(DogFourName))
+                    trialist.Dogs.Add(new Dog(DogFourName, DogFourStatus));
+                if (!string.IsNullOrEmpty(DogFiveName))
+                    trialist.Dogs.Add(new Dog(DogFiveName, DogFiveStatus));
 
-            // Setup location
-            if (locationService.TryResolve(Address, out ILocation location))
-                trialist.CoordinatePoint = location.Location;
+                // Setup location
+                if (locationService.TryResolve(Address, out ILocation location))
+                    trialist.CoordinatePoint = location.Location;
 
-            return trialist;
+                return trialist;
+            }).ConfigureAwait(false);
         }
 
         #region Object Overrides

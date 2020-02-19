@@ -233,7 +233,7 @@ namespace TrialManager.ViewModels
                 case ImportSection.Duplicates:
                     try
                     {
-                        BindableCollection<Trialist> trialists = await _importService.FinaliseTrialistList(DuplicateTrialistPairs, PreferredDayMappings).ConfigureAwait(false);
+                        BindableCollection<Trialist> trialists = await _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings).ConfigureAwait(false);
                         NavigationService.Navigate<DrawDisplayViewModel, BindableCollection<Trialist>>(this, trialists);
                     }
                     catch (Exception ex)

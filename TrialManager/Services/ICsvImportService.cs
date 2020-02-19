@@ -27,12 +27,11 @@ namespace TrialManager.Services
         IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, ClassMap<MappedTrialist> classMap);
 
         /// <summary>
-        /// Compresses a <see cref="DuplicateTrialistPair"/> list and adds preferred day data
+        /// Builds a <see cref="Trialist"/> list, factoring in resolved duplicates
         /// </summary>
-        /// <param name="duplicates"></param>
-        /// <param name="preferredDayMappings"></param>
-        /// <returns></returns>
-        Task<BindableCollection<Trialist>> FinaliseTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings);
+        /// <param name="duplicates">A list of resolved duplicates</param>
+        /// <param name="preferredDayMappings">Preferred day mappings</param>
+        IAsyncEnumerable<Trialist> BuildTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings);
 
         /// <summary>
         /// Performs a basic check for a CSV file by looking for the separator chars (; or ,)
