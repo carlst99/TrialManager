@@ -1,7 +1,5 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using Stylet;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -68,6 +66,11 @@ namespace TrialManager.Services
             _tempStorageList = tempStorageList.Where(t => !t.HasDuplicateClash);
         }
 
+        /// <summary>
+        /// Builds a <see cref="Trialist"/> list, factoring in resolved duplicates
+        /// </summary>
+        /// <param name="duplicates">A list of resolved duplicates</param>
+        /// <param name="preferredDayMappings">Preferred day mappings</param>
         public async IAsyncEnumerable<Trialist> BuildTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
         {
             foreach (MappedTrialist trialist in _tempStorageList)
