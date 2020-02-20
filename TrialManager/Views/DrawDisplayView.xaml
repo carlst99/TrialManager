@@ -55,17 +55,66 @@
 
             <!-- Export draw -->
             <Button Margin="8,0,0,0"
-                    VerticalAlignment="Center"
-                    Command="{s:Action ExportDraw}">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <md:PackIcon VerticalAlignment="Center"
-                                     Kind="Export"/>
-                        <TextBlock Margin="4,0,0,0"
-                                   VerticalAlignment="Center"
-                                   Text="{Binding [Command_ExportDraw], Mode=OneTime}"/>
+                    VerticalAlignment="Center">
+                <md:PopupBox PlacementMode="BottomAndAlignCentres">
+                    <md:PopupBox.ToggleContent>
+                        <StackPanel Orientation="Horizontal">
+                            <md:PackIcon VerticalAlignment="Center"
+                                         Kind="Export"/>
+                            <TextBlock Margin="4,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding [Command_ExportDraw], Mode=OneTime}"/>
+                        </StackPanel>
+                    </md:PopupBox.ToggleContent>
+
+                    <StackPanel>
+                        <!-- Export to CSV -->
+                        <Button Command="{s:Action ExportToCsv}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <md:PackIcon Kind="FileCsv"/>
+                                <TextBlock Grid.Column="1"
+                                           Margin="4,0,0,0"
+                                           Text="Export to CSV"/>
+                                <TextBlock Grid.Row="1"
+                                           Grid.ColumnSpan="2"
+                                           FontSize="10"
+                                           Text="Allows editing the draw in Excel/Google Sheets"/>
+                            </Grid>
+                        </Button>
+
+                        <!-- Export to PDF -->
+                        <Button Command="{s:Action ExportToPdf}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <md:PackIcon Kind="Pdf"/>
+                                <TextBlock Grid.Column="1"
+                                           Margin="4,0,0,0"
+                                           Text="Export to PDF"/>
+                                <TextBlock Grid.Row="1"
+                                           Grid.ColumnSpan="2"
+                                           FontSize="10"
+                                           Text="Exports the draw to an Adobe PDF document"/>
+                            </Grid>
+                        </Button>
                     </StackPanel>
-                </Button.Content>
+                </md:PopupBox>
             </Button>
 
             <!-- Print draw -->

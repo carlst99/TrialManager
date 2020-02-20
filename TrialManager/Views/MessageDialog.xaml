@@ -58,7 +58,7 @@
             <Button Command="{x:Static md:DialogHost.CloseDialogCommand}"
                     Content="{Binding OkayButtonContent}"
                     IsDefault="True"
-                    Style="{StaticResource MaterialDesignFlatButton}">
+                    Style="{StaticResource MaterialDesignOutlinedButton}">
                 <Button.CommandParameter>
                     <sys:Boolean>True</sys:Boolean>
                 </Button.CommandParameter>

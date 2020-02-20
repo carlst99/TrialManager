@@ -104,6 +104,21 @@ namespace TrialManager.ViewModels
             }
         }
 
+        public void ExportToCsv()
+        {
+            _messageQueue.Enqueue("Export to CSV is not supported yet!");
+        }
+
+        public void ExportToPdf()
+        {
+            _messageQueue.Enqueue("Export to PDF is not supported yet!");
+        }
+
+        public void PrintDraw()
+        {
+            _messageQueue.Enqueue("Draw printing is not supported yet!");
+        }
+
         public override async void Prepare(object payload)
         {
             _trialists = new List<Trialist>();

@@ -6,9 +6,11 @@ namespace TrialManager.Model.Csv
     {
         public TrialistDrawEntryMapping()
         {
-            Map(m => m.RunNumber).Index(0).Name("RunNumber");
-            Map(m => m.TrialistName).Index(2).Name("TrialistName");
-            Map(m => m.CompetingDogName).Index(3).Name("DogName");
+            Map(m => m.RunNumber).Index(0).Name("Run Number");
+            Map(m => m.TrialistName).Index(1).Name("Trialist Name");
+            Map(m => m.TrialistStatus).Index(2).Name("Trialist Status");
+            Map(m => m.CompetingDogName).Index(3).Name("Dog Name");
+            Map(m => m.CompetingDogStatus).Index(4).Name("Dog Status");
         }
     }
 }

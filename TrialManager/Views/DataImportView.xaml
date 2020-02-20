@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:csv="clr-namespace:TrialManager.Model.Csv"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:TrialManager.Views"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:model="clr-namespace:TrialManager.Model"
@@ -239,7 +238,7 @@
                                 <DataGridTemplateColumn IsReadOnly="True">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}"
+                                            <md:PackIcon Foreground="{StaticResource PrimaryHueLightBrush}"
                                                          Kind="ArrowBackCircle"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -303,7 +302,7 @@
                                 <DataGridTemplateColumn IsReadOnly="True">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <md:PackIcon Foreground="{StaticResource PrimaryHueMidBrush}"
+                                            <md:PackIcon Foreground="{StaticResource PrimaryHueLightBrush}"
                                                          Kind="ArrowBackCircle"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
