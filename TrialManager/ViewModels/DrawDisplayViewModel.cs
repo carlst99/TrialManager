@@ -133,26 +133,24 @@ namespace TrialManager.ViewModels
             }
         }
 
-        public async Task ExportToPdf()
+        public async Task ExportToTxt()
         {
-            _messageQueue.Enqueue("Export to PDF has not yet been implemented");
-            return;
-            SaveFileDialog sfd = GetSaveFileDialog("Adobe PDF File (*.pdf)|*.pdf");
+            SaveFileDialog sfd = GetSaveFileDialog("Text File (*.txt)|*.txt");
             if (sfd.ShowDialog() == true)
             {
                 try
                 {
-                    await _exportService.ExportAsPdf(Draw, sfd.FileName).ConfigureAwait(false);
-                    _messageQueue.Enqueue("Draw exported to PDF successfully!");
+                    await _exportService.ExportAsTxt(Draw, sfd.FileName).ConfigureAwait(false);
+                    _messageQueue.Enqueue("Draw exported to text file successfully!");
                 }
                 catch (IOException ex)
                 {
-                    Log.Error("Could not export PDF file", ex);
+                    Log.Error("Could not export TXT file", ex);
                     await DisplayIOExceptionDialog().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Could not export PDF file", ex);
+                    Log.Error("Could not export TXT file", ex);
                     await DisplayUnexpectedExceptionDialog().ConfigureAwait(false);
                 }
             }

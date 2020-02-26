@@ -7,6 +7,6 @@ namespace TrialManager.Services
     public interface IDataExportService
     {
         public Task ExportAsCsv(IEnumerable<TrialistDrawEntry> draw, string outputPath);
-        public Task ExportAsPdf(IEnumerable<TrialistDrawEntry> draw, string outputPath);
+        public Task ExportAsTxt(IEnumerable<TrialistDrawEntry> draw, string outputPath);
     }
 }

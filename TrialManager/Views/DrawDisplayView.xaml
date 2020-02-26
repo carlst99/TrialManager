@@ -80,10 +80,10 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <md:PackIcon Kind="FileCsv"/>
+                                <md:PackIcon Kind="FileCsvOutline"/>
                                 <TextBlock Grid.Column="1"
                                            Margin="4,0,0,0"
-                                           Text="Export to CSV"/>
+                                           Text="Export to CSV file"/>
                                 <TextBlock Grid.Row="1"
                                            Grid.ColumnSpan="2"
                                            FontSize="10"
@@ -92,7 +92,7 @@
                         </Button>
 
                         <!-- Export to PDF -->
-                        <Button Command="{s:Action ExportToPdf}">
+                        <Button Command="{s:Action ExportToTxt}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -103,14 +103,14 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <md:PackIcon Kind="Pdf"/>
+                                <md:PackIcon Kind="NoteTextOutline"/>
                                 <TextBlock Grid.Column="1"
                                            Margin="4,0,0,0"
-                                           Text="Export to PDF"/>
+                                           Text="Export to text file"/>
                                 <TextBlock Grid.Row="1"
                                            Grid.ColumnSpan="2"
                                            FontSize="10"
-                                           Text="Exports the draw to an Adobe PDF document"/>
+                                           Text="Allows editing the draw in a notepad/Word"/>
                             </Grid>
                         </Button>
                     </StackPanel>

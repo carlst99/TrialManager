@@ -16,12 +16,20 @@ namespace TrialManager.Services
             using StreamWriter sw = new StreamWriter(outputPath);
             using CsvWriter cw = new CsvWriter(sw, CultureInfo.CurrentCulture);
             cw.Configuration.RegisterClassMap<TrialistDrawEntryMapping>();
-            await cw.WriteRecordsAsync(draw);
+            await cw.WriteRecordsAsync(draw).ConfigureAwait(false);
         }
 
-        public async Task ExportAsPdf(IEnumerable<TrialistDrawEntry> draw, string outputPath)
+        public async Task ExportAsTxt(IEnumerable<TrialistDrawEntry> draw, string outputPath)
         {
-            throw new NotImplementedException();
+            using StreamWriter sw = new StreamWriter(outputPath);
+            await sw.WriteLineAsync("RUN NUMBER || NAME, STATUS || DOG NAME, DOG STATUS").ConfigureAwait(false);
+            foreach (TrialistDrawEntry entry in draw)
+            {
+                string line = entry.RunNumber + " || ";
+                line += entry.TrialistName + ", " + entry.TrialistStatus + " || ";
+                line += entry.CompetingDogName + ", " + entry.CompetingDogStatus;
+                await sw.WriteLineAsync(line).ConfigureAwait(false);
+            }
         }
     }
 }
