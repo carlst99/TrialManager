@@ -27,6 +27,7 @@ namespace TrialManager
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
             builder.Bind<ICsvImportService>().To<CsvImportService>().InSingletonScope();
+            builder.Bind<IDataExportService>().To<DataExportService>().InSingletonScope();
             builder.Bind<IDrawCreationService>().To<DrawCreationService>().InSingletonScope();
             builder.Bind<ILocationService>().To<LocationService>().InSingletonScope();
             builder.Bind<INavigationService>().To<NavigationService>().InSingletonScope();
@@ -57,20 +58,6 @@ namespace TrialManager
                 Log.Error(ex, "An error could not be created");
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Logs an error and returns it
-        /// </summary>
-        /// <typeparam name="ExType">The type of exception to create and return</typeparam>
-        /// <param name="message">The error message</param>
-        /// <param name="exception">The inner exception to log</param>
-        /// <returns>An exception</returns>
-        public static Exception LogError(string message, Exception exception, bool log = true)
-        {
-            if (log)
-                Log.Error(exception, message);
-            return exception;
         }
 
         #endregion

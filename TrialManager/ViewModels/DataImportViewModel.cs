@@ -175,7 +175,7 @@ namespace TrialManager.ViewModels
             OpenFileDialog ofd = new OpenFileDialog()
             {
                 Filter = "Google Forms Files (*.csv)|*.csv|All Files (*.*)|*.*",
-                Title = "Open data file"
+                Title = "Open data file",
             };
             if (ofd.ShowDialog() == true)
             {

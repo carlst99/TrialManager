@@ -1,12 +1,15 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 using Serilog;
 using Stylet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TrialManager.Model;
 using TrialManager.Model.TrialistDb;
+using TrialManager.Resources;
 using TrialManager.Services;
 using TrialManager.ViewModels.Base;
 using TrialManager.Views;
@@ -17,6 +20,7 @@ namespace TrialManager.ViewModels
     {
         #region Fields
 
+        private readonly IDataExportService _exportService;
         private readonly IDrawCreationService _drawService;
         private readonly ISnackbarMessageQueue _messageQueue;
 
@@ -59,10 +63,12 @@ namespace TrialManager.ViewModels
         public DrawDisplayViewModel(
             IEventAggregator eventAggregator,
             INavigationService navigationService,
+            IDataExportService exportService,
             IDrawCreationService drawService,
             ISnackbarMessageQueue messageQueue)
             : base(eventAggregator, navigationService)
         {
+            _exportService = exportService;
             _drawService = drawService;
             _messageQueue = messageQueue;
             _runsPerDay = 100;
@@ -104,14 +110,50 @@ namespace TrialManager.ViewModels
             }
         }
 
-        public void ExportToCsv()
+        public async Task ExportToCsv()
         {
-            _messageQueue.Enqueue("Export to CSV is not supported yet!");
+            SaveFileDialog sfd = GetSaveFileDialog("CSV File (*.csv)|*.csv");
+            if (sfd.ShowDialog() == true)
+            {
+                try
+                {
+                    await _exportService.ExportAsCsv(Draw, sfd.FileName).ConfigureAwait(false);
+                    _messageQueue.Enqueue("Draw exported to CSV successfully!");
+                }
+                catch (IOException ex)
+                {
+                    Log.Error("Could not export CSV file", ex);
+                    await DisplayIOExceptionDialog().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Could not export CSV file", ex);
+                    await DisplayUnexpectedExceptionDialog().ConfigureAwait(false);
+                }
+            }
         }
 
-        public void ExportToPdf()
+        public async Task ExportToPdf()
         {
-            _messageQueue.Enqueue("Export to PDF is not supported yet!");
+            SaveFileDialog sfd = GetSaveFileDialog("Adobe PDF File (*.pdf)|*.pdf");
+            if (sfd.ShowDialog() == true)
+            {
+                try
+                {
+                    await _exportService.ExportAsPdf(Draw, sfd.FileName).ConfigureAwait(false);
+                    _messageQueue.Enqueue("Draw exported to PDF successfully!");
+                }
+                catch (IOException ex)
+                {
+                    Log.Error("Could not export PDF file", ex);
+                    await DisplayIOExceptionDialog().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Could not export PDF file", ex);
+                    await DisplayUnexpectedExceptionDialog().ConfigureAwait(false);
+                }
+            }
         }
 
         public void PrintDraw()
@@ -132,6 +174,46 @@ namespace TrialManager.ViewModels
             base.OnPropertyChanged(propertyName);
             if (propertyName == nameof(RunsPerDay))
                 await CreateDraw().ConfigureAwait(false);
+        }
+
+        private SaveFileDialog GetSaveFileDialog(string filter)
+        {
+            return new SaveFileDialog()
+            {
+                Filter = filter,
+                Title = "Export Draw",
+                FileName = "Draw",
+                AddExtension = true,
+                ValidateNames = true
+            };
+        }
+
+        /// <summary>
+        /// Displays a <see cref="MessageDialog"/> which alerts the user to an issue with reading the CSV file
+        /// </summary>
+        private async Task DisplayIOExceptionDialog()
+        {
+            MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
+            {
+                Title = "File Error",
+                Message = "TrialManager could not write the file that you have selected. Please ensure that the file does not already exist, and that you have permission to save to the selected location",
+                HelpUrl = HelpUrls.IOException
+            });
+            await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Displays a <see cref="MessageDialog"/> which alers the user to an unexpected exception
+        /// </summary>
+        private async Task DisplayUnexpectedExceptionDialog()
+        {
+            MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
+            {
+                Title = "Woah!",
+                Message = "TrialManager encountered an unexpected exception when exporting the draw. Please try again",
+                HelpUrl = HelpUrls.Default
+            });
+            await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
         }
     }
 }
