@@ -25,8 +25,8 @@ namespace TrialManager.Services
             await sw.WriteLineAsync("RUN NUMBER || NAME, STATUS || DOG NAME, DOG STATUS").ConfigureAwait(false);
             foreach (TrialistDrawEntry entry in draw)
             {
-                string line = entry.RunNumber + " || ";
-                line += entry.TrialistName + ", " + entry.TrialistStatus + " || ";
+                string line = entry.RunNumber + "\t|| ";
+                line += entry.TrialistName + ", " + entry.TrialistStatus + "\t|| ";
                 line += entry.CompetingDogName + ", " + entry.CompetingDogStatus;
                 await sw.WriteLineAsync(line).ConfigureAwait(false);
             }
