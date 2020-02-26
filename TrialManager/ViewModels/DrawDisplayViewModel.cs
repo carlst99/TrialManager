@@ -135,6 +135,8 @@ namespace TrialManager.ViewModels
 
         public async Task ExportToPdf()
         {
+            _messageQueue.Enqueue("Export to PDF has not yet been implemented");
+            return;
             SaveFileDialog sfd = GetSaveFileDialog("Adobe PDF File (*.pdf)|*.pdf");
             if (sfd.ShowDialog() == true)
             {

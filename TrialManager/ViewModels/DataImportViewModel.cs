@@ -309,7 +309,11 @@ namespace TrialManager.ViewModels
             for (int i = 0; i < mappedPropertyEnumValues.Length; i++)
             {
                 MappedProperty property = mappedPropertyEnumValues[i];
-                string header = CsvHeaders[i];
+                string header;
+                if (CsvHeaders.Count > i)
+                    header = CsvHeaders[i];
+                else
+                    header = string.Empty;
                 MappedProperties.Add(new PropertyHeaderPair(property, header));
             }
 #else
