@@ -23,11 +23,24 @@ namespace TrialManager.Views
             AddressAutocompleter.AutocompleteSource = new LocationAutoCompleteSource(_locationService);
         }
 
-        private void TxtBxRunCount_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void NumericTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             // Only allow number input
             if (!Regex.Match(e.Text, "[0-9]").Success)
                 e.Handled = true;
+        }
+
+        private void TxtBxMaxDogs_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            // Only allow number input
+            if (Regex.Match(e.Text, "[0-9]").Success)
+            {
+                if ((TxtBxMaxDogs.Text.Length == 0 || TxtBxMaxDogs.SelectionStart == 0) && e.Text == "0")
+                    e.Handled = true;
+            } else
+            {
+                e.Handled = true;
+            }
         }
     }
 }

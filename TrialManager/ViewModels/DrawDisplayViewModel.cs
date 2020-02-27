@@ -28,6 +28,8 @@ namespace TrialManager.ViewModels
         private List<TrialistDrawEntry> _draw;
         private string _trialAddress;
         private int _runsPerDay;
+        private int _minRunSeparation = 5;
+        private int _maxDogsPerDay = 3;
         private bool _showProgress;
 
         #endregion
@@ -50,6 +52,18 @@ namespace TrialManager.ViewModels
         {
             get => _runsPerDay;
             set => SetAndNotify(ref _runsPerDay, value);
+        }
+
+        public int MinRunSeparation
+        {
+            get => _minRunSeparation;
+            set => SetAndNotify(ref _minRunSeparation, value);
+        }
+
+        public int MaxDogsPerDay
+        {
+            get => _maxDogsPerDay;
+            set => SetAndNotify(ref _maxDogsPerDay, value);
         }
 
         public bool ShowProgress
@@ -79,7 +93,7 @@ namespace TrialManager.ViewModels
             ShowProgress = true;
             try
             {
-                Draw = await Task.Run(() => _drawService.CreateDraw(_trialists, RunsPerDay, TrialAddress).ToList()).ConfigureAwait(false);
+                Draw = await Task.Run(() => _drawService.CreateDraw(_trialists, RunsPerDay, TrialAddress, MinRunSeparation, MaxDogsPerDay).ToList()).ConfigureAwait(true);
             }
             catch (Exception ex)
             {

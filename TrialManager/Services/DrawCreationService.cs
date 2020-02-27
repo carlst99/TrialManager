@@ -17,16 +17,6 @@ namespace TrialManager.Services
         public const double LOCAL_DISTANCE_MAX = 0.6;
 
         /// <summary>
-        /// Defines the maximum number of dogs that may be run in a day
-        /// </summary>
-        public const int MAX_DOGS_PER_DAY = 3;
-
-        /// <summary>
-        /// Defines the separation between dogs in the draw
-        /// </summary>
-        public const int DOG_RUN_SEPARATION = 20;
-
-        /// <summary>
         /// Gets the marker used to define a non-preference of day
         /// </summary>
         public static readonly DateTime NO_PREFERRED_DAY_MARKER = DateTime.MinValue;
@@ -40,9 +30,17 @@ namespace TrialManager.Services
             _locationService = locationService;
         }
 
-        public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRunsPerDay, string address)
+        /// <summary>
+        /// Creates a draw given certain parameters
+        /// </summary>
+        /// <param name="trialists">The trialists/dogs to include in the draw</param>
+        /// <param name="maxRunsPerDay">Defines the maximum number of runs that can be scheduled for each day</param>
+        /// <param name="trialAddress">The address of the trial grounds, used for location sorting</param>
+        /// <param name="minRunSeparation">The minimum separation between each trialists runs</param>
+        /// <param name="maxDogsPerDay">Defines the maximum number of dogs that may be run in a day</param>
+        public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRunsPerDay, string trialAddress, int minRunSeparation, int maxDogsPerDay)
         {
-            _locationService.TryResolve(address, out ILocation trialLocation);
+            _locationService.TryResolve(trialAddress, out ILocation trialLocation);
 
             // Get trialists and order by number of dogs, so those with more dogs are run earlier in the day
             trialists = trialists.OrderByDescending(t => t.Dogs.Count);
@@ -57,7 +55,7 @@ namespace TrialManager.Services
             // Fill days if needed and generate final list
             IEnumerable<Trialist> finalList = GenerateFinalList(dayTrialistPairs, maxRunsPerDay);
 
-            foreach (TrialistDrawEntry value in SpreadAndGenerateRuns(finalList, maxRunsPerDay, 0))
+            foreach (TrialistDrawEntry value in SpreadAndGenerateRuns(finalList, maxRunsPerDay, 0, minRunSeparation, maxDogsPerDay))
                 yield return value;
         }
 
@@ -163,8 +161,16 @@ namespace TrialManager.Services
         /// <param name="maxRunsPerDay"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        private IEnumerable<TrialistDrawEntry> SpreadAndGenerateRuns(IEnumerable<Trialist> trialists, int maxRunsPerDay, int count)
+        private IEnumerable<TrialistDrawEntry> SpreadAndGenerateRuns(IEnumerable<Trialist> trialists, int maxRunsPerDay, int count, int minRunSeparation, int maxDogsPerDay)
         {
+            if (maxRunsPerDay <= 0)
+                throw new ArgumentException("Max Runs must be greater than 0", nameof(maxRunsPerDay));
+            if (minRunSeparation < 0)
+                throw new ArgumentException("Min Run Separation must be greater than -1", nameof(minRunSeparation));
+            if (maxDogsPerDay <= 0)
+                throw new ArgumentException("Max dogs must be greater than 0", nameof(maxDogsPerDay));
+
+            minRunSeparation++;
             int dogCount = 0;
             foreach (Trialist trialist in trialists)
                 dogCount += trialist.Dogs.Count;
@@ -187,7 +193,7 @@ namespace TrialManager.Services
                 for (int i = 0; i < element.Dogs.Count; i++)
                 {
                     // If we are a multiple of the maximum dogs per day, move to the next day
-                    if (i != 0 && i % MAX_DOGS_PER_DAY == 0 && i / MAX_DOGS_PER_DAY == dayIncrements)
+                    if (i != 0 && i % maxDogsPerDay == 0 && i / maxDogsPerDay == dayIncrements)
                     {
                         // Increment to next day
                         int increment = maxRunsPerDay - localCount;
@@ -203,7 +209,7 @@ namespace TrialManager.Services
                     usedNumbers.Add(localCount);
 
                     // Increment day if necessary and find next local count
-                    localCount += DOG_RUN_SEPARATION;
+                    localCount += minRunSeparation;
                     if (localCount != 0 && maxRunsPerDay / localCount < 1)
                         dayIncrements++;
                     FindNextAvailable(usedNumbers, ref localCount);

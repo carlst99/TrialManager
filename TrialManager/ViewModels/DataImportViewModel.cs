@@ -229,6 +229,10 @@ namespace TrialManager.ViewModels
                     IsPreferredDaySectionExpanded = false;
                     IsDuplicatesSectionExpanded = true;
                     await PrepareDuplicatesSection().ConfigureAwait(false);
+
+                    // Move on if there are no duplicates
+                    if (DuplicateTrialistPairs.Count == 0)
+                        await ValidateAndContinue(ImportSection.Duplicates).ConfigureAwait(false);
                     break;
                 case ImportSection.Duplicates:
                     try
