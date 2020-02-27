@@ -35,7 +35,7 @@
                      md:HintAssist.Hint="{Binding [Hint_RunsPerDay], Mode=OneTime}"
                      md:HintAssist.IsFloating="True"
                      FontSize="14"
-                     PreviewTextInput="NumericTextBox_PreviewTextInput"
+                     PreviewTextInput="NonZeroTextBox_PreviewTextInput"
                      Text="{Binding RunsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
             <TextBox x:Name="TxtBxMinSeparation"
@@ -45,6 +45,7 @@
                      md:HintAssist.Hint="Minimum run separation"
                      md:HintAssist.IsFloating="True"
                      FontSize="14"
+                     LostFocus="NonZeroTextBox_LostFocus"
                      PreviewTextInput="NumericTextBox_PreviewTextInput"
                      Text="{Binding MinRunSeparation, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
@@ -55,7 +56,8 @@
                      md:HintAssist.Hint="Maximum Dogs run in one day for each trialist"
                      md:HintAssist.IsFloating="True"
                      FontSize="14"
-                     PreviewTextInput="TxtBxMaxDogs_PreviewTextInput"
+                     LostFocus="NonZeroTextBox_LostFocus"
+                     PreviewTextInput="NonZeroTextBox_PreviewTextInput"
                      Text="{Binding MaxDogsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
             <!-- Refresh draw -->

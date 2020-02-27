@@ -130,6 +130,8 @@ namespace TrialManager.Services
             foreach (DayTrialistPair pair in dayTrialistPairs)
             {
                 IEnumerable<Trialist> list = pair.Trialists;
+
+                // Fill up the day with no-preference trialists, if we have not yet met the maximum run count
                 int runCount = list.Sum(t => t.Dogs.Count);
                 if (runCount < maxRunsPerDay)
                 {

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using TrialManager.Model;
 using TrialManager.Services;
@@ -30,17 +31,41 @@ namespace TrialManager.Views
                 e.Handled = true;
         }
 
-        private void TxtBxMaxDogs_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void NonZeroTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
+            if (!(sender is TextBox text))
+                throw new ArgumentException("Sender must be TextBox", nameof(sender));
+
             // Only allow number input
             if (Regex.Match(e.Text, "[0-9]").Success)
             {
-                if ((TxtBxMaxDogs.Text.Length == 0 || TxtBxMaxDogs.SelectionStart == 0) && e.Text == "0")
+                if ((text.Text.Length == 0 || text.SelectionStart == 0) && e.Text == "0")
                     e.Handled = true;
             } else
             {
                 e.Handled = true;
             }
+        }
+
+        private void NonZeroTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (!(sender is TextBox text))
+                throw new ArgumentException("Sender must be TextBox", nameof(sender));
+
+            if (e.Key == System.Windows.Input.Key.Back)
+            {
+                if (text.Text.Length == 1 || text.SelectionStart == 0)
+                    text.Text = "1";
+            }
+        }
+
+        private void NonZeroTextBox_LostFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (!(sender is TextBox text))
+                throw new ArgumentException("Sender must be TextBox", nameof(sender));
+
+            if (string.IsNullOrEmpty(text.Text))
+                text.Text = "1";
         }
     }
 }
