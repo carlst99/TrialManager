@@ -89,20 +89,23 @@ namespace TrialManager.Services
         /// <remarks>First day is sorted in ascending order so those with further to travel have time to settle in. Other days sorted in descending order as they can arrive day before</remarks>
         private void SortByDistance(List<DayTrialistPair> dayTrialistPairs, Gd2000Coordinate trialLocation)
         {
+            if (dayTrialistPairs.Count == 0)
+                throw new ArgumentOutOfRangeException(nameof(dayTrialistPairs), "Must have at least one day to sort");
+
             for (int i = 0; i < dayTrialistPairs.Count; i++)
             {
-                // For the first day, those farther away should be run later. i == 1 as no preference day is first
+                // For the first/only day, those farther away should be run later. i == 1 as no preference day is first
                 // For days after this, those from farther away should be run earlier so that they can
                 // Arrive the previous day, and leave earlier on the day of their runs
-                if (i == 1)
+                if (i == 1 || dayTrialistPairs.Count == 1)
                 {
                     dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                    .OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
+                        .OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
                 }
                 else
                 {
                     dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                    .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
+                        .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
                 }
             }
         }
