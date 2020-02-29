@@ -31,6 +31,7 @@ namespace TrialManager.ViewModels
         private int _minRunSeparation = 5;
         private int _maxDogsPerDay = 3;
         private bool _showProgress;
+        private bool _preparationComplete;
 
         #endregion
 
@@ -90,6 +91,9 @@ namespace TrialManager.ViewModels
 
         public async Task CreateDraw()
         {
+            if (!_preparationComplete)
+                return;
+
             ShowProgress = true;
             try
             {
@@ -120,6 +124,7 @@ namespace TrialManager.ViewModels
             {
                 Draw = null;
                 _trialists = null;
+                _preparationComplete = false;
                 NavigationService.Navigate<DataImportViewModel>(this);
             }
         }
@@ -180,6 +185,7 @@ namespace TrialManager.ViewModels
             _trialists = new List<Trialist>();
             await foreach (Trialist element in (IAsyncEnumerable<Trialist>)payload)
                 _trialists.Add(element);
+            _preparationComplete = true;
             await CreateDraw().ConfigureAwait(false);
         }
 

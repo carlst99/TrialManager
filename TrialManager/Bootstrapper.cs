@@ -1,6 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Serilog;
-using Serilog.Events;
 using StyletIoC;
 using System;
 using System.IO;
@@ -35,32 +34,6 @@ namespace TrialManager
 
             base.ConfigureIoC(builder);
         }
-
-        #region Error Helpers
-
-        /// <summary>
-        /// Logs and creates an error
-        /// </summary>
-        /// <typeparam name="ExType">The type of error</typeparam>
-        /// <param name="message">The error message</param>
-        /// <returns>An exception</returns>
-        public static ExType CreateError<ExType>(string message, bool log = true, LogEventLevel level = LogEventLevel.Error) where ExType : Exception, new()
-        {
-            try
-            {
-                ExType ex = (ExType)Activator.CreateInstance(typeof(ExType), message);
-                if (log)
-                    Log.Write(level, ex, message);
-                return ex;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "An error could not be created");
-                return null;
-            }
-        }
-
-        #endregion
 
         #region Appdata Helpers
 

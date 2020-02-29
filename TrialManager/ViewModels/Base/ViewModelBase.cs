@@ -1,7 +1,6 @@
 ﻿using Serilog;
 using Stylet;
 using System;
-using System.Threading.Tasks;
 using TrialManager.Resources;
 using TrialManager.Services;
 

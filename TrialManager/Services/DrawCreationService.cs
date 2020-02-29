@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using TrialManager.Model;
 using TrialManager.Model.LocationDb;
@@ -50,7 +52,7 @@ namespace TrialManager.Services
 
             // Sort each list by distance to trial grounds
             if (trialLocation != null)
-                SortByDistance(dayTrialistPairs, trialLocation.Location);
+                SortByDistance(dayTrialistPairs, trialLocation.Location, maxRunsPerDay);
 
             // Fill days if needed and generate final list
             IEnumerable<Trialist> finalList = GenerateFinalList(dayTrialistPairs, maxRunsPerDay);
@@ -87,25 +89,72 @@ namespace TrialManager.Services
         /// <param name="dayTrialistPairs"></param>
         /// <param name="trialLocation"></param>
         /// <remarks>First day is sorted in ascending order so those with further to travel have time to settle in. Other days sorted in descending order as they can arrive day before</remarks>
-        private void SortByDistance(List<DayTrialistPair> dayTrialistPairs, Gd2000Coordinate trialLocation)
+        private void SortByDistance(List<DayTrialistPair> dayTrialistPairs, Gd2000Coordinate trialLocation, int maxRunsPerDay)
         {
-            if (dayTrialistPairs.Count == 0)
-                throw new ArgumentOutOfRangeException(nameof(dayTrialistPairs), "Must have at least one day to sort");
-
-            for (int i = 0; i < dayTrialistPairs.Count; i++)
+            // An improved take function, factoring in dog run count and removing from the list
+            static List<Trialist> TakeAndRemove(List<Trialist> trialists, int runCount)
             {
-                // For the first/only day, those farther away should be run later. i == 1 as no preference day is first
-                // For days after this, those from farther away should be run earlier so that they can
-                // Arrive the previous day, and leave earlier on the day of their runs
-                if (i == 1 || dayTrialistPairs.Count == 1)
+                List<Trialist> takeList = new List<Trialist>();
+                int index = 0;
+                int runIndex = 0;
+                while (index < trialists.Count && runIndex < runCount)
                 {
-                    dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                        .OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
+                    Trialist trialist = trialists[index];
+                    takeList.Add(trialist);
+                    runIndex += trialist.Dogs.Count;
+                    index++;
                 }
-                else
+                trialists.RemoveRange(0, index);
+                return takeList;
+            }
+
+            if (dayTrialistPairs.Count == 0)
+            {
+                ArgumentException ex = new ArgumentOutOfRangeException(nameof(dayTrialistPairs), "Must have at least one day to sort");
+                Log.Error(ex, "Could not create draw");
+                throw ex;
+            }
+            else if (dayTrialistPairs.Count == 1)
+            {
+                List<Trialist> trialists = dayTrialistPairs[0].Trialists.ToList();
+                int totalRuns = trialists.Sum(t => t.Dogs.Count);
+                int totalDays = (int)Math.Ceiling((double)totalRuns / maxRunsPerDay);
+
+                List<Trialist> sortedTrialists = new List<Trialist>();
+
+                // Start with the closest trialists on the first day
+                trialists = trialists.OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation)).ToList();
+                sortedTrialists.AddRange(TakeAndRemove(trialists, maxRunsPerDay));
+
+                // Now add trialists so that those from further away are run earlier in the day
+                // First order by dog count so that those with more dogs are run in earlier days
+                trialists = trialists.OrderByDescending(t => t.Dogs.Count).ToList();
+                for (int i = 1; i < totalDays; i++)
                 {
-                    dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                        .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
+                    List<Trialist> takeList = TakeAndRemove(trialists, maxRunsPerDay);
+                    sortedTrialists.AddRange(takeList.OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation)));
+                }
+
+                dayTrialistPairs[0].Trialists = sortedTrialists;
+            }
+            else
+            {
+                bool noPrefDayExists = dayTrialistPairs.Select(d => d.Day).Contains(DateTime.MinValue);
+                for (int i = 0; i < dayTrialistPairs.Count; i++)
+                {
+                    // For the first day, those farther away should be run later. i == 1 as no preference day is first
+                    // For days after this, those from farther away should be run earlier so that they can
+                    // Arrive the previous day, and leave earlier on the day of their runs
+                    if ((noPrefDayExists && i == 1) || (!noPrefDayExists && i == 0))
+                    {
+                        dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
+                            .OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
+                    }
+                    else
+                    {
+                        dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
+                            .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
+                    }
                 }
             }
         }
