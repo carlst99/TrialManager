@@ -1,7 +1,11 @@
-﻿namespace TrialManager.Model
+﻿using TrialManager.Model.LocationDb;
+
+namespace TrialManager.Model
 {
     public class DrawCreationOptions
     {
+        internal Gd2000Coordinate TrialLocation { get; set; }
+
         public int MaxRunsPerDay { get; set; }
         public string TrialAddress { get; set; }
         public int MinRunSeparation { get; set; }

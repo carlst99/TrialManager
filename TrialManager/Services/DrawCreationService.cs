@@ -40,6 +40,7 @@ namespace TrialManager.Services
         public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, DrawCreationOptions options)
         {
             _locationService.TryResolve(options.TrialAddress, out ILocation trialLocation);
+            options.TrialLocation = trialLocation.Location;
 
             // Get trialists and order by number of dogs, so those with more dogs are run earlier in the day
             trialists = trialists.OrderByDescending(t => t.Dogs.Count);
@@ -49,7 +50,7 @@ namespace TrialManager.Services
 
             // Sort each list by distance to trial grounds
             if (trialLocation != null)
-                SortByDistance(dayTrialistPairs, trialLocation.Location, options.MaxRunsPerDay);
+                SortByDistance(dayTrialistPairs, options);
 
             // Fill days if needed and generate final list
             IEnumerable<Trialist> finalList = GenerateFinalList(dayTrialistPairs, options.MaxRunsPerDay);
@@ -86,7 +87,7 @@ namespace TrialManager.Services
         /// <param name="dayTrialistPairs"></param>
         /// <param name="trialLocation"></param>
         /// <remarks>First day is sorted in ascending order so those with further to travel have time to settle in. Other days sorted in descending order as they can arrive day before</remarks>
-        private void SortByDistance(List<DayTrialistPair> dayTrialistPairs, Gd2000Coordinate trialLocation, int maxRunsPerDay)
+        private void SortByDistance(List<DayTrialistPair> dayTrialistPairs, DrawCreationOptions options)
         {
             // An improved take function, factoring in dog run count and removing from the list
             static List<Trialist> TakeAndRemove(List<Trialist> trialists, int runCount)
@@ -115,21 +116,26 @@ namespace TrialManager.Services
             {
                 List<Trialist> trialists = dayTrialistPairs[0].Trialists.ToList();
                 int totalRuns = trialists.Sum(t => t.Dogs.Count);
-                int totalDays = (int)Math.Ceiling((double)totalRuns / maxRunsPerDay);
+                int totalDays = (int)Math.Ceiling((double)totalRuns / options.MaxRunsPerDay);
 
                 List<Trialist> sortedTrialists = new List<Trialist>();
 
                 // Start with the closest trialists on the first day
-                trialists = trialists.OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation)).ToList();
-                sortedTrialists.AddRange(TakeAndRemove(trialists, maxRunsPerDay));
+                trialists = trialists.OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, options.TrialLocation)).ToList();
+                sortedTrialists.AddRange(TakeAndRemove(trialists, options.MaxRunsPerDay));
 
                 // Now add trialists so that those from further away are run earlier in the day
+                // Do this while factoring in buffer runs so that trialists have time to arrive in the morning
                 // First order by dog count so that those with more dogs are run in earlier days
                 trialists = trialists.OrderByDescending(t => t.Dogs.Count).ToList();
                 for (int i = 1; i < totalDays; i++)
                 {
-                    List<Trialist> takeList = TakeAndRemove(trialists, maxRunsPerDay);
-                    sortedTrialists.AddRange(takeList.OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation)));
+                    List<Trialist> takeList = TakeAndRemove(trialists, options.MaxRunsPerDay);
+
+                    List<Trialist> bufferRuns = TakeAndRemove(takeList.OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, options.TrialLocation)).ToList(), options.BufferRuns);
+                    sortedTrialists.AddRange(bufferRuns);
+
+                    sortedTrialists.AddRange(takeList.OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, options.TrialLocation)));
                 }
 
                 dayTrialistPairs[0].Trialists = sortedTrialists;
@@ -145,12 +151,12 @@ namespace TrialManager.Services
                     if ((noPrefDayExists && i == 1) || (!noPrefDayExists && i == 0))
                     {
                         dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                            .OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
+                            .OrderBy(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, options.TrialLocation));
                     }
                     else
                     {
                         dayTrialistPairs[i].Trialists = dayTrialistPairs[i].Trialists
-                            .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, trialLocation));
+                            .OrderByDescending(t => Gd2000Coordinate.DistanceTo(t.CoordinatePoint, options.TrialLocation));
                     }
                 }
             }
