@@ -214,20 +214,20 @@ namespace TrialManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Maximum Runs Per Day.
+        /// </summary>
+        public static string Hint_MaxRunsPerDay {
+            get {
+                return ResourceManager.GetString("Hint_MaxRunsPerDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hint: Right-click an entry to edit it!.
         /// </summary>
         public static string Hint_RightClickToEdit {
             get {
                 return ResourceManager.GetString("Hint_RightClickToEdit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Runs Per Day.
-        /// </summary>
-        public static string Hint_RunsPerDay {
-            get {
-                return ResourceManager.GetString("Hint_RunsPerDay", resourceCulture);
             }
         }
         

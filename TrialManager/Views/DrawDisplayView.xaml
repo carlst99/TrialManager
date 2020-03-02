@@ -32,11 +32,11 @@
                      Width="Auto"
                      Margin="8,0"
                      VerticalAlignment="Center"
-                     md:HintAssist.Hint="{Binding [Hint_RunsPerDay], Mode=OneTime}"
+                     md:HintAssist.Hint="{Binding [Hint_MaxRunsPerDay], Mode=OneTime}"
                      md:HintAssist.IsFloating="True"
                      FontSize="14"
                      PreviewTextInput="NonZeroTextBox_PreviewTextInput"
-                     Text="{Binding RunsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
+                     Text="{Binding MaxRunsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
             <TextBox x:Name="TxtBxMinSeparation"
                      Width="Auto"
@@ -59,6 +59,21 @@
                      LostFocus="NonZeroTextBox_LostFocus"
                      PreviewTextInput="NonZeroTextBox_PreviewTextInput"
                      Text="{Binding MaxDogsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
+
+            <TextBox x:Name="TxtBxBufferRuns"
+                     Width="Auto"
+                     Margin="8,0"
+                     VerticalAlignment="Center"
+                     md:HintAssist.Hint="Buffer Runs"
+                     md:HintAssist.IsFloating="True"
+                     FontSize="14"
+                     PreviewTextInput="NumericTextBox_PreviewTextInput"
+                     Text="{Binding BufferRuns, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
+
+            <ToggleButton Margin="8,0"
+                          VerticalAlignment="Center"
+                          md:HintAssist.Hint="Run far-distance trialists later on first day"
+                          IsChecked="{Binding RunFurtherTrialistsLaterOnFirstDay}"/>
 
             <!-- Refresh draw -->
             <Button Margin="8,0,0,0"

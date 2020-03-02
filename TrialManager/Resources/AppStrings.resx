@@ -185,13 +185,13 @@
     <value>Status</value>
     <comment>This header appears above a list of trialist/dog status'</comment>
   </data>
+  <data name="Hint_MaxRunsPerDay" xml:space="preserve">
+    <value>Maximum Runs Per Day</value>
+    <comment>This hint appears on a textbox allowing the user to set the number of runs per day in the trial</comment>
+  </data>
   <data name="Hint_RightClickToEdit" xml:space="preserve">
     <value>Hint: Right-click an entry to edit it!</value>
     <comment>This hint message appears in the data view to let users know that they can right click an entry to edit it</comment>
-  </data>
-  <data name="Hint_RunsPerDay" xml:space="preserve">
-    <value>Runs Per Day</value>
-    <comment>This hint appears on a textbox allowing the user to set the number of runs per day in the trial</comment>
   </data>
   <data name="Hint_SearchTrialists" xml:space="preserve">
     <value>Search by name</value>

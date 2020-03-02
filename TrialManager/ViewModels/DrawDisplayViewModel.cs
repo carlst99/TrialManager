@@ -26,10 +26,14 @@ namespace TrialManager.ViewModels
 
         private List<Trialist> _trialists;
         private List<TrialistDrawEntry> _draw;
+
         private string _trialAddress;
         private int _runsPerDay;
         private int _minRunSeparation = 5;
         private int _maxDogsPerDay = 3;
+        private int _bufferRuns;
+        private bool _runFurtherTrialistsLaterOnFirstDay;
+
         private bool _showProgress;
         private bool _preparationComplete;
 
@@ -49,7 +53,7 @@ namespace TrialManager.ViewModels
             set => SetAndNotify(ref _trialAddress, value);
         }
 
-        public int RunsPerDay
+        public int MaxRunsPerDay
         {
             get => _runsPerDay;
             set => SetAndNotify(ref _runsPerDay, value);
@@ -65,6 +69,18 @@ namespace TrialManager.ViewModels
         {
             get => _maxDogsPerDay;
             set => SetAndNotify(ref _maxDogsPerDay, value);
+        }
+
+        public int BufferRuns
+        {
+            get => _bufferRuns;
+            set => SetAndNotify(ref _bufferRuns, value);
+        }
+
+        public bool RunFurtherTrialistsLaterOnFirstDay
+        {
+            get => _runFurtherTrialistsLaterOnFirstDay;
+            set => SetAndNotify(ref _runFurtherTrialistsLaterOnFirstDay, value);
         }
 
         public bool ShowProgress
@@ -97,7 +113,8 @@ namespace TrialManager.ViewModels
             ShowProgress = true;
             try
             {
-                Draw = await Task.Run(() => _drawService.CreateDraw(_trialists, RunsPerDay, TrialAddress, MinRunSeparation, MaxDogsPerDay).ToList()).ConfigureAwait(true);
+                DrawCreationOptions options = new DrawCreationOptions(TrialAddress, MaxRunsPerDay, MinRunSeparation, MaxDogsPerDay, BufferRuns, RunFurtherTrialistsLaterOnFirstDay);
+                Draw = await Task.Run(() => _drawService.CreateDraw(_trialists, options).ToList()).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
@@ -192,7 +209,7 @@ namespace TrialManager.ViewModels
         protected override async void OnPropertyChanged(string propertyName)
         {
             base.OnPropertyChanged(propertyName);
-            if (propertyName == nameof(RunsPerDay))
+            if (propertyName == nameof(MaxRunsPerDay))
                 await CreateDraw().ConfigureAwait(false);
         }
 

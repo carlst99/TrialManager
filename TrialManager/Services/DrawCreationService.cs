@@ -40,7 +40,7 @@ namespace TrialManager.Services
         public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, DrawCreationOptions options)
         {
             _locationService.TryResolve(options.TrialAddress, out ILocation trialLocation);
-            options.TrialLocation = trialLocation.Location;
+            options.TrialLocation = trialLocation?.Location;
 
             // Get trialists and order by number of dogs, so those with more dogs are run earlier in the day
             trialists = trialists.OrderByDescending(t => t.Dogs.Count);
@@ -249,8 +249,8 @@ namespace TrialManager.Services
         /// <param name="trialists"></param>
         /// <param name="maxRunsPerDay"></param>
         /// <param name="count"></param>
-        /// <param name="maxDogsPerDay"></param>
         /// <param name="minRunSeparation"></param>
+        /// <param name="maxDogsPerDay"></param>
         /// <returns></returns>
         private IEnumerable<TrialistDrawEntry> SpreadAndGenerateRuns(IEnumerable<Trialist> trialists, int maxRunsPerDay, int count, int minRunSeparation, int maxDogsPerDay)
         {
