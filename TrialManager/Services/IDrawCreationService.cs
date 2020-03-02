@@ -6,6 +6,6 @@ namespace TrialManager.Services
 {
     public interface IDrawCreationService
     {
-        IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRuns, string address, int minRunSeparation, int maxDogsPerDay);
+        IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, DrawCreationOptions options);
     }
 }

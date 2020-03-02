@@ -36,13 +36,10 @@ namespace TrialManager.Services
         /// Creates a draw given certain parameters
         /// </summary>
         /// <param name="trialists">The trialists/dogs to include in the draw</param>
-        /// <param name="maxRunsPerDay">Defines the maximum number of runs that can be scheduled for each day</param>
-        /// <param name="trialAddress">The address of the trial grounds, used for location sorting</param>
-        /// <param name="minRunSeparation">The minimum separation between each trialists runs</param>
-        /// <param name="maxDogsPerDay">Defines the maximum number of dogs that may be run in a day</param>
-        public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, int maxRunsPerDay, string trialAddress, int minRunSeparation, int maxDogsPerDay)
+        /// <param name="options"></param>
+        public IEnumerable<TrialistDrawEntry> CreateDraw(IEnumerable<Trialist> trialists, DrawCreationOptions options)
         {
-            _locationService.TryResolve(trialAddress, out ILocation trialLocation);
+            _locationService.TryResolve(options.TrialAddress, out ILocation trialLocation);
 
             // Get trialists and order by number of dogs, so those with more dogs are run earlier in the day
             trialists = trialists.OrderByDescending(t => t.Dogs.Count);
@@ -52,12 +49,12 @@ namespace TrialManager.Services
 
             // Sort each list by distance to trial grounds
             if (trialLocation != null)
-                SortByDistance(dayTrialistPairs, trialLocation.Location, maxRunsPerDay);
+                SortByDistance(dayTrialistPairs, trialLocation.Location, options.MaxRunsPerDay);
 
             // Fill days if needed and generate final list
-            IEnumerable<Trialist> finalList = GenerateFinalList(dayTrialistPairs, maxRunsPerDay);
+            IEnumerable<Trialist> finalList = GenerateFinalList(dayTrialistPairs, options.MaxRunsPerDay);
 
-            foreach (TrialistDrawEntry value in SpreadAndGenerateRuns(finalList, maxRunsPerDay, 0, minRunSeparation, maxDogsPerDay))
+            foreach (TrialistDrawEntry value in SpreadAndGenerateRuns(finalList, options.MaxRunsPerDay, 0, options.MinRunSeparation, options.MaxDogsPerDay))
                 yield return value;
         }
 
@@ -139,7 +136,7 @@ namespace TrialManager.Services
             }
             else
             {
-                bool noPrefDayExists = dayTrialistPairs.Select(d => d.Day).Contains(DateTime.MinValue);
+                bool noPrefDayExists = dayTrialistPairs.Select(d => d.Day).Contains(NO_PREFERRED_DAY_MARKER);
                 for (int i = 0; i < dayTrialistPairs.Count; i++)
                 {
                     // For the first day, those farther away should be run later. i == 1 as no preference day is first
@@ -168,52 +165,73 @@ namespace TrialManager.Services
         /// <remarks>Fills days with trialists if said day is needing more runs to reach the maximum</remarks>
         private IEnumerable<Trialist> GenerateFinalList(List<DayTrialistPair> dayTrialistPairs, int maxRunsPerDay)
         {
-            IEnumerable<Trialist> finalList = Enumerable.Empty<Trialist>();
-            int noPrefPositionCounter = 0;
-
-            // Take and remove the no preference pair
-            DayTrialistPair noPreferencePair = dayTrialistPairs.First(p => p.Day == NO_PREFERRED_DAY_MARKER);
-            dayTrialistPairs.Remove(noPreferencePair);
-            List<Trialist> noPreferredDay = noPreferencePair.Trialists.ToList();
-
-            foreach (DayTrialistPair pair in dayTrialistPairs)
+            if (dayTrialistPairs.Count == 0)
             {
-                IEnumerable<Trialist> list = pair.Trialists;
+                ArgumentOutOfRangeException ex = new ArgumentOutOfRangeException(nameof(dayTrialistPairs), "At least one day is required to create a draw");
+                Log.Error(ex, "Could not create draw");
+                throw ex;
+            }
+            else if (dayTrialistPairs.Count == 1)
+            {
+                return dayTrialistPairs[0].Trialists;
+            }
+            else if (dayTrialistPairs.Select(t => t.Day).Contains(NO_PREFERRED_DAY_MARKER))
+            {
+                List<Trialist> finalList = new List<Trialist>();
+                int noPrefPositionCounter = 0;
 
-                // Fill up the day with no-preference trialists, if we have not yet met the maximum run count
-                int runCount = list.Sum(t => t.Dogs.Count);
-                if (runCount < maxRunsPerDay)
+                // Take and remove the no preference pair
+                DayTrialistPair noPreferencePair = dayTrialistPairs.First(p => p.Day.Equals(NO_PREFERRED_DAY_MARKER));
+                dayTrialistPairs.Remove(noPreferencePair);
+                List<Trialist> noPreferredDay = noPreferencePair.Trialists.ToList();
+
+                foreach (DayTrialistPair pair in dayTrialistPairs)
                 {
-                    int runDiff = maxRunsPerDay - runCount;
-                    int originalPos = noPrefPositionCounter;
-                    while (runDiff >= 0)
+                    IEnumerable<Trialist> list = pair.Trialists;
+
+                    // Fill up the day with no-preference trialists, if we have not yet met the maximum run count
+                    int runCount = list.Sum(t => t.Dogs.Count);
+                    if (runCount < maxRunsPerDay)
                     {
-                        runDiff -= noPreferredDay[noPrefPositionCounter].Dogs.Count;
-                        noPrefPositionCounter++;
+                        int runDiff = maxRunsPerDay - runCount;
+                        int originalPos = noPrefPositionCounter;
+                        while (runDiff >= 0)
+                        {
+                            runDiff -= noPreferredDay[noPrefPositionCounter].Dogs.Count;
+                            noPrefPositionCounter++;
+                        }
+
+                        list = list.Concat(noPreferredDay.GetRange(originalPos, noPrefPositionCounter - originalPos));
                     }
 
-                    list = list.Concat(noPreferredDay.GetRange(originalPos, noPrefPositionCounter - originalPos));
+                    if (finalList == null)
+                        finalList = list.ToList();
+                    else
+                        finalList.AddRange(list);
                 }
 
-                if (finalList == null)
-                    finalList = list;
-                else
-                    finalList = finalList.Concat(list);
+                if (noPrefPositionCounter < noPreferredDay.Count)
+                    finalList.AddRange(noPreferredDay.GetRange(noPrefPositionCounter, noPreferredDay.Count - noPrefPositionCounter));
+
+                return finalList;
             }
-
-            if (noPrefPositionCounter < noPreferredDay.Count)
-                finalList = finalList.Concat(noPreferredDay.GetRange(noPrefPositionCounter, noPreferredDay.Count - noPrefPositionCounter));
-
-            return finalList;
+            else
+            {
+                List<Trialist> finalList = new List<Trialist>();
+                foreach (DayTrialistPair pair in dayTrialistPairs)
+                    finalList.AddRange(pair.Trialists);
+                return finalList;
+            }
         }
 
         /// <summary>
         /// Spreads out each trialists runs and returns the generated draw entries
         /// </summary>
         /// <param name="trialists"></param>
-        /// <param name="realm"></param>
         /// <param name="maxRunsPerDay"></param>
         /// <param name="count"></param>
+        /// <param name="maxDogsPerDay"></param>
+        /// <param name="minRunSeparation"></param>
         /// <returns></returns>
         private IEnumerable<TrialistDrawEntry> SpreadAndGenerateRuns(IEnumerable<Trialist> trialists, int maxRunsPerDay, int count, int minRunSeparation, int maxDogsPerDay)
         {
