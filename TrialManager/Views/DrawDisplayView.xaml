@@ -36,7 +36,7 @@
                      md:HintAssist.IsFloating="True"
                      FontSize="14"
                      PreviewTextInput="NonZeroTextBox_PreviewTextInput"
-                     Text="{Binding MaxRunsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
+                     Text="{Binding DrawCreationOptions.MaxRunsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
             <TextBox x:Name="TxtBxMinSeparation"
                      Width="Auto"
@@ -47,7 +47,7 @@
                      FontSize="14"
                      LostFocus="NonZeroTextBox_LostFocus"
                      PreviewTextInput="NumericTextBox_PreviewTextInput"
-                     Text="{Binding MinRunSeparation, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
+                     Text="{Binding DrawCreationOptions.MinRunSeparation, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
             <TextBox x:Name="TxtBxMaxDogs"
                      Width="Auto"
@@ -58,7 +58,7 @@
                      FontSize="14"
                      LostFocus="NonZeroTextBox_LostFocus"
                      PreviewTextInput="NonZeroTextBox_PreviewTextInput"
-                     Text="{Binding MaxDogsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
+                     Text="{Binding DrawCreationOptions.MaxDogsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
             <TextBox x:Name="TxtBxBufferRuns"
                      Width="Auto"
@@ -68,12 +68,16 @@
                      md:HintAssist.IsFloating="True"
                      FontSize="14"
                      PreviewTextInput="NumericTextBox_PreviewTextInput"
-                     Text="{Binding BufferRuns, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
+                     Text="{Binding DrawCreationOptions.BufferRuns, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
             <ToggleButton Margin="8,0"
                           VerticalAlignment="Center"
                           md:HintAssist.Hint="Run far-distance trialists later on first day"
-                          IsChecked="{Binding RunFurtherTrialistsLaterOnFirstDay}"/>
+                          IsChecked="{Binding DrawCreationOptions.RunFurtherTrialistsLaterOnFirstDay}"/>
+
+            <DatePicker Margin="8,0"
+                        VerticalAlignment="Center"
+                        SelectedDate="{Binding DrawCreationOptions.TrialStartDate}"/>
 
             <!-- Refresh draw -->
             <Button Margin="8,0,0,0"
@@ -189,8 +193,7 @@
         <mde:Autocomplete x:Name="AddressAutocompleter"
                           Grid.Row="1"
                           Margin="0,8,0,0"
-                          SelectedItem="{Binding TrialAddress, Mode=TwoWay}"
-                          SelectedItemChangedCommand="{s:Action CreateDraw}">
+                          SelectedItem="{Binding DrawCreationOptions.TrialAddress, Mode=TwoWay}">
             <mde:Autocomplete.Hint>
                 <StackPanel HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"

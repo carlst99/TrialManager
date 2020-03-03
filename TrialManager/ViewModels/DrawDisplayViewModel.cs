@@ -27,12 +27,7 @@ namespace TrialManager.ViewModels
         private List<Trialist> _trialists;
         private List<TrialistDrawEntry> _draw;
 
-        private string _trialAddress;
-        private int _runsPerDay;
-        private int _minRunSeparation = 5;
-        private int _maxDogsPerDay = 3;
-        private int _bufferRuns;
-        private bool _runFurtherTrialistsLaterOnFirstDay;
+        private DrawCreationOptions _drawCreationOptions;
 
         private bool _showProgress;
         private bool _preparationComplete;
@@ -47,40 +42,10 @@ namespace TrialManager.ViewModels
             set => SetAndNotify(ref _draw, value);
         }
 
-        public string TrialAddress
+        public DrawCreationOptions DrawCreationOptions
         {
-            get => _trialAddress;
-            set => SetAndNotify(ref _trialAddress, value);
-        }
-
-        public int MaxRunsPerDay
-        {
-            get => _runsPerDay;
-            set => SetAndNotify(ref _runsPerDay, value);
-        }
-
-        public int MinRunSeparation
-        {
-            get => _minRunSeparation;
-            set => SetAndNotify(ref _minRunSeparation, value);
-        }
-
-        public int MaxDogsPerDay
-        {
-            get => _maxDogsPerDay;
-            set => SetAndNotify(ref _maxDogsPerDay, value);
-        }
-
-        public int BufferRuns
-        {
-            get => _bufferRuns;
-            set => SetAndNotify(ref _bufferRuns, value);
-        }
-
-        public bool RunFurtherTrialistsLaterOnFirstDay
-        {
-            get => _runFurtherTrialistsLaterOnFirstDay;
-            set => SetAndNotify(ref _runFurtherTrialistsLaterOnFirstDay, value);
+            get => _drawCreationOptions;
+            set => SetAndNotify(ref _drawCreationOptions, value);
         }
 
         public bool ShowProgress
@@ -102,7 +67,9 @@ namespace TrialManager.ViewModels
             _exportService = exportService;
             _drawService = drawService;
             _messageQueue = messageQueue;
-            _runsPerDay = 100;
+
+            DrawCreationOptions = new DrawCreationOptions();
+            DrawCreationOptions.OnOptionsChanged += async (_, __) => await CreateDraw().ConfigureAwait(false);
         }
 
         public async Task CreateDraw()
@@ -113,8 +80,7 @@ namespace TrialManager.ViewModels
             ShowProgress = true;
             try
             {
-                DrawCreationOptions options = new DrawCreationOptions(TrialAddress, MaxRunsPerDay, MinRunSeparation, MaxDogsPerDay, BufferRuns, RunFurtherTrialistsLaterOnFirstDay);
-                Draw = await Task.Run(() => _drawService.CreateDraw(_trialists, options).ToList()).ConfigureAwait(true);
+                Draw = await Task.Run(() => _drawService.CreateDraw(_trialists, DrawCreationOptions).ToList()).ConfigureAwait(true);
             }
             catch (Exception ex)
             {
@@ -204,13 +170,6 @@ namespace TrialManager.ViewModels
                 _trialists.Add(element);
             _preparationComplete = true;
             await CreateDraw().ConfigureAwait(false);
-        }
-
-        protected override async void OnPropertyChanged(string propertyName)
-        {
-            base.OnPropertyChanged(propertyName);
-            if (propertyName == nameof(MaxRunsPerDay))
-                await CreateDraw().ConfigureAwait(false);
         }
 
         private SaveFileDialog GetSaveFileDialog(string filter)
