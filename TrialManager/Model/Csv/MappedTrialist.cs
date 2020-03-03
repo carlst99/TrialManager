@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TrialManager.Model.LocationDb;
@@ -59,15 +60,15 @@ namespace TrialManager.Model.Csv
                 };
 
                 // Add dogs
-                if (!string.IsNullOrEmpty(DogOneName))
+                if (!string.IsNullOrWhiteSpace(DogOneName))
                     trialist.Dogs.Add(new Dog(DogOneName, DogOneStatus));
-                if (!string.IsNullOrEmpty(DogTwoName))
+                if (!string.IsNullOrWhiteSpace(DogTwoName))
                     trialist.Dogs.Add(new Dog(DogTwoName, DogTwoStatus));
-                if (!string.IsNullOrEmpty(DogThreeName))
+                if (!string.IsNullOrWhiteSpace(DogThreeName))
                     trialist.Dogs.Add(new Dog(DogThreeName, DogThreeStatus));
-                if (!string.IsNullOrEmpty(DogFourName))
+                if (!string.IsNullOrWhiteSpace(DogFourName))
                     trialist.Dogs.Add(new Dog(DogFourName, DogFourStatus));
-                if (!string.IsNullOrEmpty(DogFiveName))
+                if (!string.IsNullOrWhiteSpace(DogFiveName))
                     trialist.Dogs.Add(new Dog(DogFiveName, DogFiveStatus));
 
                 // Setup location
@@ -85,9 +86,8 @@ namespace TrialManager.Model.Csv
         public override bool Equals(object obj)
         {
             return obj is MappedTrialist mt
-                && mt.FullName.Equals(FullName)
-                && mt.Status.Equals(Status)
-                && mt.Address.Equals(Address);
+                && mt.FullName.Equals(FullName, StringComparison.OrdinalIgnoreCase)
+                && mt.Address.Equals(Address, StringComparison.OrdinalIgnoreCase);
         }
 
         public override int GetHashCode()
@@ -95,9 +95,8 @@ namespace TrialManager.Model.Csv
             unchecked
             {
                 int hash = 13;
-                hash = (hash * 7) + FullName.GetHashCode();
-                hash = (hash * 7) + Status.GetHashCode();
-                return (hash * 7) + Address.GetHashCode();
+                hash = (hash * 7) + FullName.ToLower().GetHashCode();
+                return (hash * 7) + Address.ToLower().GetHashCode();
             }
         }
 
