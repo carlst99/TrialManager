@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:TrialManager.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:TrialManager.Views"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
              xmlns:model="clr-namespace:TrialManager.Model"
              xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              d:DesignHeight="450"
              d:DesignWidth="800"
              Loaded="UserControl_Loaded"
@@ -16,13 +16,32 @@
 
     <UserControl.Resources>
         <converters:IntToStringValueConverter x:Key="IntToStringValueConverter"/>
+        <Thickness x:Key="OptionsDialogItemMargin">12,4,12,4</Thickness>
+        <Thickness x:Key="OptionsDialogHelpItemMargin">0,0,8,0</Thickness>
+        <sys:Double x:Key="OptionsDialogHelpIconSize">20</sys:Double>
     </UserControl.Resources>
 
     <md:DialogHost CloseOnClickAway="True"
                    IsOpen="{Binding IsDrawOptionsDialogOpen}">
         <md:DialogHost.DialogContent>
-            <StackPanel>
-                <md:ColorZone MinWidth="250"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <md:ColorZone Grid.Row="0"
+                              Grid.ColumnSpan="2"
+                              MinWidth="250"
                               md:ShadowAssist.ShadowDepth="Depth1"
                               Mode="Accent">
                     <Grid Margin="8">
@@ -31,7 +50,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock VerticalAlignment="Center"
+                        <TextBlock Margin="4,0"
+                                   VerticalAlignment="Center"
                                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                    Text="Draw Creation Options"/>
                         <Button Grid.Column="1"
@@ -41,13 +61,25 @@
                     </Grid>
                 </md:ColorZone>
 
-                <DatePicker Margin="12,4"
+                <DatePicker Grid.Row="1"
+                            Margin="{StaticResource OptionsDialogItemMargin}"
                             md:HintAssist.FloatingScale="0.8"
                             md:HintAssist.Hint="Trial Start Date"
                             md:HintAssist.IsFloating="True"
                             SelectedDate="{Binding DrawCreationOptions.TrialStartDate}"/>
 
-                <TextBox Margin="12,4"
+                <md:PackIcon Grid.Row="1"
+                             Grid.Column="1"
+                             Width="{StaticResource OptionsDialogHelpIconSize}"
+                             Height="{StaticResource OptionsDialogHelpIconSize}"
+                             Margin="{StaticResource OptionsDialogHelpItemMargin}"
+                             VerticalAlignment="Center"
+                             Kind="HelpCircle"
+                             ToolTip="This sets the start date of the trial. It is only used to show relevant dates in the draw"
+                             ToolTipService.InitialShowDelay="0"/>
+
+                <TextBox Grid.Row="2"
+                         Margin="{StaticResource OptionsDialogItemMargin}"
                          md:HintAssist.FloatingScale="0.8"
                          md:HintAssist.Hint="Maximum runs per day"
                          md:HintAssist.IsFloating="True"
@@ -55,16 +87,44 @@
                          PreviewTextInput="NonZeroTextBox_PreviewTextInput"
                          Text="{Binding DrawCreationOptions.MaxRunsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
-                <TextBox Margin="12,4"
+                <md:PackIcon Grid.Row="2"
+                             Grid.Column="1"
+                             Width="{StaticResource OptionsDialogHelpIconSize}"
+                             Height="{StaticResource OptionsDialogHelpIconSize}"
+                             Margin="{StaticResource OptionsDialogHelpItemMargin}"
+                             VerticalAlignment="Center"
+                             Kind="HelpCircle"
+                             ToolTip="This specifies the maximum number of individual runs that can be put into each day of the draw"
+                             ToolTipService.InitialShowDelay="0"/>
+
+                <TextBox Grid.Row="3"
+                         Margin="{StaticResource OptionsDialogItemMargin}"
                          md:HintAssist.FloatingScale="0.8"
-                         md:HintAssist.Hint="Minimum run separation"
+                         md:HintAssist.Hint="Trialist run separation"
                          md:HintAssist.IsFloating="True"
                          FontSize="14"
                          LostFocus="NonZeroTextBox_LostFocus"
                          PreviewTextInput="NumericTextBox_PreviewTextInput"
                          Text="{Binding DrawCreationOptions.MinRunSeparation, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
-                <TextBox Margin="12,4"
+                <md:PackIcon Grid.Row="3"
+                             Grid.Column="1"
+                             Width="{StaticResource OptionsDialogHelpIconSize}"
+                             Height="{StaticResource OptionsDialogHelpIconSize}"
+                             Margin="{StaticResource OptionsDialogHelpItemMargin}"
+                             VerticalAlignment="Center"
+                             Kind="HelpCircle"
+                             ToolTipService.InitialShowDelay="0"
+                             ToolTipService.ShowDuration="15000">
+                    <md:PackIcon.ToolTip>
+                        <TextBlock>
+                            This specifies the number of runs that each Trialist's runs should be separated by.<LineBreak/>
+                            I.e. a value of three will place five other trialists in between each run of a single trialist</TextBlock>
+                    </md:PackIcon.ToolTip>
+                </md:PackIcon>
+
+                <TextBox Grid.Row="4"
+                         Margin="{StaticResource OptionsDialogItemMargin}"
                          md:HintAssist.FloatingScale="0.8"
                          md:HintAssist.Hint="Maximum dogs per trialist per day"
                          md:HintAssist.IsFloating="True"
@@ -73,7 +133,18 @@
                          PreviewTextInput="NonZeroTextBox_PreviewTextInput"
                          Text="{Binding DrawCreationOptions.MaxDogsPerDay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
-                <TextBox Margin="12,4"
+                <md:PackIcon Grid.Row="4"
+                             Grid.Column="1"
+                             Width="{StaticResource OptionsDialogHelpIconSize}"
+                             Height="{StaticResource OptionsDialogHelpIconSize}"
+                             Margin="{StaticResource OptionsDialogHelpItemMargin}"
+                             VerticalAlignment="Center"
+                             Kind="HelpCircle"
+                             ToolTip="This specifies the maximum number of dogs that a single trialist can run in one day"
+                             ToolTipService.InitialShowDelay="0"/>
+
+                <TextBox Grid.Row="5"
+                         Margin="{StaticResource OptionsDialogItemMargin}"
                          md:HintAssist.FloatingScale="0.8"
                          md:HintAssist.Hint="Buffer Runs"
                          md:HintAssist.IsFloating="True"
@@ -81,10 +152,43 @@
                          PreviewTextInput="NumericTextBox_PreviewTextInput"
                          Text="{Binding DrawCreationOptions.BufferRuns, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToStringValueConverter}}"/>
 
-                <CheckBox Margin="12,4,12,12"
+                <md:PackIcon Grid.Row="5"
+                             Grid.Column="1"
+                             Width="{StaticResource OptionsDialogHelpIconSize}"
+                             Height="{StaticResource OptionsDialogHelpIconSize}"
+                             Margin="{StaticResource OptionsDialogHelpItemMargin}"
+                             VerticalAlignment="Center"
+                             Kind="HelpCircle"
+                             ToolTipService.InitialShowDelay="0"
+                             ToolTipService.ShowDuration="15000">
+                    <md:PackIcon.ToolTip>
+                        <TextBlock>
+                            This value specifies how many near-distance trialists to place into the top of the draw,<LineBreak/>
+                            before placing far-distance trialists, to give them time to arrive</TextBlock>
+                    </md:PackIcon.ToolTip>
+                </md:PackIcon>
+
+                <CheckBox Grid.Row="6"
+                          Margin="12,4,8,12"
                           Content="Run far-distance trialists later on first day"
                           IsChecked="{Binding DrawCreationOptions.RunFurtherTrialistsLaterOnFirstDay}"/>
-            </StackPanel>
+
+                <md:PackIcon Grid.Row="6"
+                             Grid.Column="1"
+                             Width="{StaticResource OptionsDialogHelpIconSize}"
+                             Height="{StaticResource OptionsDialogHelpIconSize}"
+                             Margin="0,0,8,12"
+                             VerticalAlignment="Center"
+                             Kind="HelpCircle"
+                             ToolTipService.InitialShowDelay="0"
+                             ToolTipService.ShowDuration="15000">
+                    <md:PackIcon.ToolTip>
+                        <TextBlock>
+                            Far-distance trialists are usually run early in the day, to give them time to drive home.<LineBreak/>
+                            This option reverses that for the first day only</TextBlock>
+                    </md:PackIcon.ToolTip>
+                </md:PackIcon>
+            </Grid>
         </md:DialogHost.DialogContent>
 
         <Grid Margin="16">

@@ -84,7 +84,7 @@ namespace TrialManager.Model
             MinRunSeparation = 3;
             MaxDogsPerDay = 5;
             BufferRuns = 10;
-            RunFurtherTrialistsLaterOnFirstDay = true;
+            RunFurtherTrialistsLaterOnFirstDay = false;
             TrialStartDate = DateTime.Now;
         }
 
