@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="12.1.2" />
-    <PackageReference Include="MessagePack" Version="1.7.3.7" />
+    <PackageReference Include="MessagePack" Version="1.9.11" />
     <PackageReference Include="Realm" Version="4.1.0" />
   </ItemGroup>
 
