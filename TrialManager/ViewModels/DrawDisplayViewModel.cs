@@ -31,6 +31,7 @@ namespace TrialManager.ViewModels
 
         private bool _showProgress;
         private bool _preparationComplete;
+        private bool _isDrawOptionsDialogOpen;
 
         #endregion
 
@@ -52,6 +53,12 @@ namespace TrialManager.ViewModels
         {
             get => _showProgress;
             set => SetAndNotify(ref _showProgress, value);
+        }
+
+        public bool IsDrawOptionsDialogOpen
+        {
+            get => _isDrawOptionsDialogOpen;
+            set => SetAndNotify(ref _isDrawOptionsDialogOpen, value);
         }
 
         #endregion
@@ -161,6 +168,11 @@ namespace TrialManager.ViewModels
         public void PrintDraw()
         {
             _messageQueue.Enqueue("Draw printing is not supported yet!");
+        }
+
+        public void ToggleDrawOptionsDialog()
+        {
+            IsDrawOptionsDialogOpen = !IsDrawOptionsDialogOpen;
         }
 
         public override async void Prepare(object payload)

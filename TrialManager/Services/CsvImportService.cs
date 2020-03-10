@@ -109,6 +109,7 @@ namespace TrialManager.Services
         {
             StreamReader reader = new StreamReader(filePath);
             CsvReader csv = new CsvReader(reader, CultureInfo.CurrentCulture);
+            csv.Configuration.TypeConverterCache.AddConverter<string>(new StringTrimConverter());
             if (classMap != null)
                 csv.Configuration.RegisterClassMap(classMap);
             return csv;
