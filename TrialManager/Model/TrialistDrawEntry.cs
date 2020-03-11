@@ -22,6 +22,7 @@ namespace TrialManager.Model
             CompetingDogName = dog.Name;
             CompetingDogStatus = dog.Status;
             RunNumber = runNumber;
+            Day = day;
         }
     }
 }
