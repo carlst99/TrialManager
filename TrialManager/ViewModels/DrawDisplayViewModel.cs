@@ -172,9 +172,10 @@ namespace TrialManager.ViewModels
         {
             try
             {
-                if (await _printService.Print(Draw, "Draw").ConfigureAwait(true))
+                if (_printService.Print(Draw, null))
                     _messageQueue.Enqueue("Draw printed successfully!");
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Log.Error(ex, "Could not print draw");
                 await DisplayUnexpectedExceptionDialog().ConfigureAwait(false);
