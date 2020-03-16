@@ -55,7 +55,7 @@ namespace TrialManager.Services
             // Fill days if needed and generate final list
             IEnumerable<Trialist> finalList = GenerateFinalList(dayTrialistPairs, options.MaxRunsPerDay);
 
-            foreach (TrialistDrawEntry value in SpreadAndGenerateRuns(finalList, options.MaxRunsPerDay, 0, options.MinRunSeparation, options.MaxDogsPerDay))
+            foreach (TrialistDrawEntry value in SpreadAndGenerateRuns(finalList, options))
                 yield return value;
         }
 
@@ -246,29 +246,29 @@ namespace TrialManager.Services
         /// <summary>
         /// Spreads out each trialists runs and returns the generated draw entries
         /// </summary>
-        /// <param name="trialists"></param>
-        /// <param name="maxRunsPerDay"></param>
-        /// <param name="count"></param>
-        /// <param name="minRunSeparation"></param>
-        /// <param name="maxDogsPerDay"></param>
+        /// <param name="trialists">The ordered trialists list to create a draw from</param>
+        /// <param name="options">The draw creation options that this method must abide by</param>
         /// <returns></returns>
-        private IEnumerable<TrialistDrawEntry> SpreadAndGenerateRuns(IEnumerable<Trialist> trialists, int maxRunsPerDay, int count, int minRunSeparation, int maxDogsPerDay)
+        private IEnumerable<TrialistDrawEntry> SpreadAndGenerateRuns(IEnumerable<Trialist> trialists, DrawCreationOptions options)
         {
-            if (maxRunsPerDay <= 0)
-                throw new ArgumentException("Max Runs must be greater than 0", nameof(maxRunsPerDay));
-            if (minRunSeparation < 0)
-                throw new ArgumentException("Min Run Separation must be greater than -1", nameof(minRunSeparation));
-            if (maxDogsPerDay <= 0)
-                throw new ArgumentException("Max dogs must be greater than 0", nameof(maxDogsPerDay));
+            if (options.MaxRunsPerDay <= 0)
+                throw new ArgumentException("Max Runs must be greater than 0", nameof(options.MaxRunsPerDay));
+            if (options.MinRunSeparation < 0)
+                throw new ArgumentException("Min Run Separation must be greater than -1", nameof(options.MinRunSeparation));
+            if (options.MaxDogsPerDay <= 0)
+                throw new ArgumentException("Max dogs must be greater than 0", nameof(options.MaxDogsPerDay));
 
-            minRunSeparation++;
+            int minRunSeparation = options.MinRunSeparation + 1;
+            DateTime day = options.TrialStartDate;
+
             int dogCount = 0;
             foreach (Trialist trialist in trialists)
                 dogCount += trialist.Dogs.Count;
 
             TrialistDrawEntry[] draw = new TrialistDrawEntry[dogCount * 2];
             HashSet<int> usedNumbers = new HashSet<int>();
-            int startCount = count;
+            int startCount = 0;
+            int count = 0;
 
             foreach (Trialist element in trialists)
             {
@@ -284,10 +284,10 @@ namespace TrialManager.Services
                 for (int i = 0; i < element.Dogs.Count; i++)
                 {
                     // If we are a multiple of the maximum dogs per day, move to the next day
-                    if (i != 0 && i % maxDogsPerDay == 0 && i / maxDogsPerDay == dayIncrements)
+                    if (i != 0 && i % options.MaxDogsPerDay == 0 && i / options.MaxDogsPerDay == dayIncrements)
                     {
                         // Increment to next day
-                        int increment = maxRunsPerDay - localCount;
+                        int increment = options.MaxRunsPerDay - localCount;
                         localCount += increment;
                         dayIncrements++;
 
@@ -296,12 +296,12 @@ namespace TrialManager.Services
                     }
 
                     // Add the entry
-                    draw[localCount] = new TrialistDrawEntry(element, element.Dogs[i], localCount + 1);
+                    draw[localCount] = new TrialistDrawEntry(element, element.Dogs[i], localCount + 1, day.AddDays(dayIncrements));
                     usedNumbers.Add(localCount);
 
                     // Increment day if necessary and find next local count
                     localCount += minRunSeparation;
-                    if (localCount != 0 && maxRunsPerDay / localCount < 1)
+                    if (localCount != 0 && options.MaxRunsPerDay / localCount < 1)
                         dayIncrements++;
                     FindNextAvailable(usedNumbers, ref localCount);
                 }

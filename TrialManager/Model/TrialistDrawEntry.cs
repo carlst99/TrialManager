@@ -10,8 +10,9 @@ namespace TrialManager.Model
         public string CompetingDogName { get; set; }
         public string CompetingDogStatus { get; set; }
         public int RunNumber { get; set; }
+        public DateTime Day { get; set; }
 
-        public TrialistDrawEntry(Trialist trialist, Dog dog, int runNumber)
+        public TrialistDrawEntry(Trialist trialist, Dog dog, int runNumber, DateTime day)
         {
             if (!trialist.Dogs.Contains(dog))
                 throw new ArgumentException("This trialist does not own the dog " + dog.ToString());
@@ -21,6 +22,7 @@ namespace TrialManager.Model
             CompetingDogName = dog.Name;
             CompetingDogStatus = dog.Status;
             RunNumber = runNumber;
+            Day = day;
         }
     }
 }
