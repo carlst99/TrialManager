@@ -23,6 +23,7 @@ namespace TrialManager.ViewModels
         private readonly IDataExportService _exportService;
         private readonly IDrawCreationService _drawService;
         private readonly ISnackbarMessageQueue _messageQueue;
+        private readonly IPrintService _printService;
 
         private List<Trialist> _trialists;
         private List<TrialistDrawEntry> _draw;
@@ -68,12 +69,14 @@ namespace TrialManager.ViewModels
             INavigationService navigationService,
             IDataExportService exportService,
             IDrawCreationService drawService,
+            IPrintService printService,
             ISnackbarMessageQueue messageQueue)
             : base(eventAggregator, navigationService)
         {
             _exportService = exportService;
             _drawService = drawService;
             _messageQueue = messageQueue;
+            _printService = printService;
 
             DrawCreationOptions = new DrawCreationOptions();
             DrawCreationOptions.OnOptionsChanged += async (_, __) => await CreateDraw().ConfigureAwait(false);
@@ -165,15 +168,9 @@ namespace TrialManager.ViewModels
             }
         }
 
-        public void PrintDraw()
-        {
-            _messageQueue.Enqueue("Draw printing is not supported yet!");
-        }
+        public void PrintDraw() => _printService.Print(Draw, "Draw");
 
-        public void ToggleDrawOptionsDialog()
-        {
-            IsDrawOptionsDialogOpen = !IsDrawOptionsDialogOpen;
-        }
+        public void ToggleDrawOptionsDialog() => IsDrawOptionsDialogOpen = !IsDrawOptionsDialogOpen;
 
         public override async void Prepare(object payload)
         {
