@@ -370,10 +370,10 @@
                                             FontWeight="Bold"
                                             Header="Run"
                                             IsReadOnly="True"/>
-                        <DataGridTextColumn Width="Auto"
+                        <!--<DataGridTextColumn Width="Auto"
                                             Binding="{Binding Day}"
                                             Header="Day"
-                                            IsReadOnly="True"/>
+                                            IsReadOnly="True"/>-->
                         <DataGridTemplateColumn Width="Auto"
                                                 Header="Name"
                                                 IsReadOnly="True">
