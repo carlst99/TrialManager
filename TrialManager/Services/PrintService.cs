@@ -13,7 +13,7 @@ namespace TrialManager.Services
 {
     public class PrintService : IPrintService
     {
-        public void Print(IEnumerable<TrialistDrawEntry> drawEntries, string title, DataGrid dg)
+        public void Print(IEnumerable<TrialistDrawEntry> drawEntries, string title)
         {
             PrintDialog pd = new PrintDialog();
             if (pd.ShowDialog() == true)
@@ -23,15 +23,15 @@ namespace TrialManager.Services
                     PageHeight = pd.PrintableAreaHeight,
                     PageWidth = pd.PrintableAreaWidth,
                     TextAlignment = TextAlignment.Center,
-                    ColumnWidth = 500
+                    ColumnWidth = 500,
+                    FontSize = 13,
                 };
                 fd.BringIntoView();
 
                 // Add the document title
                 Paragraph titleParagragh = new Paragraph(new Run(title))
                 {
-                    FontSize = 16,
-                    FontFamily = dg.FontFamily
+                    FontSize = 16
                 };
                 fd.Blocks.Add(titleParagragh);
 
@@ -39,34 +39,24 @@ namespace TrialManager.Services
                 {
                     CellSpacing = 0,
                     BorderBrush = Brushes.Gray,
-                    BorderThickness = new Thickness(1, 1, 0, 0),
-                    FontStyle = dg.FontStyle,
-                    FontFamily = dg.FontFamily,
-                    FontSize = 13
+                    BorderThickness = new Thickness(1, 1, 0, 0)
                 };
 
-                TableRowGroup tableRowGroup = new TableRowGroup();
+                TableRowGroup tableRowGroup = new TableRowGroup
+                {
+                    Background = Brushes.DarkGray,
+                    Foreground = Brushes.White,
+                    FontWeight = FontWeights.Bold
+                };
                 TableRow tableRow = new TableRow();
 
-                List<string> headerList = dg.Columns.Select(e => e.Header.ToString()).ToList();
-                List<string> bindList = new List<string>();
-
                 // Create the header row
-                for (int i = 0; i < headerList.Count; i++)
-                {
-                    tableRow.Cells.Add(new TableCell(new Paragraph(new Run(headerList[i])))
-                    {
-                        ColumnSpan = 4,
-                        Padding = new Thickness(4),
-                        BorderBrush = Brushes.Black,
-                        BorderThickness = new Thickness(1),
-                        Background = Brushes.DarkGray,
-                        Foreground = Brushes.White,
-                        FontWeight = FontWeights.Bold
-                    });
-                    Binding binding = (dg.Columns[i] as DataGridBoundColumn)?.Binding as Binding;
-                    bindList.Add(binding.Path.Path);
-                }
+                tableRow.Cells.Add(GetHeaderTableCell("Run Number"));
+                tableRow.Cells.Add(GetHeaderTableCell("Name"));
+                tableRow.Cells.Add(GetHeaderTableCell("Status"));
+                tableRow.Cells.Add(GetHeaderTableCell("Dog Name"));
+                tableRow.Cells.Add(GetHeaderTableCell("Dog Status"));
+
                 tableRowGroup.Rows.Add(tableRow);
                 table.RowGroups.Add(tableRowGroup);
 
@@ -76,7 +66,9 @@ namespace TrialManager.Services
                 {
                     tableRow = new TableRow();
 
-                    tableRow.Cells.Add(GetTableCell(entry.RunNumber.ToString()));
+                    TableCell runNumberCell = GetTableCell(entry.RunNumber.ToString());
+                    runNumberCell.FontWeight = FontWeights.Bold;
+                    tableRow.Cells.Add(runNumberCell);
                     tableRow.Cells.Add(GetTableCell(entry.TrialistName));
                     tableRow.Cells.Add(GetTableCell(entry.TrialistStatus));
                     tableRow.Cells.Add(GetTableCell(entry.CompetingDogName));
@@ -85,35 +77,6 @@ namespace TrialManager.Services
                     tableRowGroup.Rows.Add(tableRow);
                 }
                 table.RowGroups.Add(tableRowGroup);
-
-                //for (int i = 0; i < dg.Items.Count; i++)
-                //{
-                //    dynamic row;
-
-                //    if (string.Equals(dg.ItemsSource.ToString(), "system.data.linqdataview", StringComparison.OrdinalIgnoreCase))
-                //        row = (DataRowView)dg.Items.GetItemAt(i);
-                //    else
-                //        row = (TrialistDrawEntry)dg.Items.GetItemAt(i);
-
-                //    tableRowGroup = new TableRowGroup();
-                //    tableRow = new TableRow();
-
-                //    for (int j = 0; j < row.Row.ItemArray.Count(); j++)
-                //    {
-                //        if (string.Equals(dg.ItemsSource.ToString(), "system.data.linqdataview", StringComparison.OrdinalIgnoreCase))
-                //            tableRow.Cells.Add(new TableCell(new Paragraph(new Run(row.Row.ItemArray[j].ToString()))));
-                //        else
-                //            tableRow.Cells.Add(new TableCell(new Paragraph(new Run(row.GetType().GetProperty(bindList[j]).GetValue(row, null)))));
-
-                //        tableRow.Cells[j].ColumnSpan = 4;
-                //        tableRow.Cells[j].Padding = new Thickness(4);
-                //        tableRow.Cells[j].BorderBrush = Brushes.DarkGray;
-                //        tableRow.Cells[j].BorderThickness = new Thickness(0, 0, 1, 1);
-                //    }
-
-                //    tableRowGroup.Rows.Add(tableRow);
-                //    table.RowGroups.Add(tableRowGroup);
-                //}
 
                 fd.Blocks.Add(table);
                 pd.PrintDocument(((IDocumentPaginatorSource)fd).DocumentPaginator, title);
@@ -127,8 +90,18 @@ namespace TrialManager.Services
                 ColumnSpan = 4,
                 Padding = new Thickness(4),
                 BorderBrush = Brushes.DarkGray,
-                BorderThickness = new Thickness(0, 0, 1, 1),
-                FontWeight = FontWeights.Bold
+                BorderThickness = new Thickness(0, 0, 1, 1)
+            };
+        }
+
+        private TableCell GetHeaderTableCell(string cellData)
+        {
+            return new TableCell(new Paragraph(new Run(cellData)))
+            {
+                ColumnSpan = 4,
+                Padding = new Thickness(4),
+                BorderBrush = Brushes.Black,
+                BorderThickness = new Thickness(1)
             };
         }
     }
