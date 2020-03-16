@@ -168,7 +168,18 @@ namespace TrialManager.ViewModels
             }
         }
 
-        public void PrintDraw() => _printService.Print(Draw, "Draw");
+        public async Task PrintDraw()
+        {
+            try
+            {
+                if (await _printService.Print(Draw, "Draw").ConfigureAwait(true))
+                    _messageQueue.Enqueue("Draw printed successfully!");
+            } catch (Exception ex)
+            {
+                Log.Error(ex, "Could not print draw");
+                await DisplayUnexpectedExceptionDialog().ConfigureAwait(false);
+            }
+        }
 
         public void ToggleDrawOptionsDialog() => IsDrawOptionsDialogOpen = !IsDrawOptionsDialogOpen;
 
