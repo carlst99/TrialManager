@@ -2,9 +2,11 @@
 using Stylet;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using TrialManager.Resources;
 using TrialManager.Services;
 using TrialManager.ViewModels.Base;
+using TrialManager.Views;
 
 namespace TrialManager.ViewModels
 {
@@ -12,6 +14,7 @@ namespace TrialManager.ViewModels
     {
         private readonly DrawDisplayViewModel _drawDisplayViewModel;
         private readonly DataImportViewModel _dataImportViewModel;
+        private readonly AboutDialogViewModel _aboutDialogViewModel;
         private ISnackbarMessageQueue _messageQueue;
 
         public ISnackbarMessageQueue MessageQueue
@@ -25,11 +28,13 @@ namespace TrialManager.ViewModels
             INavigationService navigationService,
             DataImportViewModel dataImportViewModel,
             DrawDisplayViewModel drawDisplayViewModel,
+            AboutDialogViewModel aboutDialogViewModel,
             ISnackbarMessageQueue messageQueue)
             : base (eventAggregator, navigationService)
         {
             _drawDisplayViewModel = drawDisplayViewModel;
             _dataImportViewModel = dataImportViewModel;
+            _aboutDialogViewModel = aboutDialogViewModel;
             MessageQueue = messageQueue;
             ActiveItem = dataImportViewModel;
         }
@@ -41,6 +46,11 @@ namespace TrialManager.ViewModels
                 FileName = HelpUrls.Default,
                 UseShellExecute = true
             });
+        }
+
+        public async Task OnAboutRequested()
+        {
+            await DialogHost.Show(new AboutDialog(_aboutDialogViewModel), "MainDialogHost").ConfigureAwait(false);
         }
 
         protected override void OnNavigationRequested(object sender, Type e, object p)

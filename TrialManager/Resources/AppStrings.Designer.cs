@@ -61,11 +61,47 @@ namespace TrialManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copyright © Carl Stephens 2020.
+        /// </summary>
+        public static string App_Copyright {
+            get {
+                return ResourceManager.GetString("App_Copyright", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TrialManager.
         /// </summary>
         public static string App_Title {
             get {
                 return ResourceManager.GetString("App_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string App_VersionIdentifier {
+            get {
+                return ResourceManager.GetString("App_VersionIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string Command_AboutApp {
+            get {
+                return ResourceManager.GetString("Command_AboutApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Command_Close {
+            get {
+                return ResourceManager.GetString("Command_Close", resourceCulture);
             }
         }
         
@@ -133,47 +169,11 @@ namespace TrialManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dogs.
-        /// </summary>
-        public static string Header_DogList {
-            get {
-                return ResourceManager.GetString("Header_DogList", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edit Trialist Entry.
-        /// </summary>
-        public static string Header_EditTrialist {
-            get {
-                return ResourceManager.GetString("Header_EditTrialist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Email.
-        /// </summary>
-        public static string Header_Email {
-            get {
-                return ResourceManager.GetString("Header_Email", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Competitor.
         /// </summary>
         public static string Header_FullName {
             get {
                 return ResourceManager.GetString("Header_FullName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Phone Number.
-        /// </summary>
-        public static string Header_PhoneNumber {
-            get {
-                return ResourceManager.GetString("Header_PhoneNumber", resourceCulture);
             }
         }
         
@@ -214,33 +214,6 @@ namespace TrialManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maximum Runs Per Day.
-        /// </summary>
-        public static string Hint_MaxRunsPerDay {
-            get {
-                return ResourceManager.GetString("Hint_MaxRunsPerDay", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hint: Right-click an entry to edit it!.
-        /// </summary>
-        public static string Hint_RightClickToEdit {
-            get {
-                return ResourceManager.GetString("Hint_RightClickToEdit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search by name.
-        /// </summary>
-        public static string Hint_SearchTrialists {
-            get {
-                return ResourceManager.GetString("Hint_SearchTrialists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Set Trial Location.
         /// </summary>
         public static string Hint_TrialLocation {
@@ -250,101 +223,11 @@ namespace TrialManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trial Name.
-        /// </summary>
-        public static string Hint_TrialName {
-            get {
-                return ResourceManager.GetString("Hint_TrialName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Trial Notes.
-        /// </summary>
-        public static string Hint_TrialNotes {
-            get {
-                return ResourceManager.GetString("Hint_TrialNotes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Starting Date.
-        /// </summary>
-        public static string Hint_TrialStartDate {
-            get {
-                return ResourceManager.GetString("Hint_TrialStartDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Trial Start Time.
-        /// </summary>
-        public static string Hint_TrialStartTime {
-            get {
-                return ResourceManager.GetString("Hint_TrialStartTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Done.
-        /// </summary>
-        public static string Label_Done {
-            get {
-                return ResourceManager.GetString("Label_Done", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Import Data.
-        /// </summary>
-        public static string Label_ImportData {
-            get {
-                return ResourceManager.GetString("Label_ImportData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
         public static string Stepper_Continue {
             get {
                 return ResourceManager.GetString("Stepper_Continue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Entry.
-        /// </summary>
-        public static string ToolTip_AddItem {
-            get {
-                return ResourceManager.GetString("ToolTip_AddItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Delete Entry.
-        /// </summary>
-        public static string ToolTip_DeleteItem {
-            get {
-                return ResourceManager.GetString("ToolTip_DeleteItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edit Entry.
-        /// </summary>
-        public static string ToolTip_EditItem {
-            get {
-                return ResourceManager.GetString("ToolTip_EditItem", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Right click to edit entry.
-        /// </summary>
-        public static string ToolTip_EditRightClickShortcutHint {
-            get {
-                return ResourceManager.GetString("ToolTip_EditRightClickShortcutHint", resourceCulture);
             }
         }
         

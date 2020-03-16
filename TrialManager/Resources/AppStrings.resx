@@ -117,9 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="App_Copyright" xml:space="preserve">
+    <value>Copyright © Carl Stephens 2020</value>
+    <comment>This label shows the application copyright information</comment>
+  </data>
   <data name="App_Title" xml:space="preserve">
     <value>TrialManager</value>
     <comment>This is the title of the application</comment>
+  </data>
+  <data name="App_VersionIdentifier" xml:space="preserve">
+    <value>Version</value>
+    <comment>This label is used to help identify the app version</comment>
+  </data>
+  <data name="Command_AboutApp" xml:space="preserve">
+    <value>About</value>
+    <comment>This label appears on a control which shows information about TrialManager</comment>
+  </data>
+  <data name="Command_Close" xml:space="preserve">
+    <value>Close</value>
+    <comment>This label appears on a control which closes a dialog</comment>
   </data>
   <data name="Command_CreateDraw" xml:space="preserve">
     <value>Refresh Draw</value>
@@ -149,25 +165,9 @@
     <value>Dog</value>
     <comment>This header appears above a list of dogs, in the context of which dog a trialist is assigned for their run</comment>
   </data>
-  <data name="Header_DogList" xml:space="preserve">
-    <value>Dogs</value>
-    <comment>This header appears above a list of dogs</comment>
-  </data>
-  <data name="Header_EditTrialist" xml:space="preserve">
-    <value>Edit Trialist Entry</value>
-    <comment>This header appears on a control which provides means to edit a data entry</comment>
-  </data>
-  <data name="Header_Email" xml:space="preserve">
-    <value>Email</value>
-    <comment>This header appears above a list of email addresses</comment>
-  </data>
   <data name="Header_FullName" xml:space="preserve">
     <value>Competitor</value>
     <comment>This header appears above a list of full names</comment>
-  </data>
-  <data name="Header_PhoneNumber" xml:space="preserve">
-    <value>Phone Number</value>
-    <comment>This header appears above a list of phone numbers</comment>
   </data>
   <data name="Header_RunDay" xml:space="preserve">
     <value>Day</value>
@@ -185,65 +185,13 @@
     <value>Status</value>
     <comment>This header appears above a list of trialist/dog status'</comment>
   </data>
-  <data name="Hint_MaxRunsPerDay" xml:space="preserve">
-    <value>Maximum Runs Per Day</value>
-    <comment>This hint appears on a textbox allowing the user to set the number of runs per day in the trial</comment>
-  </data>
-  <data name="Hint_RightClickToEdit" xml:space="preserve">
-    <value>Hint: Right-click an entry to edit it!</value>
-    <comment>This hint message appears in the data view to let users know that they can right click an entry to edit it</comment>
-  </data>
-  <data name="Hint_SearchTrialists" xml:space="preserve">
-    <value>Search by name</value>
-    <comment>This hint appears on a control allowing the user to search the trialists by name</comment>
-  </data>
   <data name="Hint_TrialLocation" xml:space="preserve">
     <value>Set Trial Location</value>
     <comment>This hint appears on the autocomplete box allowing the user to set the trial location</comment>
   </data>
-  <data name="Hint_TrialName" xml:space="preserve">
-    <value>Trial Name</value>
-    <comment>This hint appears on a control allowing the user to add a name to the trial</comment>
-  </data>
-  <data name="Hint_TrialNotes" xml:space="preserve">
-    <value>Trial Notes</value>
-    <comment>This hint appears on a control allowing the user to add notes about the trial</comment>
-  </data>
-  <data name="Hint_TrialStartDate" xml:space="preserve">
-    <value>Starting Date</value>
-    <comment>This hint appears on a timepicker control allowing the trial start date to be chosen</comment>
-  </data>
-  <data name="Hint_TrialStartTime" xml:space="preserve">
-    <value>Trial Start Time</value>
-    <comment>This hint appears on a timepicker control allowing the starting time of the trial to be selected</comment>
-  </data>
-  <data name="Label_Done" xml:space="preserve">
-    <value>Done</value>
-    <comment>This label appears on a control which completes an action</comment>
-  </data>
-  <data name="Label_ImportData" xml:space="preserve">
-    <value>Import Data</value>
-    <comment>This label appears on a control which initiates the data import sequence</comment>
-  </data>
   <data name="Stepper_Continue" xml:space="preserve">
     <value>Continue</value>
     <comment>This label appears on a stepper continue button</comment>
-  </data>
-  <data name="ToolTip_AddItem" xml:space="preserve">
-    <value>Add Entry</value>
-    <comment>This tooltip appears on a control which adds a data entry</comment>
-  </data>
-  <data name="ToolTip_DeleteItem" xml:space="preserve">
-    <value>Delete Entry</value>
-    <comment>This tooltip appears on a control which deletes a data entry</comment>
-  </data>
-  <data name="ToolTip_EditItem" xml:space="preserve">
-    <value>Edit Entry</value>
-    <comment>This tooltip appears on a control which allows a data entry to be edited</comment>
-  </data>
-  <data name="ToolTip_EditRightClickShortcutHint" xml:space="preserve">
-    <value>Right click to edit entry</value>
-    <comment>This tooltip appears on an editable data entry which can be edited by right clicking</comment>
   </data>
   <data name="ToolTip_ViewDocumentation" xml:space="preserve">
     <value>View TrialManager's documentation</value>

@@ -26,19 +26,35 @@
             <mde:AppBar Title="{Binding [App_Title], Mode=OneTime}"
                         AppIcon="{md:PackIcon Kind=FormatListBulletedSquare,
                                               Size=28}">
-                <Button md:ButtonAssist.CornerRadius="10"
-                        Command="{s:Action OnDocumentationRequested}"
-                        Style="{StaticResource MaterialDesignRaisedAccentButton}"
-                        ToolTip="{Binding [ToolTip_ViewDocumentation], Mode=OneTime}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="0,0,8,0"
-                                   VerticalAlignment="Center"
-                                   Text="{Binding [Command_ViewDocumentation], Mode=OneTime}"/>
-                        <md:PackIcon Width="20"
-                                     Height="20"
-                                     Kind="HelpCircle"/>
-                    </StackPanel>
-                </Button>
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="0,0,8,0"
+                            md:ButtonAssist.CornerRadius="10"
+                            Command="{s:Action OnDocumentationRequested}"
+                            Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                            ToolTip="{Binding [ToolTip_ViewDocumentation], Mode=OneTime}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0,0,8,0"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding [Command_ViewDocumentation], Mode=OneTime}"/>
+                            <md:PackIcon Width="20"
+                                         Height="20"
+                                         Kind="HelpCircle"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button md:ButtonAssist.CornerRadius="10"
+                            Command="{s:Action OnAboutRequested}"
+                            Style="{StaticResource MaterialDesignRaisedLightButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0,0,8,0"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding [Command_AboutApp], Mode=OneTime}"/>
+                            <md:PackIcon Width="20"
+                                         Height="20"
+                                         Kind="AboutCircle"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </mde:AppBar>
 
             <ContentControl Grid.Row="1"
