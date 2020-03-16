@@ -41,17 +41,22 @@
             <LineBreak/>
             <Hyperlink NavigateUri="https://spiegelp.github.io/MaterialDesignExtensions/"
                        RequestNavigate="Hyperlink_RequestNavigate">
-                MaterialDesignExtensions
+                Material Design Extensions
             </Hyperlink>
             <LineBreak/>
-            <Hyperlink NavigateUri="https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit"
+            <Hyperlink NavigateUri="https://materialdesignicons.com/"
                        RequestNavigate="Hyperlink_RequestNavigate">
-                MaterialDesignInXamlToolkit
+                Material Design Icons
+            </Hyperlink>
+            <LineBreak/>
+            <Hyperlink NavigateUri="http://materialdesigninxaml.net/"
+                       RequestNavigate="Hyperlink_RequestNavigate">
+                Material Design In Xaml Toolkit
             </Hyperlink>
             <LineBreak/>
             <Hyperlink NavigateUri="https://github.com/neuecc/MessagePack-CSharp"
                        RequestNavigate="Hyperlink_RequestNavigate">
-                MessagePack
+                MessagePack-CSharp
             </Hyperlink>
             <LineBreak/>
             <Hyperlink NavigateUri="https://realm.io/products/realm-database"
