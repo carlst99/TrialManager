@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TrialManager.Model;
@@ -307,23 +308,21 @@ namespace TrialManager.ViewModels
             }
 
             MappedProperties = new BindableCollection<PropertyHeaderPair>();
-            MappedProperty[] mappedPropertyEnumValues = (MappedProperty[])Enum.GetValues(typeof(MappedProperty));
-#if DEBUG
-            // Automatically map for debug mode
-            for (int i = 0; i < mappedPropertyEnumValues.Length; i++)
+            foreach (MappedProperty element in (MappedProperty[])Enum.GetValues(typeof(MappedProperty)))
             {
-                MappedProperty property = mappedPropertyEnumValues[i];
-                string header;
-                if (CsvHeaders.Count > i)
-                    header = CsvHeaders[i];
+                List<double> similarity = CsvHeaders.Select(h => h.CompareStrings(element.ToString())).ToList();
+                double bestMatchPercentage = similarity.Max();
+
+                // Only take the best match if it is 60% similar
+                string bestMatch;
+                if (bestMatchPercentage >= 0.6)
+                    bestMatch = CsvHeaders[similarity.IndexOf(similarity.Max())];
                 else
-                    header = string.Empty;
-                MappedProperties.Add(new PropertyHeaderPair(property, header));
+                    bestMatch = DEFAULT_PROPERTY_INDICATOR;
+
+                PropertyHeaderPair headerPair = new PropertyHeaderPair(element, bestMatch);
+                MappedProperties.Add(headerPair);
             }
-#else
-            foreach (MappedProperty value in Enum.GetValues(typeof(MappedProperty)))
-                MappedProperties.Add(new PropertyHeaderPair(value, DEFAULT_PROPERTY_INDICATOR));
-#endif
             return true;
         }
 
