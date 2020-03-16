@@ -5,6 +5,6 @@ namespace TrialManager.Services
 {
     public interface IPrintService
     {
-        bool Print(IEnumerable<TrialistDrawEntry> drawEntries);
+        bool Print(IEnumerable<TrialistDrawEntry> drawEntries, string title);
     }
 }
