@@ -8,13 +8,16 @@ namespace LINZCsvConverter.Model
 {
     public class SuburbLocalityLocation : RealmObject
     {
-        [Required]
+        [Ignore] // CsvHelper
+        [Required] // Realm
         private byte[] LocationRaw { get; set; }
 
-        [Ignored]
+        [Ignore] // CsvHelper
+        [Ignored] // Realm
         public List<double> XCollection { get; } = new List<double>();
 
-        [Ignored]
+        [Ignore] //CsvHelper
+        [Ignored] // Getting the pattern?
         public List<double> YCollection { get; } = new List<double>();
 
         [Name("town_city")]
@@ -23,6 +26,7 @@ namespace LINZCsvConverter.Model
         /// <summary>
         /// Gets or sets the primary DB key
         /// </summary>
+        [Ignore]
         [PrimaryKey]
         public int Id { get; set; }
 
@@ -51,14 +55,14 @@ namespace LINZCsvConverter.Model
         /// <summary>
         /// Gets or sets the NZ Geodetic Datum 2000 (NZGD2000) coordinate point for this location
         /// </summary>
-        public Location Location
+        public Gd2000Coordinate Location
         {
             get
             {
                 if (LocationRaw != null)
-                    return MessagePackSerializer.Deserialize<Location>(LocationRaw);
+                    return MessagePackSerializer.Deserialize<Gd2000Coordinate>(LocationRaw);
                 else
-                    return new Location();
+                    return new Gd2000Coordinate();
             }
             set => LocationRaw = MessagePackSerializer.Serialize(value);
         }
@@ -72,12 +76,18 @@ namespace LINZCsvConverter.Model
         public void Prepare()
         {
             if (XCollection.Count > 0)
+            {
+                XCollection.Add(Gd2000X);
                 Gd2000X = XCollection.Average();
+            }
 
             if (YCollection.Count > 0)
+            {
+                YCollection.Add(Gd2000Y);
                 Gd2000Y = YCollection.Average();
+            }
 
-            Location = new Location
+            Location = new Gd2000Coordinate
             {
                 Gd2000X = Gd2000X,
                 Gd2000Y = Gd2000Y

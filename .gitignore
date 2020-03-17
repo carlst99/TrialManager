@@ -338,3 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/LINZCsvConverter/Resources/nz-street-address.csv

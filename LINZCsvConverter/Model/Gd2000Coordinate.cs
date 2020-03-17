@@ -4,7 +4,7 @@ using System;
 namespace LINZCsvConverter.Model
 {
     [MessagePackObject]
-    public struct Location
+    public struct Gd2000Coordinate
     {
         /// <summary>
         /// Gets the X coordinate of this location point
@@ -27,7 +27,7 @@ namespace LINZCsvConverter.Model
 
         public override bool Equals(object obj)
         {
-            return obj is Location loc
+            return obj is Gd2000Coordinate loc
                 && loc.Gd2000X.Equals(Gd2000X)
                 && loc.Gd2000Y.Equals(Gd2000Y);
         }
@@ -50,12 +50,22 @@ namespace LINZCsvConverter.Model
         /// <param name="lFrom"></param>
         /// <param name="lTo"></param>
         /// <returns>The distance between the two location points, 'as the crow flies'</returns>
-        public static double DistanceTo(Location lFrom, Location lTo)
+        public static double DistanceTo(Gd2000Coordinate lFrom, Gd2000Coordinate lTo)
         {
             double xDistance = Math.Abs(lFrom.Gd2000X - lTo.Gd2000X);
             double yDistance = Math.Abs(lFrom.Gd2000Y - lTo.Gd2000Y);
 
             return Math.Sqrt(Math.Pow(xDistance, 2) + Math.Pow(yDistance, 2));
+        }
+
+        public static bool operator ==(Gd2000Coordinate left, Gd2000Coordinate right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Gd2000Coordinate left, Gd2000Coordinate right)
+        {
+            return !(left == right);
         }
     }
 }
