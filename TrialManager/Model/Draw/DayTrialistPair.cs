@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TrialManager.Model.TrialistDb;
 
-namespace TrialManager.Model
+namespace TrialManager.Model.Draw
 {
     public class DayTrialistPair
     {

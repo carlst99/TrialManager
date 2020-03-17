@@ -2,7 +2,7 @@
 using System.Collections;
 using TrialManager.Services;
 
-namespace TrialManager.Model
+namespace TrialManager.Utils
 {
     public class LocationAutoCompleteSource : IAutocompleteSource
     {

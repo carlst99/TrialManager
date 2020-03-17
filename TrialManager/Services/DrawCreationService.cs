@@ -1,9 +1,8 @@
 ﻿using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using TrialManager.Model;
+using TrialManager.Model.Draw;
 using TrialManager.Model.LocationDb;
 using TrialManager.Model.TrialistDb;
 
@@ -267,7 +266,7 @@ namespace TrialManager.Services
 
             TrialistDrawEntry[] draw = new TrialistDrawEntry[dogCount * 2];
             HashSet<int> usedNumbers = new HashSet<int>();
-            int startCount = 0;
+            const int startCount = 0;
             int count = 0;
 
             foreach (Trialist element in trialists)

@@ -15,6 +15,7 @@ using TrialManager.Model.Csv;
 using TrialManager.Model.TrialistDb;
 using TrialManager.Resources;
 using TrialManager.Services;
+using TrialManager.Utils;
 using TrialManager.ViewModels.Base;
 using TrialManager.Views;
 

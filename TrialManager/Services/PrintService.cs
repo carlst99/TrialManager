@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using TrialManager.Model;
+using TrialManager.Model.Draw;
 
 namespace TrialManager.Services
 {

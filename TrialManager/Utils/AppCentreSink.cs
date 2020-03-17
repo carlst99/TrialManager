@@ -5,7 +5,7 @@ using Serilog.Core;
 using Serilog.Events;
 using System.Collections.Generic;
 
-namespace TrialManager.Model
+namespace TrialManager.Utils
 {
     public class AppCentreSink : ILogEventSink
     {

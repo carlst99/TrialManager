@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
-using TrialManager.Model;
 using TrialManager.Services;
+using TrialManager.Utils;
 
 namespace TrialManager.Views
 {

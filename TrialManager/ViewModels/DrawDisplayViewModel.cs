@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using TrialManager.Model;
+using TrialManager.Model.Draw;
 using TrialManager.Model.TrialistDb;
 using TrialManager.Resources;
 using TrialManager.Services;

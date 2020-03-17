@@ -1,14 +1,13 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 using Serilog;
 using StyletIoC;
 using System;
 using System.IO;
 using System.Linq;
-using TrialManager.Model;
 using TrialManager.Services;
+using TrialManager.Utils;
 using TrialManager.ViewModels;
 
 namespace TrialManager

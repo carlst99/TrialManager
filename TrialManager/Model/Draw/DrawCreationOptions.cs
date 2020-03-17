@@ -2,7 +2,7 @@
 using System;
 using TrialManager.Model.LocationDb;
 
-namespace TrialManager.Model
+namespace TrialManager.Model.Draw
 {
     public class DrawCreationOptions : PropertyChangedBase
     {
