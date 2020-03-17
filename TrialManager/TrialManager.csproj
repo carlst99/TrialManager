@@ -71,6 +71,9 @@
     <None Update="Resources\locations.realm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="secrets.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Include="..\icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

@@ -2,12 +2,11 @@
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using Microsoft.Extensions.Configuration;
 using Serilog;
 using StyletIoC;
 using System;
 using System.IO;
-using System.Reflection;
+using System.Linq;
 using TrialManager.Services;
 using TrialManager.ViewModels;
 
@@ -15,6 +14,8 @@ namespace TrialManager
 {
     public class Bootstrapper : Stylet.Bootstrapper<ShellViewModel>
     {
+        public const string SECRETS_FILE_PATH = @"..\..\..\secrets.txt";
+
         public const string LOG_FILE_NAME = "log.log";
 
         protected override void OnStart()
@@ -25,7 +26,14 @@ namespace TrialManager
                 .WriteTo.File(GetAppdataFilePath(LOG_FILE_NAME))
                 .CreateLogger();
 
+#if DEBUG
+            if (!File.Exists(SECRETS_FILE_PATH))
+                throw new ApplicationException("Could not find the secrets file");
+            string appCentreKey = File.ReadLines(SECRETS_FILE_PATH).First();
+            AppCenter.Start(appCentreKey, typeof(Analytics), typeof(Crashes));
+#else
             AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
+#endif
 
             base.OnStart();
         }
@@ -43,7 +51,7 @@ namespace TrialManager
             base.ConfigureIoC(builder);
         }
 
-        #region Appdata Helpers
+#region Appdata Helpers
 
         /// <summary>
         /// Gets the path to the appdata store of respective platforms
@@ -69,6 +77,6 @@ namespace TrialManager
         /// <returns></returns>
         public static string GetAppdataFilePath(string fileName) => Path.Combine(GetPlatformAppdataPath(), fileName);
 
-        #endregion
+#endregion
     }
 }
