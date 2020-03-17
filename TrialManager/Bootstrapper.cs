@@ -7,6 +7,7 @@ using StyletIoC;
 using System;
 using System.IO;
 using System.Linq;
+using TrialManager.Model;
 using TrialManager.Services;
 using TrialManager.ViewModels;
 
@@ -24,6 +25,7 @@ namespace TrialManager
                 .MinimumLevel.Information()
                 .WriteTo.Debug()
                 .WriteTo.File(GetAppdataFilePath(LOG_FILE_NAME))
+                .WriteTo.AppCentreSink()
                 .CreateLogger();
 
 #if DEBUG
