@@ -15,7 +15,8 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         WindowStartupLocation="CenterScreen">
-    <md:DialogHost Identifier="MainDialogHost">
+    <md:DialogHost Identifier="MainDialogHost"
+                   Loaded="{s:Action OnDialogHostLoaded}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

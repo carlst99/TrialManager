@@ -32,7 +32,7 @@ namespace TrialManager
             if (!File.Exists(SECRETS_FILE_PATH))
                 throw new ApplicationException("Could not find the secrets file");
             string appCentreKey = File.ReadLines(SECRETS_FILE_PATH).First();
-            AppCenter.Start(appCentreKey, typeof(Analytics), typeof(Crashes));
+            AppCenter.Start(appCentreKey, typeof(Analytics));
 #else
             AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
 #endif
