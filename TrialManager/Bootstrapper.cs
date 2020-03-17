@@ -1,8 +1,13 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using StyletIoC;
 using System;
 using System.IO;
+using System.Reflection;
 using TrialManager.Services;
 using TrialManager.ViewModels;
 
@@ -19,6 +24,8 @@ namespace TrialManager
                 .WriteTo.Debug()
                 .WriteTo.File(GetAppdataFilePath(LOG_FILE_NAME))
                 .CreateLogger();
+
+            AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
 
             base.OnStart();
         }
