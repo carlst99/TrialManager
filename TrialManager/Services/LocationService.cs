@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using TrialManager.Model.LocationDb;
 
@@ -55,7 +56,7 @@ namespace TrialManager.Services
                 location = null;
                 return false;
             }
-
+            
             Realm realm = GetRealmInstance();
             text = text.ToLower();
 

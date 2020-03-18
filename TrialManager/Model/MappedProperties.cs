@@ -7,13 +7,17 @@
     {
         FullName,
         Status,
-        Address,
-        PreferredDay,
         DogOneName,
         DogTwoName,
         DogThreeName,
         DogFourName,
-        DogFiveName,
+        DogFiveName
+    }
+
+    public enum OptionalMappedProperty
+    {
+        Address,
+        PreferredDay,
         DogOneStatus,
         DogTwoStatus,
         DogThreeStatus,

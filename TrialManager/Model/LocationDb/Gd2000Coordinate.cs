@@ -60,6 +60,9 @@ namespace TrialManager.Model.LocationDb
         /// <returns>The distance between the two location points, 'as the crow flies'</returns>
         public static double DistanceTo(Gd2000Coordinate lFrom, Gd2000Coordinate lTo)
         {
+            if (lFrom is null || lTo is null)
+                return 0;
+
             double xDistance = Math.Abs(lFrom.Gd2000X - lTo.Gd2000X);
             double yDistance = Math.Abs(lFrom.Gd2000Y - lTo.Gd2000Y);
 

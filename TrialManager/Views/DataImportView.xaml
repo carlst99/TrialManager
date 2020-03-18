@@ -276,6 +276,67 @@
                         Background="{DynamicResource MaterialDesignDivider}"
                         SnapsToDevicePixels="True"/>
 
+                <!-- Setup Optional Mappings Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsSetupOptionalMappingsSectionExpanded, Mode=OneWay}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="Setup Optional Property Mappings"
+                                     Icon="3"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Margin="24,8,24,16">
+                        <DataGrid AutoGenerateColumns="False"
+                                  CellStyle="{StaticResource DataGridVerticalAlignmentCell}"
+                                  ItemsSource="{Binding OptionalMappedProperties}"
+                                  Style="{StaticResource DataGridNoScroll}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="Auto"
+                                                    Binding="{Binding OptionalMappedProperty, Mode=OneTime}"
+                                                    Header="Optional TrialManager Property"
+                                                    IsReadOnly="True"/>
+                                <DataGridTemplateColumn IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <md:PackIcon Foreground="{StaticResource PrimaryHueLightBrush}"
+                                                         Kind="ArrowBackCircle"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="Auto"
+                                                        Header="CSV File Property">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type model:PropertyHeaderPair}">
+                                            <ComboBox MinWidth="100"
+                                                      Background="{StaticResource MaterialDesignPaper}"
+                                                      ItemsSource="{Binding DataContext.CsvHeaders, Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      SelectedItem="{Binding DataFileProperty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <Button Margin="0,0,12,0"
+                                    Command="{s:Action StepBack}"
+                                    CommandParameter="{x:Static vm:ImportSection.SetupOptionalMappings}"
+                                    Content="BACK"
+                                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                            <Button Command="{s:Action ValidateAndContinue}"
+                                    CommandParameter="{x:Static vm:ImportSection.SetupOptionalMappings}"
+                                    Content="CONTINUE"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
+
                 <!-- Preferred Day Section -->
                 <Expander HorizontalAlignment="Stretch"
                           IsExpanded="{Binding IsPreferredDaySectionExpanded}"
@@ -283,7 +344,7 @@
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal">
                             <md:Chip Content="Map 'Preferred Day' Dates"
-                                     Icon="3"/>
+                                     Icon="4"/>
                         </StackPanel>
                     </Expander.Header>
                     <StackPanel Margin="24,8,24,16">
@@ -357,7 +418,7 @@
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal">
                             <md:Chip Content="Correct Duplicates"
-                                     Icon="4"/>
+                                     Icon="5"/>
                         </StackPanel>
                     </Expander.Header>
 

@@ -10,6 +10,8 @@ namespace TrialManager.Model
         private string _dataFileProperty;
 
         public MappedProperty MappedProperty { get; }
+        public OptionalMappedProperty OptionalMappedProperty { get; }
+        public bool IsOptional { get; }
 
         public string DataFileProperty
         {
@@ -22,9 +24,21 @@ namespace TrialManager.Model
             MappedProperty = property;
         }
 
-        public PropertyHeaderPair(MappedProperty property, string dataFileProperty)
+        public PropertyHeaderPair(OptionalMappedProperty optionalMappedProperty)
         {
-            MappedProperty = property;
+            OptionalMappedProperty = optionalMappedProperty;
+            IsOptional = true;
+        }
+
+        public PropertyHeaderPair(MappedProperty mappedProperty, string dataFileProperty)
+        {
+            MappedProperty = mappedProperty;
+            DataFileProperty = dataFileProperty;
+        }
+
+        public PropertyHeaderPair(OptionalMappedProperty optionalMappedProperty, string dataFileProperty)
+        {
+            OptionalMappedProperty = optionalMappedProperty;
             DataFileProperty = dataFileProperty;
         }
 
@@ -32,6 +46,7 @@ namespace TrialManager.Model
         {
             return obj is PropertyHeaderPair mapping
                 && mapping.MappedProperty.Equals(MappedProperty)
+                && mapping.OptionalMappedProperty.Equals(OptionalMappedProperty)
                 && mapping.DataFileProperty.Equals(DataFileProperty);
         }
 
@@ -41,6 +56,7 @@ namespace TrialManager.Model
             {
                 int hash = 13;
                 hash = (hash * 7) + MappedProperty.GetHashCode();
+                hash = (hash * 7) + OptionalMappedProperty.GetHashCode();
                 return (hash * 7) + DataFileProperty.GetHashCode();
             }
         }

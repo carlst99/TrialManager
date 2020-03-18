@@ -1,7 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -73,6 +73,14 @@ namespace TrialManager.Services
         /// <param name="preferredDayMappings">Preferred day mappings</param>
         public async IAsyncEnumerable<Trialist> BuildTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
         {
+            if (preferredDayMappings is null)
+            {
+                preferredDayMappings = new List<PreferredDayDateTimePair>
+                {
+                    new PreferredDayDateTimePair(null, DateTime.MinValue)
+                };
+            }
+
             foreach (MappedTrialist trialist in _tempStorageList)
                 yield return await trialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
 
@@ -119,7 +127,7 @@ namespace TrialManager.Services
         /// Creates a class map based on user mappings input
         /// </summary>
         /// <returns></returns>
-        public TrialistCsvClassMap BuildClassMap(IList<PropertyHeaderPair> mappedProperties)
+        public TrialistCsvClassMap BuildClassMap(IList<PropertyHeaderPair> mappedProperties, IList<PropertyHeaderPair> optionalProperties, string defaultValue)
         {
             TrialistCsvClassMap classMap = new TrialistCsvClassMap();
             System.Reflection.PropertyInfo[] properties = classMap.GetType().GetProperties();
@@ -129,6 +137,16 @@ namespace TrialManager.Services
                 property.SetValue(classMap, pair.DataFileProperty);
             }
             classMap.SetupMappings();
+
+            if (optionalProperties != null)
+            {
+                foreach (PropertyHeaderPair pair in optionalProperties.Where(p => p.DataFileProperty != defaultValue))
+                {
+                    System.Reflection.PropertyInfo property = properties.First(p => p.Name == pair.OptionalMappedProperty.ToString());
+                    property.SetValue(classMap, pair.DataFileProperty);
+                }
+                classMap.SetupOptionalMappings();
+            }
             return classMap;
         }
 
@@ -137,13 +155,14 @@ namespace TrialManager.Services
         /// </summary>
         /// <param name="filePath">The path to the CSV file</param>
         /// <returns></returns>
-        public ReadOnlyCollection<string> GetCsvHeaders(string filePath)
+        public string[] GetCsvHeaders(string filePath)
         {
             using CsvReader csvReader = GetCsvReader(filePath);
             csvReader.Read();
             csvReader.ReadHeader();
-            string[] headerRecord = csvReader.Context.HeaderRecord;
-            return new ReadOnlyCollection<string>(headerRecord);
+            string[] headers = new string[csvReader.Context.HeaderRecord.Length];
+            csvReader.Context.HeaderRecord.CopyTo(headers, 0);
+            return headers;
         }
 
         /// <summary>
