@@ -79,7 +79,7 @@ namespace TrialManager.ViewModels
             _printService = printService;
 
             DrawCreationOptions = new DrawCreationOptions();
-            DrawCreationOptions.OnOptionsChanged += async (_, __) => await CreateDraw().ConfigureAwait(false);
+            DrawCreationOptions.PropertyChanged += async (_, __) => await CreateDraw().ConfigureAwait(false);
         }
 
         public async Task CreateDraw()

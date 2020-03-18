@@ -41,18 +41,20 @@ namespace TrialManager
 
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
+            // Bind draw services
             builder.Bind<ICsvImportService>().To<CsvImportService>().InSingletonScope();
             builder.Bind<IDataExportService>().To<DataExportService>().InSingletonScope();
             builder.Bind<IDrawCreationService>().To<DrawCreationService>().InSingletonScope();
             builder.Bind<ILocationService>().To<LocationService>().InSingletonScope();
             builder.Bind<IPrintService>().To<PrintService>().InSingletonScope();
+            //Bind UI services
             builder.Bind<INavigationService>().To<NavigationService>().InSingletonScope();
             builder.Bind<ISnackbarMessageQueue>().ToFactory(_ => new SnackbarMessageQueue(new TimeSpan(0, 0, 5))).InSingletonScope();
 
             base.ConfigureIoC(builder);
         }
 
-#region Appdata Helpers
+        #region Appdata Helpers
 
         /// <summary>
         /// Gets the path to the appdata store of respective platforms
@@ -78,6 +80,6 @@ namespace TrialManager
         /// <returns></returns>
         public static string GetAppdataFilePath(string fileName) => Path.Combine(GetPlatformAppdataPath(), fileName);
 
-#endregion
+        #endregion
     }
 }

@@ -6,7 +6,7 @@ namespace TrialManager.Model
 {
     public class Preferences : RealmObject
     {
-        [Required]
+        [Required, MapTo("DrawCreationOptions")]
         private byte[] DrawCreationOptionsRaw { get; set; }
 
         [Ignored]
@@ -16,10 +16,14 @@ namespace TrialManager.Model
             set => DrawCreationOptionsRaw = MessagePackSerializer.Serialize(value);
         }
 
-        [Required]
         public bool IsFirstRunComplete { get; set; }
-
-        [Required]
         public bool IsDiagnosticsEnabled { get; set; }
+
+        public Preferences()
+        {
+            IsFirstRunComplete = false;
+            IsDiagnosticsEnabled = true;
+            DrawCreationOptions = new DrawCreationOptions();
+        }
     }
 }
