@@ -272,7 +272,10 @@ namespace TrialManager.ViewModels
                 case ImportSection.Duplicates:
                     try
                     {
-                        NavigationService.Navigate<DrawDisplayViewModel, IAsyncEnumerable<Trialist>>(this, _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings));
+                        IAsyncEnumerable<Trialist> trialists = _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings);
+                        bool locationEnabled = OptionalMappedProperties.First(p => p.OptionalMappedProperty == OptionalMappedProperty.Address).DataFileProperty != DEFAULT_PROPERTY_INDICATOR;
+                        DrawDisplayParams p = new DrawDisplayParams(trialists, locationEnabled);
+                        NavigationService.Navigate<DrawDisplayViewModel, DrawDisplayParams>(this, p);
                         IsDuplicatesSectionExpanded = false;
                         IsImportFileSectionExpanded = true;
                         DuplicateTrialistPairs = null;

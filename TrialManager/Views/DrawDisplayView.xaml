@@ -334,7 +334,8 @@
             <mde:Autocomplete x:Name="AddressAutocompleter"
                               Grid.Row="1"
                               Margin="0,8,0,0"
-                              SelectedItem="{Binding DrawCreationOptions.TrialAddress, Mode=TwoWay}">
+                              SelectedItem="{Binding DrawCreationOptions.TrialAddress, Mode=TwoWay}"
+                              Visibility="{Binding ShowAddressBar, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
                 <mde:Autocomplete.Hint>
                     <StackPanel HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"

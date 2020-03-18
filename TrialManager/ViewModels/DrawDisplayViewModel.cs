@@ -38,6 +38,7 @@ namespace TrialManager.ViewModels
         private bool _showProgress;
         private bool _preparationComplete;
         private bool _isDrawOptionsDialogOpen;
+        private bool _showAddressBar;
 
         #endregion
 
@@ -65,6 +66,12 @@ namespace TrialManager.ViewModels
         {
             get => _isDrawOptionsDialogOpen;
             set => SetAndNotify(ref _isDrawOptionsDialogOpen, value);
+        }
+
+        public bool ShowAddressBar
+        {
+            get => _showAddressBar;
+            set => SetAndNotify(ref _showAddressBar, value);
         }
 
         #endregion
@@ -193,9 +200,11 @@ namespace TrialManager.ViewModels
 
         public override async void Prepare(object payload)
         {
+            DrawDisplayParams p = (DrawDisplayParams)payload;
             _trialists = new List<Trialist>();
-            await foreach (Trialist element in (IAsyncEnumerable<Trialist>)payload)
+            await foreach (Trialist element in p.Trialists)
                 _trialists.Add(element);
+            ShowAddressBar = p.LocationSortingEnabled;
             _preparationComplete = true;
             await CreateDraw().ConfigureAwait(false);
         }
