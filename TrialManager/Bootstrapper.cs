@@ -28,15 +28,7 @@ namespace TrialManager
                 .WriteTo.AppCentreSink()
                 .CreateLogger();
 
-#if DEBUG
-            if (!File.Exists(SECRETS_FILE_PATH))
-                throw new ApplicationException("Could not find the secrets file");
-            string appCentreKey = File.ReadLines(SECRETS_FILE_PATH).First();
-
-            Preferences _preferences = RealmHelpers.GetUserPreferences(RealmHelpers.GetRealmInstance());
-            if (_preferences.IsDiagnosticsEnabled)
-                AppCenter.Start(appCentreKey, typeof(Analytics));
-#else
+#if RELEASE
             throw new ApplicationException("Remember AppCenter key!");
             Preferences _preferences = RealmHelpers.GetUserPreferences(RealmHelpers.GetRealmInstance());
             if (_preferences.IsDiagnosticsEnabled)
@@ -73,7 +65,7 @@ namespace TrialManager
         /// </returns>
         public static string GetPlatformAppdataPath()
         {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TrialManager");
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TrialManager");
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 

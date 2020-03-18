@@ -14,7 +14,8 @@ namespace TrialManager.Utils
             Dictionary<string, string> appCentreProperties = new Dictionary<string, string>();
             foreach (KeyValuePair<string, LogEventPropertyValue> pair in logEvent.Properties)
                 appCentreProperties.Add(pair.Key, pair.Value.ToString());
-            Crashes.TrackError(logEvent.Exception, appCentreProperties);
+            if (Crashes.IsEnabledAsync().Result)
+                Crashes.TrackError(logEvent.Exception, appCentreProperties);
         }
     }
 

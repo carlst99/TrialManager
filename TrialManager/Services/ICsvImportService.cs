@@ -1,7 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using TrialManager.Model;
 using TrialManager.Model.Csv;
@@ -49,13 +48,13 @@ namespace TrialManager.Services
         /// Creates a class map based on user mappings input
         /// </summary>
         /// <returns></returns>
-        TrialistCsvClassMap BuildClassMap(IList<PropertyHeaderPair> mappedProperties);
+        TrialistCsvClassMap BuildClassMap(IList<PropertyHeaderPair> mappedProperties, IList<PropertyHeaderPair> optionalProperties, string defaultValue);
 
         /// <summary>
         /// Gets the header record, if present, from a CSV file
         /// </summary>
         /// <param name="filePath">The path to the CSV file</param>
         /// <returns></returns>
-        ReadOnlyCollection<string> GetCsvHeaders(string filePath);
+        string[] GetCsvHeaders(string filePath);
     }
 }

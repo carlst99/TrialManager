@@ -56,7 +56,7 @@ namespace TrialManager.Model.Csv
                     Name = FullName,
                     Status = Status,
                     Address = Address,
-                    PreferredDay = preferredDayMappings.First(t => t.PreferredDay.Equals(PreferredDayString)).Day
+                    PreferredDay = preferredDayMappings.First(t => t.PreferredDay == PreferredDayString).Day
                 };
 
                 // Add dogs
@@ -87,7 +87,7 @@ namespace TrialManager.Model.Csv
         {
             return obj is MappedTrialist mt
                 && mt.FullName.Equals(FullName, StringComparison.OrdinalIgnoreCase)
-                && mt.Address.Equals(Address, StringComparison.OrdinalIgnoreCase);
+                && mt.Status.Equals(Status, StringComparison.OrdinalIgnoreCase);
         }
 
         public override int GetHashCode()
@@ -96,7 +96,7 @@ namespace TrialManager.Model.Csv
             {
                 int hash = 13;
                 hash = (hash * 7) + FullName.ToLower().GetHashCode();
-                return (hash * 7) + Address.ToLower().GetHashCode();
+                return (hash * 7) + Status.GetHashCode();
             }
         }
 

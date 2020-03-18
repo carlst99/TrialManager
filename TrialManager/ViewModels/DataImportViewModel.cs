@@ -25,13 +25,14 @@ namespace TrialManager.ViewModels
     {
         ImportFile,
         SetupMappings,
+        SetupOptionalMappings,
         PreferredDay,
         Duplicates
     }
 
     public class DataImportViewModel : ViewModelBase
     {
-        private const string DEFAULT_PROPERTY_INDICATOR = "Select Value";
+        private const string DEFAULT_PROPERTY_INDICATOR = "SELECT VALUE";
 
         #region Fields
 
@@ -42,6 +43,7 @@ namespace TrialManager.ViewModels
         private string _filePath;
         private ReadOnlyCollection<string> _csvHeaders;
         private BindableCollection<PropertyHeaderPair> _mappedProperties;
+        private BindableCollection<PropertyHeaderPair> _optionalMappedProperties;
         private BindableCollection<DuplicateTrialistPair> _duplicateTrialistPairs;
         private BindableCollection<PreferredDayDateTimePair> _preferredDayMappings;
 
@@ -74,6 +76,7 @@ namespace TrialManager.ViewModels
         private bool _isImportFileSectionValid;
         private bool _isImportFileSectionExpanded;
         private bool _isSetupMappingsSectionExpanded;
+        private bool _isSetupOptionalMappingsSectionExpanded;
         private bool _isPreferredDaySectionExpanded;
         private bool _isDuplicatesSectionExpanded;
 
@@ -118,6 +121,12 @@ namespace TrialManager.ViewModels
             set => SetAndNotify(ref _mappedProperties, value);
         }
 
+        public BindableCollection<PropertyHeaderPair> OptionalMappedProperties
+        {
+            get => _optionalMappedProperties;
+            set => SetAndNotify(ref _optionalMappedProperties, value);
+        }
+
         #endregion
 
         #region Step Validation Properties
@@ -141,6 +150,12 @@ namespace TrialManager.ViewModels
         {
             get => _isSetupMappingsSectionExpanded;
             set => SetAndNotify(ref _isSetupMappingsSectionExpanded, value);
+        }
+
+        public bool IsSetupOptionalMappingsSectionExpanded
+        {
+            get => _isSetupOptionalMappingsSectionExpanded;
+            set => SetAndNotify(ref _isSetupOptionalMappingsSectionExpanded, value);
         }
 
         public bool IsPreferredDaySectionExpanded
@@ -213,17 +228,35 @@ namespace TrialManager.ViewModels
             switch (section)
             {
                 case ImportSection.ImportFile:
-                    if (!await PrepareSetupMappingsSection().ConfigureAwait(false))
-                        break;
                     IsImportFileSectionExpanded = false;
                     IsSetupMappingsSectionExpanded = true;
+                    if (!await PrepareSetupMappingsSection().ConfigureAwait(false))
+                        break;
                     break;
                 case ImportSection.SetupMappings:
                     if (!await ValidateSetupMappingsSection().ConfigureAwait(false))
                         break;
                     IsSetupMappingsSectionExpanded = false;
-                    IsPreferredDaySectionExpanded = true;
-                    await PreparePreferredDaySection().ConfigureAwait(false);
+                    IsSetupOptionalMappingsSectionExpanded = true;
+                    break;
+                case ImportSection.SetupOptionalMappings:
+                    if (!ValidateSetupOptionalMappingsSection())
+                        break;
+                    IsSetupOptionalMappingsSectionExpanded = false;
+                    // Check if a preferred day mapping has been set
+                    if (OptionalMappedProperties.First(p => p.OptionalMappedProperty == OptionalMappedProperty.PreferredDay).DataFileProperty == DEFAULT_PROPERTY_INDICATOR)
+                    {
+                        IsDuplicatesSectionExpanded = true;
+                        await PrepareDuplicatesSection().ConfigureAwait(false);
+
+                        // Move on if there are no duplicates
+                        if (DuplicateTrialistPairs.Count == 0)
+                            await ValidateAndContinue(ImportSection.Duplicates).ConfigureAwait(false);
+                    } else
+                    {
+                        IsPreferredDaySectionExpanded = true;
+                        await PreparePreferredDaySection().ConfigureAwait(false);
+                    }
                     break;
                 case ImportSection.PreferredDay:
                     if (!await ValidatePreferredDaySection().ConfigureAwait(false))
@@ -239,7 +272,10 @@ namespace TrialManager.ViewModels
                 case ImportSection.Duplicates:
                     try
                     {
-                        NavigationService.Navigate<DrawDisplayViewModel, IAsyncEnumerable<Trialist>>(this, _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings));
+                        IAsyncEnumerable<Trialist> trialists = _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings);
+                        bool locationEnabled = OptionalMappedProperties.First(p => p.OptionalMappedProperty == OptionalMappedProperty.Address).DataFileProperty != DEFAULT_PROPERTY_INDICATOR;
+                        DrawDisplayParams p = new DrawDisplayParams(trialists, locationEnabled);
+                        NavigationService.Navigate<DrawDisplayViewModel, DrawDisplayParams>(this, p);
                         IsDuplicatesSectionExpanded = false;
                         IsImportFileSectionExpanded = true;
                         DuplicateTrialistPairs = null;
@@ -269,9 +305,13 @@ namespace TrialManager.ViewModels
                     IsSetupMappingsSectionExpanded = false;
                     IsImportFileSectionExpanded = true;
                     break;
+                case ImportSection.SetupOptionalMappings:
+                    IsSetupOptionalMappingsSectionExpanded = false;
+                    IsSetupMappingsSectionExpanded = true;
+                    break;
                 case ImportSection.PreferredDay:
                     IsPreferredDaySectionExpanded = false;
-                    IsSetupMappingsSectionExpanded = true;
+                    IsSetupOptionalMappingsSectionExpanded = true;
                     break;
                 case ImportSection.Duplicates:
                     IsDuplicatesSectionExpanded = false;
@@ -295,7 +335,11 @@ namespace TrialManager.ViewModels
         {
             try
             {
-                CsvHeaders = _importService.GetCsvHeaders(FilePath);
+                List<string> headers = new List<string>(_importService.GetCsvHeaders(FilePath))
+                {
+                    DEFAULT_PROPERTY_INDICATOR
+                };
+                CsvHeaders = new ReadOnlyCollection<string>(headers);
             }
             catch (IOException ioex)
             {
@@ -314,15 +358,31 @@ namespace TrialManager.ViewModels
                 List<double> similarity = CsvHeaders.Select(h => h.CompareStrings(element.ToString())).ToList();
                 double bestMatchPercentage = similarity.Max();
 
-                // Only take the best match if it is 60% similar
+                // Only take the best match if it is >= 60% similar
                 string bestMatch;
                 if (bestMatchPercentage >= 0.6)
-                    bestMatch = CsvHeaders[similarity.IndexOf(similarity.Max())];
+                    bestMatch = CsvHeaders[similarity.IndexOf(bestMatchPercentage)];
                 else
                     bestMatch = DEFAULT_PROPERTY_INDICATOR;
 
                 PropertyHeaderPair headerPair = new PropertyHeaderPair(element, bestMatch);
                 MappedProperties.Add(headerPair);
+            }
+            OptionalMappedProperties = new BindableCollection<PropertyHeaderPair>();
+            foreach (OptionalMappedProperty element in (OptionalMappedProperty[])Enum.GetValues(typeof(OptionalMappedProperty)))
+            {
+                List<double> similarity = CsvHeaders.Select(h => h.CompareStrings(element.ToString())).ToList();
+                double bestMatchPercentage = similarity.Max();
+
+                // Only take the best match if it is >= 60% similar
+                string bestMatch;
+                if (bestMatchPercentage >= 0.6)
+                    bestMatch = CsvHeaders[similarity.IndexOf(bestMatchPercentage)];
+                else
+                    bestMatch = DEFAULT_PROPERTY_INDICATOR;
+
+                PropertyHeaderPair headerPair = new PropertyHeaderPair(element, bestMatch);
+                OptionalMappedProperties.Add(headerPair);
             }
             return true;
         }
@@ -357,7 +417,7 @@ namespace TrialManager.ViewModels
             CsvReader csvReader = null;
             try
             {
-                csvReader = _importService.GetCsvReader(FilePath, _importService.BuildClassMap(MappedProperties));
+                csvReader = _importService.GetCsvReader(FilePath, _importService.BuildClassMap(MappedProperties, null, DEFAULT_PROPERTY_INDICATOR));
                 // Check that we can read records
                 csvReader.Read();
                 MappedTrialist record = csvReader.GetRecord<MappedTrialist>();
@@ -385,6 +445,23 @@ namespace TrialManager.ViewModels
             }
         }
 
+        private bool ValidateSetupOptionalMappingsSection()
+        {
+            // Check for duplicate/reused mappings
+            foreach (PropertyHeaderPair mapping in OptionalMappedProperties)
+            {
+                foreach (PropertyHeaderPair mapping2 in OptionalMappedProperties)
+                {
+                    if (mapping.DataFileProperty == mapping2.DataFileProperty && mapping.OptionalMappedProperty != mapping2.OptionalMappedProperty && mapping.DataFileProperty != DEFAULT_PROPERTY_INDICATOR)
+                    {
+                        _messageQueue.Enqueue("You have duplicate optional mappings!");
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         /// <summary>
         /// Prepares the Preferred Day section
         /// </summary>
@@ -393,7 +470,7 @@ namespace TrialManager.ViewModels
             try
             {
                 PreferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
-                await foreach (string element in _importService.GetDistinctPreferredDays(FilePath, _importService.BuildClassMap(MappedProperties)))
+                await foreach (string element in _importService.GetDistinctPreferredDays(FilePath, _importService.BuildClassMap(MappedProperties, OptionalMappedProperties, DEFAULT_PROPERTY_INDICATOR)))
                     PreferredDayMappings.Add(new PreferredDayDateTimePair(element));
             }
             catch (IOException ioex)
@@ -441,7 +518,7 @@ namespace TrialManager.ViewModels
             try
             {
                 DuplicateTrialistPairs = new BindableCollection<DuplicateTrialistPair>();
-                await foreach (DuplicateTrialistPair element in _importService.GetMappedDuplicates(FilePath, _importService.BuildClassMap(MappedProperties)))
+                await foreach (DuplicateTrialistPair element in _importService.GetMappedDuplicates(FilePath, _importService.BuildClassMap(MappedProperties, OptionalMappedProperties, DEFAULT_PROPERTY_INDICATOR)))
                     DuplicateTrialistPairs.Add(element);
             }
             catch (IOException ioex)

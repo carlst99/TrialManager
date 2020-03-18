@@ -23,19 +23,31 @@ namespace TrialManager.Model.Csv
         {
             Map(m => m.FullName).Name(FullName);
             Map(m => m.Status).Name(Status);
-            Map(m => m.Address).Name(Address);
-            Map(m => m.PreferredDayString).Name(PreferredDay);
 
             Map(m => m.DogOneName).Name(DogOneName);
             Map(m => m.DogTwoName).Name(DogTwoName);
             Map(m => m.DogThreeName).Name(DogThreeName);
             Map(m => m.DogFourName).Name(DogFourName);
             Map(m => m.DogFiveName).Name(DogFiveName);
-            Map(m => m.DogOneStatus).Name(DogOneStatus);
-            Map(m => m.DogTwoStatus).Name(DogTwoStatus);
-            Map(m => m.DogThreeStatus).Name(DogThreeStatus);
-            Map(m => m.DogFourStatus).Name(DogFourStatus);
-            Map(m => m.DogFiveStatus).Name(DogFiveStatus);
+        }
+
+        public void SetupOptionalMappings()
+        {
+            if (!string.IsNullOrEmpty(Address))
+                Map(m => m.Address).Name(Address);
+            if (!string.IsNullOrEmpty(PreferredDay))
+                Map(m => m.PreferredDayString).Name(PreferredDay);
+
+            if (!string.IsNullOrEmpty(DogOneStatus))
+                Map(m => m.DogOneStatus).Name(DogOneStatus);
+            if (!string.IsNullOrEmpty(DogTwoStatus))
+                Map(m => m.DogTwoStatus).Name(DogTwoStatus);
+            if (!string.IsNullOrEmpty(DogThreeStatus))
+                Map(m => m.DogThreeStatus).Name(DogThreeStatus);
+            if (!string.IsNullOrEmpty(DogFourStatus))
+                Map(m => m.DogFourStatus).Name(DogFourStatus);
+            if (!string.IsNullOrEmpty(DogFiveStatus))
+                Map(m => m.DogFiveStatus).Name(DogFiveStatus);
         }
     }
 }
