@@ -6,6 +6,7 @@ using StyletIoC;
 using System;
 using System.IO;
 using System.Linq;
+using TrialManager.Model;
 using TrialManager.Services;
 using TrialManager.Utils;
 using TrialManager.ViewModels;
@@ -31,9 +32,15 @@ namespace TrialManager
             if (!File.Exists(SECRETS_FILE_PATH))
                 throw new ApplicationException("Could not find the secrets file");
             string appCentreKey = File.ReadLines(SECRETS_FILE_PATH).First();
-            AppCenter.Start(appCentreKey, typeof(Analytics));
+
+            Preferences _preferences = RealmHelpers.GetUserPreferences(RealmHelpers.GetRealmInstance());
+            if (_preferences.IsDiagnosticsEnabled)
+                AppCenter.Start(appCentreKey, typeof(Analytics));
 #else
-            AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
+            throw new ApplicationException("Remember AppCenter key!");
+            Preferences _preferences = RealmHelpers.GetUserPreferences(RealmHelpers.GetRealmInstance());
+            if (_preferences.IsDiagnosticsEnabled)
+                AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
 #endif
 
             base.OnStart();

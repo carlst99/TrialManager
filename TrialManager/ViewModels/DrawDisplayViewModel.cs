@@ -31,9 +31,9 @@ namespace TrialManager.ViewModels
         private List<Trialist> _trialists;
         private List<TrialistDrawEntry> _draw;
 
+        private readonly Realm _realmInstance;
+        private readonly Preferences _preferences;
         private DrawCreationOptions _drawCreationOptions;
-        private Realm _realmInstance;
-        private Preferences _preferences;
 
         private bool _showProgress;
         private bool _preparationComplete;

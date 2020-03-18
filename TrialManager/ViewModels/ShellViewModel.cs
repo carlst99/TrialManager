@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Microsoft.AppCenter;
 using Realms;
 using Stylet;
 using System;
@@ -39,10 +40,11 @@ namespace TrialManager.ViewModels
             _dataImportViewModel = dataImportViewModel;
             _aboutDialogViewModel = aboutDialogViewModel;
             MessageQueue = messageQueue;
+
             ActiveItem = dataImportViewModel;
         }
 
-        public static async Task OnDialogHostLoaded()
+        public async Task OnDialogHostLoaded()
         {
             Realm realmInstance = RealmHelpers.GetRealmInstance();
             Preferences preferences = RealmHelpers.GetUserPreferences(realmInstance);
@@ -57,6 +59,7 @@ namespace TrialManager.ViewModels
                 OkayButtonContent = "Enable Diagnostics"
             });
             bool acceptance = (bool)await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(true);
+            await AppCenter.SetEnabledAsync(acceptance).ConfigureAwait(true);
 
             realmInstance.Write(() =>
             {

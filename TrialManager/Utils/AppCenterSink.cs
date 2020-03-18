@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace TrialManager.Utils
 {
-    public class AppCentreSink : ILogEventSink
+    public class AppCenterSink : ILogEventSink
     {
         public void Emit(LogEvent logEvent)
         {
@@ -23,7 +23,7 @@ namespace TrialManager.Utils
         public static LoggerConfiguration AppCentreSink(
                   this LoggerSinkConfiguration loggerConfiguration)
         {
-            return loggerConfiguration.Sink(new AppCentreSink());
+            return loggerConfiguration.Sink(new AppCenterSink());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Realms;
+﻿using Microsoft.AppCenter;
+using Realms;
 using Stylet;
 using System.Reflection;
 using TrialManager.Model;
@@ -21,6 +22,7 @@ namespace TrialManager.ViewModels
             set
             {
                 _realmInstance.Write(() => _preferences.IsDiagnosticsEnabled = value);
+                AppCenter.SetEnabledAsync(value);
                 NotifyOfPropertyChange(nameof(IsDiagnosticsEnabled));
             }
         }
