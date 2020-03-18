@@ -1,5 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
+using Realms;
 using Serilog;
 using Stylet;
 using System;
@@ -7,10 +8,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TrialManager.Model;
 using TrialManager.Model.Draw;
 using TrialManager.Model.TrialistDb;
 using TrialManager.Resources;
 using TrialManager.Services;
+using TrialManager.Utils;
 using TrialManager.ViewModels.Base;
 using TrialManager.Views;
 
@@ -29,6 +32,8 @@ namespace TrialManager.ViewModels
         private List<TrialistDrawEntry> _draw;
 
         private DrawCreationOptions _drawCreationOptions;
+        private Realm _realmInstance;
+        private Preferences _preferences;
 
         private bool _showProgress;
         private bool _preparationComplete;
@@ -78,8 +83,10 @@ namespace TrialManager.ViewModels
             _messageQueue = messageQueue;
             _printService = printService;
 
-            DrawCreationOptions = new DrawCreationOptions();
-            DrawCreationOptions.PropertyChanged += async (_, __) => await CreateDraw().ConfigureAwait(false);
+            _realmInstance = RealmHelpers.GetRealmInstance();
+            _preferences = RealmHelpers.GetUserPreferences(_realmInstance);
+            DrawCreationOptions = _preferences.DrawCreationOptions;
+            DrawCreationOptions.PropertyChanged += OnDrawCreationOptionsChanged;
         }
 
         public async Task CreateDraw()
@@ -231,6 +238,12 @@ namespace TrialManager.ViewModels
                 HelpUrl = HelpUrls.Default
             });
             await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+        }
+
+        private async void OnDrawCreationOptionsChanged(object sender, EventArgs e)
+        {
+            _realmInstance.Write(() => _preferences.DrawCreationOptions = DrawCreationOptions);
+            await CreateDraw().ConfigureAwait(false);
         }
     }
 }
