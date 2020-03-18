@@ -24,6 +24,16 @@
                    HorizontalAlignment="Center"
                    Foreground="Gray"
                    Text="{Binding [App_Copyright], Mode=OneTime}"/>
+        <StackPanel Margin="0,16,0,0"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+            <ToggleButton IsChecked="{Binding IsDiagnosticsEnabled}"/>
+            <TextBlock Margin="4,0,0,0"
+                       VerticalAlignment="Center">
+                <Run Text="Diagnostics Reporting: "/>
+                <Run Text="{Binding IsDiagnosticsEnabled}"/>
+            </TextBlock>
+        </StackPanel>
         <TextBlock Margin="0,16,0,0"
                    TextWrapping="Wrap">
             <Run Text="TrialManager is made possible by the following open-source libraries. For licensing info see"/>

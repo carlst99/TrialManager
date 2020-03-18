@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TrialManager.Model;
+using TrialManager.Model.Draw;
 using TrialManager.Model.TrialistDb;
 
 namespace TrialManager.Services

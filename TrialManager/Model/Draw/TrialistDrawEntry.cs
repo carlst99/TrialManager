@@ -1,7 +1,7 @@
 ﻿using System;
 using TrialManager.Model.TrialistDb;
 
-namespace TrialManager.Model
+namespace TrialManager.Model.Draw
 {
     public class TrialistDrawEntry
     {

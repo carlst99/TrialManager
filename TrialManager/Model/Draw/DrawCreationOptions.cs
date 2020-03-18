@@ -1,10 +1,15 @@
-﻿using Stylet;
+﻿using MessagePack;
+using Stylet;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using TrialManager.Model.LocationDb;
 
-namespace TrialManager.Model
+namespace TrialManager.Model.Draw
 {
-    public class DrawCreationOptions : PropertyChangedBase
+    [MessagePackObject]
+    public class DrawCreationOptions : INotifyPropertyChanged
     {
         private string _trialAddress;
         private int _maxRunsPerDay;
@@ -19,6 +24,7 @@ namespace TrialManager.Model
         /// <summary>
         /// Gets or sets the maximum number of runs that can be made in a day
         /// </summary>
+        [Key(0)]
         public int MaxRunsPerDay
         {
             get => _maxRunsPerDay;
@@ -28,6 +34,7 @@ namespace TrialManager.Model
         /// <summary>
         /// Gets or sets the address of the trial grounds, used for location sorting in the draw
         /// </summary>
+        [IgnoreMember]
         public string TrialAddress
         {
             get => _trialAddress;
@@ -37,6 +44,7 @@ namespace TrialManager.Model
         /// <summary>
         /// Gets or sets the minimum number of other trialists' runs in between each of an individual trialist's runs
         /// </summary>
+        [Key(1)]
         public int MinRunSeparation
         {
             get => _minRunSeparation;
@@ -46,6 +54,7 @@ namespace TrialManager.Model
         /// <summary>
         /// Gets or sets the maximum number of dogs from one trialist that can be run in one day
         /// </summary>
+        [Key(2)]
         public int MaxDogsPerDay
         {
             get => _maxDogsPerDay;
@@ -55,6 +64,7 @@ namespace TrialManager.Model
         /// <summary>
         /// Gets or sets the number of near-distance trialists to run before inserting far-distance trialists into the draw
         /// </summary>
+        [Key(3)]
         public int BufferRuns
         {
             get => _bufferRuns;
@@ -64,19 +74,24 @@ namespace TrialManager.Model
         /// <summary>
         /// Gets or sets a value indicating whether far-distance trialists should be run later on the first day (true), or to use the buffer-run protocol (false)
         /// </summary>
+        [Key(4)]
         public bool RunFurtherTrialistsLaterOnFirstDay
         {
             get => _runFurtherTrialistsLaterOnFirstDay;
             set => SetAndNotify(ref _runFurtherTrialistsLaterOnFirstDay, value);
         }
 
+        /// <summary>
+        /// Gets or sets the starting date of the trial
+        /// </summary>
+        [IgnoreMember]
         public DateTime TrialStartDate
         {
             get => _trialStartDate;
             set => SetAndNotify(ref _trialStartDate, value);
         }
 
-        public event EventHandler OnOptionsChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public DrawCreationOptions()
         {
@@ -99,10 +114,13 @@ namespace TrialManager.Model
             TrialStartDate = trialStartDate;
         }
 
-        protected override void OnPropertyChanged(string propertyName)
+        protected void SetAndNotify<T>(ref T container, T value, [CallerMemberName]string propertyName = "")
         {
-            base.OnPropertyChanged(propertyName);
-            OnOptionsChanged?.Invoke(this, EventArgs.Empty);
+            if (!EqualityComparer<T>.Default.Equals(container, value))
+            {
+                container = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

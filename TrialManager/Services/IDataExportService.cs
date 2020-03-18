@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TrialManager.Model;
+using TrialManager.Model.Draw;
 
 namespace TrialManager.Services
 {

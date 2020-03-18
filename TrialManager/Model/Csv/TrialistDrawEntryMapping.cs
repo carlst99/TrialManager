@@ -1,4 +1,5 @@
 ﻿using CsvHelper.Configuration;
+using TrialManager.Model.Draw;
 
 namespace TrialManager.Model.Csv
 {

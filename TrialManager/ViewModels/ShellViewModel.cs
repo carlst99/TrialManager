@@ -1,10 +1,14 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Microsoft.AppCenter;
+using Realms;
 using Stylet;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using TrialManager.Model;
 using TrialManager.Resources;
 using TrialManager.Services;
+using TrialManager.Utils;
 using TrialManager.ViewModels.Base;
 using TrialManager.Views;
 
@@ -36,11 +40,17 @@ namespace TrialManager.ViewModels
             _dataImportViewModel = dataImportViewModel;
             _aboutDialogViewModel = aboutDialogViewModel;
             MessageQueue = messageQueue;
+
             ActiveItem = dataImportViewModel;
         }
 
-        public static async Task OnDialogHostLoaded()
+        public async Task OnDialogHostLoaded()
         {
+            Realm realmInstance = RealmHelpers.GetRealmInstance();
+            Preferences preferences = RealmHelpers.GetUserPreferences(realmInstance);
+            if (preferences.IsFirstRunComplete)
+                return;
+
             MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
             {
                 Title = "Diagnostics Collection",
@@ -48,7 +58,14 @@ namespace TrialManager.ViewModels
                 CancelButtonContent = "Disable Diagnostics",
                 OkayButtonContent = "Enable Diagnostics"
             });
-            await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+            bool acceptance = (bool)await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(true);
+            await AppCenter.SetEnabledAsync(acceptance).ConfigureAwait(true);
+
+            realmInstance.Write(() =>
+            {
+                preferences.IsDiagnosticsEnabled = acceptance;
+                preferences.IsFirstRunComplete = true;
+            });
         }
 
         public static void OnDocumentationRequested()

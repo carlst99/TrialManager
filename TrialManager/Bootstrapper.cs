@@ -1,7 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 using Serilog;
 using StyletIoC;
 using System;
@@ -9,6 +8,7 @@ using System.IO;
 using System.Linq;
 using TrialManager.Model;
 using TrialManager.Services;
+using TrialManager.Utils;
 using TrialManager.ViewModels;
 
 namespace TrialManager
@@ -32,9 +32,15 @@ namespace TrialManager
             if (!File.Exists(SECRETS_FILE_PATH))
                 throw new ApplicationException("Could not find the secrets file");
             string appCentreKey = File.ReadLines(SECRETS_FILE_PATH).First();
-            AppCenter.Start(appCentreKey, typeof(Analytics));
+
+            Preferences _preferences = RealmHelpers.GetUserPreferences(RealmHelpers.GetRealmInstance());
+            if (_preferences.IsDiagnosticsEnabled)
+                AppCenter.Start(appCentreKey, typeof(Analytics));
 #else
-            AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
+            throw new ApplicationException("Remember AppCenter key!");
+            Preferences _preferences = RealmHelpers.GetUserPreferences(RealmHelpers.GetRealmInstance());
+            if (_preferences.IsDiagnosticsEnabled)
+                AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
 #endif
 
             base.OnStart();
@@ -42,18 +48,20 @@ namespace TrialManager
 
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
+            // Bind draw services
             builder.Bind<ICsvImportService>().To<CsvImportService>().InSingletonScope();
             builder.Bind<IDataExportService>().To<DataExportService>().InSingletonScope();
             builder.Bind<IDrawCreationService>().To<DrawCreationService>().InSingletonScope();
             builder.Bind<ILocationService>().To<LocationService>().InSingletonScope();
             builder.Bind<IPrintService>().To<PrintService>().InSingletonScope();
+            //Bind UI services
             builder.Bind<INavigationService>().To<NavigationService>().InSingletonScope();
             builder.Bind<ISnackbarMessageQueue>().ToFactory(_ => new SnackbarMessageQueue(new TimeSpan(0, 0, 5))).InSingletonScope();
 
             base.ConfigureIoC(builder);
         }
 
-#region Appdata Helpers
+        #region Appdata Helpers
 
         /// <summary>
         /// Gets the path to the appdata store of respective platforms
@@ -79,6 +87,6 @@ namespace TrialManager
         /// <returns></returns>
         public static string GetAppdataFilePath(string fileName) => Path.Combine(GetPlatformAppdataPath(), fileName);
 
-#endregion
+        #endregion
     }
 }
