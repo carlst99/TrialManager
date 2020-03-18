@@ -75,7 +75,6 @@
     <None Update="secrets.txt">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="..\icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
