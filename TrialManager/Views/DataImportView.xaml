@@ -226,6 +226,12 @@
                         </StackPanel>
                     </Expander.Header>
                     <StackPanel Margin="24,8,24,16">
+                        <TextBlock Margin="16,0,0,0"
+                                   FontWeight="Bold"
+                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="Required Mappings"/>
+                        <TextBlock Margin="16,4,0,0"
+                                   Text="These properties are required for TrialManager to operate, and must be set to a value from your CSV file"/>
                         <DataGrid AutoGenerateColumns="False"
                                   CellStyle="{StaticResource DataGridVerticalAlignmentCell}"
                                   ItemsSource="{Binding MappedProperties}"
@@ -257,36 +263,12 @@
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <StackPanel Margin="0,8,0,0"
-                                    HorizontalAlignment="Left"
-                                    Orientation="Horizontal">
-                            <Button Margin="0,0,12,0"
-                                    Command="{s:Action StepBack}"
-                                    CommandParameter="{x:Static vm:ImportSection.SetupMappings}"
-                                    Content="BACK"
-                                    Style="{StaticResource MaterialDesignFlatButton}"/>
-                            <Button Command="{s:Action ValidateAndContinue}"
-                                    CommandParameter="{x:Static vm:ImportSection.SetupMappings}"
-                                    Content="CONTINUE"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Expander>
-                <Border Height="1"
-                        HorizontalAlignment="Stretch"
-                        Background="{DynamicResource MaterialDesignDivider}"
-                        SnapsToDevicePixels="True"/>
-
-                <!-- Setup Optional Mappings Section -->
-                <Expander HorizontalAlignment="Stretch"
-                          IsExpanded="{Binding IsSetupOptionalMappingsSectionExpanded, Mode=OneWay}"
-                          Style="{StaticResource MaterialDesignDisabledExpander}">
-                    <Expander.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <md:Chip Content="Setup Optional Property Mappings"
-                                     Icon="3"/>
-                        </StackPanel>
-                    </Expander.Header>
-                    <StackPanel Margin="24,8,24,16">
+                        <TextBlock Margin="16,24,0,0"
+                                   FontWeight="Bold"
+                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="Optional Mappings"/>
+                        <TextBlock Margin="16,4,0,0"
+                                   Text="These properties are optional, but improve the functionality of TrialManager and are therefore recommended"/>
                         <DataGrid AutoGenerateColumns="False"
                                   CellStyle="{StaticResource DataGridVerticalAlignmentCell}"
                                   ItemsSource="{Binding OptionalMappedProperties}"
@@ -323,11 +305,11 @@
                                     Orientation="Horizontal">
                             <Button Margin="0,0,12,0"
                                     Command="{s:Action StepBack}"
-                                    CommandParameter="{x:Static vm:ImportSection.SetupOptionalMappings}"
+                                    CommandParameter="{x:Static vm:ImportSection.SetupMappings}"
                                     Content="BACK"
                                     Style="{StaticResource MaterialDesignFlatButton}"/>
                             <Button Command="{s:Action ValidateAndContinue}"
-                                    CommandParameter="{x:Static vm:ImportSection.SetupOptionalMappings}"
+                                    CommandParameter="{x:Static vm:ImportSection.SetupMappings}"
                                     Content="CONTINUE"/>
                         </StackPanel>
                     </StackPanel>

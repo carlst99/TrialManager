@@ -66,6 +66,7 @@
                             md:HintAssist.FloatingScale="0.8"
                             md:HintAssist.Hint="Trial Start Date"
                             md:HintAssist.IsFloating="True"
+                            FontSize="14"
                             SelectedDate="{Binding DrawCreationOptions.TrialStartDate}"/>
 
                 <md:PackIcon Grid.Row="1"

@@ -25,7 +25,6 @@ namespace TrialManager.ViewModels
     {
         ImportFile,
         SetupMappings,
-        SetupOptionalMappings,
         PreferredDay,
         Duplicates
     }
@@ -152,12 +151,6 @@ namespace TrialManager.ViewModels
             set => SetAndNotify(ref _isSetupMappingsSectionExpanded, value);
         }
 
-        public bool IsSetupOptionalMappingsSectionExpanded
-        {
-            get => _isSetupOptionalMappingsSectionExpanded;
-            set => SetAndNotify(ref _isSetupOptionalMappingsSectionExpanded, value);
-        }
-
         public bool IsPreferredDaySectionExpanded
         {
             get => _isPreferredDaySectionExpanded;
@@ -237,12 +230,6 @@ namespace TrialManager.ViewModels
                     if (!await ValidateSetupMappingsSection().ConfigureAwait(false))
                         break;
                     IsSetupMappingsSectionExpanded = false;
-                    IsSetupOptionalMappingsSectionExpanded = true;
-                    break;
-                case ImportSection.SetupOptionalMappings:
-                    if (!ValidateSetupOptionalMappingsSection())
-                        break;
-                    IsSetupOptionalMappingsSectionExpanded = false;
                     // Check if a preferred day mapping has been set
                     if (OptionalMappedProperties.First(p => p.OptionalMappedProperty == OptionalMappedProperty.PreferredDay).DataFileProperty == DEFAULT_PROPERTY_INDICATOR)
                     {
@@ -252,7 +239,8 @@ namespace TrialManager.ViewModels
                         // Move on if there are no duplicates
                         if (DuplicateTrialistPairs.Count == 0)
                             await ValidateAndContinue(ImportSection.Duplicates).ConfigureAwait(false);
-                    } else
+                    }
+                    else
                     {
                         IsPreferredDaySectionExpanded = true;
                         await PreparePreferredDaySection().ConfigureAwait(false);
@@ -305,17 +293,16 @@ namespace TrialManager.ViewModels
                     IsSetupMappingsSectionExpanded = false;
                     IsImportFileSectionExpanded = true;
                     break;
-                case ImportSection.SetupOptionalMappings:
-                    IsSetupOptionalMappingsSectionExpanded = false;
-                    IsSetupMappingsSectionExpanded = true;
-                    break;
                 case ImportSection.PreferredDay:
                     IsPreferredDaySectionExpanded = false;
-                    IsSetupOptionalMappingsSectionExpanded = true;
+                    IsSetupMappingsSectionExpanded = true;
                     break;
                 case ImportSection.Duplicates:
                     IsDuplicatesSectionExpanded = false;
-                    IsPreferredDaySectionExpanded = true;
+                    if (PreferredDayMappings != null)
+                        IsPreferredDaySectionExpanded = true;
+                    else
+                        IsSetupMappingsSectionExpanded = true;
                     break;
             }
         }
@@ -402,6 +389,7 @@ namespace TrialManager.ViewModels
                     return false;
                 }
             }
+
             // Check for duplicate/reused mappings
             foreach (PropertyHeaderPair mapping in MappedProperties)
             {
@@ -414,6 +402,20 @@ namespace TrialManager.ViewModels
                     }
                 }
             }
+
+            // Check for duplicate/reused optional mappings
+            foreach (PropertyHeaderPair mapping in OptionalMappedProperties)
+            {
+                foreach (PropertyHeaderPair mapping2 in OptionalMappedProperties)
+                {
+                    if (mapping.DataFileProperty == mapping2.DataFileProperty && mapping.OptionalMappedProperty != mapping2.OptionalMappedProperty && mapping.DataFileProperty != DEFAULT_PROPERTY_INDICATOR)
+                    {
+                        _messageQueue.Enqueue("You have duplicate optional mappings!");
+                        return false;
+                    }
+                }
+            }
+
             CsvReader csvReader = null;
             try
             {
@@ -443,23 +445,6 @@ namespace TrialManager.ViewModels
             {
                 csvReader.Dispose();
             }
-        }
-
-        private bool ValidateSetupOptionalMappingsSection()
-        {
-            // Check for duplicate/reused mappings
-            foreach (PropertyHeaderPair mapping in OptionalMappedProperties)
-            {
-                foreach (PropertyHeaderPair mapping2 in OptionalMappedProperties)
-                {
-                    if (mapping.DataFileProperty == mapping2.DataFileProperty && mapping.OptionalMappedProperty != mapping2.OptionalMappedProperty && mapping.DataFileProperty != DEFAULT_PROPERTY_INDICATOR)
-                    {
-                        _messageQueue.Enqueue("You have duplicate optional mappings!");
-                        return false;
-                    }
-                }
-            }
-            return true;
         }
 
         /// <summary>
