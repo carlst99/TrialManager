@@ -259,7 +259,9 @@ namespace TrialManager.ViewModels
                 case ImportSection.Duplicates:
                     try
                     {
+                        WindowCursor = Cursors.Wait;
                         List<Trialist> trialists = await _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings).ConfigureAwait(false);
+                        WindowCursor = Cursors.Arrow;
                         bool locationEnabled = OptionalMappedProperties.First(p => p.OptionalMappedProperty == OptionalMappedProperty.Address).DataFileProperty != DEFAULT_PROPERTY_INDICATOR;
                         DrawDisplayParams par = new DrawDisplayParams(trialists, locationEnabled);
                         NavigationService.Navigate<DrawDisplayViewModel, DrawDisplayParams>(this, par);
