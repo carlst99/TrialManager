@@ -25,10 +25,6 @@ namespace TrialManager.Model.Csv
             Map(m => m.Status).Name(Status);
 
             Map(m => m.DogOneName).Name(DogOneName);
-            Map(m => m.DogTwoName).Name(DogTwoName);
-            Map(m => m.DogThreeName).Name(DogThreeName);
-            Map(m => m.DogFourName).Name(DogFourName);
-            Map(m => m.DogFiveName).Name(DogFiveName);
         }
 
         public void SetupOptionalMappings()
@@ -37,6 +33,15 @@ namespace TrialManager.Model.Csv
                 Map(m => m.Address).Name(Address);
             if (!string.IsNullOrEmpty(PreferredDay))
                 Map(m => m.PreferredDayString).Name(PreferredDay);
+
+            if (!string.IsNullOrEmpty(DogTwoName))
+                Map(m => m.DogTwoName).Name(DogTwoName);
+            if (!string.IsNullOrEmpty(DogThreeName))
+                Map(m => m.DogThreeName).Name(DogThreeName);
+            if (!string.IsNullOrEmpty(DogFourName))
+                Map(m => m.DogFourName).Name(DogFourName);
+            if (!string.IsNullOrEmpty(DogFiveName))
+                Map(m => m.DogFiveName).Name(DogFiveName);
 
             if (!string.IsNullOrEmpty(DogOneStatus))
                 Map(m => m.DogOneStatus).Name(DogOneStatus);
