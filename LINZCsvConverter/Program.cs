@@ -5,25 +5,30 @@ using System.Collections.Generic;
 using System.IO;
 using Realms;
 using System.Reflection;
+using System.Globalization;
 
 namespace LINZCsvConverter
 {
     public static class Program
     {
-        public const char CSV_SPLIT_CHAR = ',';
-        public const string CSV_FILE_LOCATION = "Resources\\nz-street-address.csv";
+        public const string CSV_FILE_LOCATION = @"..\..\..\Resources\nz-street-address.csv";
+        public const string REALM_FILE_LOCATION = @"Resources\locations.realm";
 
         public static void Main()
 		{
             Realm realm = null;
             string assemPath = Assembly.GetEntryAssembly().Location;
             assemPath = Path.GetDirectoryName(assemPath);
-            string realmPath = Path.Combine(assemPath, "Resources", "locations.realm");
+            string realmPath = Path.Combine(assemPath, REALM_FILE_LOCATION);
 
             // Delete previous database
             Console.WriteLine("Deleting previous database...");
             if (File.Exists(realmPath))
                 File.Delete(realmPath);
+
+            // Check that the resources dictionary exists
+            if (!Directory.Exists(Path.GetDirectoryName(realmPath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(realmPath));
 
             // Create new database
             Console.WriteLine("Creating new database...");
@@ -36,7 +41,7 @@ namespace LINZCsvConverter
             Console.WriteLine("Reading all suburbs/localities...");
             Dictionary<string, SuburbLocalityLocation> suburbLocalities = new Dictionary<string, SuburbLocalityLocation>();
             using (StreamReader reader = new StreamReader(CSV_FILE_LOCATION))
-            using (CsvReader cReader = new CsvReader(reader))
+            using (CsvReader cReader = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 cReader.Configuration.HeaderValidated = null;
                 cReader.Configuration.MissingFieldFound = null;

@@ -8,36 +8,39 @@ namespace LINZCsvConverter.Model
 {
     public class TownCityLocation : RealmObject
     {
-        [Required]
+        [Ignore] // CsvHelper
+        [Required] // Realm
         private byte[] LocationRaw { get; set; }
 
+        [Ignore] // CsvHelper
         public IList<SuburbLocalityLocation> Suburbs { get; }
 
         /// <summary>
         /// Gets or sets the primary DB key
         /// </summary>
-        [PrimaryKey]
+        [PrimaryKey] // Realm
         public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the location
         /// </summary>
-        [Name("suburb_locality")]
-        [Required]
+        [Name("suburb_locality")] // CsvHelper
+        [Required] // Getting the pattern?
         [Indexed]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the NZ Geodetic Datum 2000 (NZGD2000) coordinate point for this location
         /// </summary>
-        public Location Location
+        [Ignore]
+        public Gd2000Coordinate Location
         {
             get
             {
                 if (LocationRaw != null)
-                    return MessagePackSerializer.Deserialize<Location>(LocationRaw);
+                    return MessagePackSerializer.Deserialize<Gd2000Coordinate>(LocationRaw);
                 else
-                    return new Location();
+                    return new Gd2000Coordinate();
             }
             set => LocationRaw = MessagePackSerializer.Serialize(value);
         }
@@ -55,7 +58,7 @@ namespace LINZCsvConverter.Model
 
             double Gd2000X = gd2000X.Average();
             double Gd2000Y = gd2000Y.Average();
-            Location = new Location
+            Location = new Gd2000Coordinate
             {
                 Gd2000X = Gd2000X,
                 Gd2000Y = Gd2000Y

@@ -1,0 +1,25 @@
+site_name: TrialManager
+site_description: 'Contains documentation for TrialManager'
+site_author: 'Carl Stephens'
+copyright: 'Copyright © Carl Stephens 2020'
+
+repo_name: 'carlst99/TrialManager'
+repo_url: 'https://github.com/carlst99/TrialManager'
+edit_uri: ''
+
+nav:
+    - Home: index.md
+    - About: about.md
+theme:
+    name: 'material'
+    palette:
+        primary: 'light blue'
+        accent: 'yellow'
+    logo: 'img/icon.png'
+    favicon: 'img/favicon.ico'
+    feature:
+        tabs: true
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
