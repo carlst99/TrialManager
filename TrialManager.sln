@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrialManagerOld", "TrialManagerOld\TrialManagerOld.csproj", "{FF449DB8-1163-49BC-BED8-BD63889CF28B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LINZCsvConverter", "LINZCsvConverter\LINZCsvConverter.csproj", "{9964F80F-C192-4A10-84A4-8605B0FE62C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrialManager", "TrialManager\TrialManager.csproj", "{59577F24-C282-45DC-9CC7-552FD0E4E061}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FF449DB8-1163-49BC-BED8-BD63889CF28B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF449DB8-1163-49BC-BED8-BD63889CF28B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF449DB8-1163-49BC-BED8-BD63889CF28B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF449DB8-1163-49BC-BED8-BD63889CF28B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9964F80F-C192-4A10-84A4-8605B0FE62C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9964F80F-C192-4A10-84A4-8605B0FE62C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9964F80F-C192-4A10-84A4-8605B0FE62C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
