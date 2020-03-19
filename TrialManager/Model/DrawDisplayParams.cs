@@ -5,10 +5,10 @@ namespace TrialManager.Model
 {
     public struct DrawDisplayParams
     {
-        public IAsyncEnumerable<Trialist> Trialists { get; }
+        public List<Trialist> Trialists { get; }
         public bool LocationSortingEnabled { get; }
 
-        public DrawDisplayParams(IAsyncEnumerable<Trialist> trialists, bool locationSortingEnabled)
+        public DrawDisplayParams(List<Trialist> trialists, bool locationSortingEnabled)
         {
             Trialists = trialists;
             LocationSortingEnabled = locationSortingEnabled;

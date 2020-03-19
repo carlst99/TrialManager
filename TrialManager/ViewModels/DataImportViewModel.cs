@@ -75,7 +75,6 @@ namespace TrialManager.ViewModels
         private bool _isImportFileSectionValid;
         private bool _isImportFileSectionExpanded;
         private bool _isSetupMappingsSectionExpanded;
-        private bool _isSetupOptionalMappingsSectionExpanded;
         private bool _isPreferredDaySectionExpanded;
         private bool _isDuplicatesSectionExpanded;
 
@@ -260,10 +259,12 @@ namespace TrialManager.ViewModels
                 case ImportSection.Duplicates:
                     try
                     {
-                        IAsyncEnumerable<Trialist> trialists = _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings);
+                        WindowCursor = Cursors.Wait;
+                        List<Trialist> trialists = await _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings).ConfigureAwait(false);
+                        WindowCursor = Cursors.Arrow;
                         bool locationEnabled = OptionalMappedProperties.First(p => p.OptionalMappedProperty == OptionalMappedProperty.Address).DataFileProperty != DEFAULT_PROPERTY_INDICATOR;
-                        DrawDisplayParams p = new DrawDisplayParams(trialists, locationEnabled);
-                        NavigationService.Navigate<DrawDisplayViewModel, DrawDisplayParams>(this, p);
+                        DrawDisplayParams par = new DrawDisplayParams(trialists, locationEnabled);
+                        NavigationService.Navigate<DrawDisplayViewModel, DrawDisplayParams>(this, par);
                         IsDuplicatesSectionExpanded = false;
                         IsImportFileSectionExpanded = true;
                         DuplicateTrialistPairs = null;
@@ -455,7 +456,7 @@ namespace TrialManager.ViewModels
             try
             {
                 PreferredDayMappings = new BindableCollection<PreferredDayDateTimePair>();
-                await foreach (string element in _importService.GetDistinctPreferredDays(FilePath, _importService.BuildClassMap(MappedProperties, OptionalMappedProperties, DEFAULT_PROPERTY_INDICATOR)))
+                foreach (string element in await _importService.GetDistinctPreferredDays(FilePath, _importService.BuildClassMap(MappedProperties, OptionalMappedProperties, DEFAULT_PROPERTY_INDICATOR)).ConfigureAwait(false))
                     PreferredDayMappings.Add(new PreferredDayDateTimePair(element));
             }
             catch (IOException ioex)
@@ -503,7 +504,7 @@ namespace TrialManager.ViewModels
             try
             {
                 DuplicateTrialistPairs = new BindableCollection<DuplicateTrialistPair>();
-                await foreach (DuplicateTrialistPair element in _importService.GetMappedDuplicates(FilePath, _importService.BuildClassMap(MappedProperties, OptionalMappedProperties, DEFAULT_PROPERTY_INDICATOR)))
+                foreach (DuplicateTrialistPair element in await _importService.GetMappedDuplicates(FilePath, _importService.BuildClassMap(MappedProperties, OptionalMappedProperties, DEFAULT_PROPERTY_INDICATOR)).ConfigureAwait(false))
                     DuplicateTrialistPairs.Add(element);
             }
             catch (IOException ioex)

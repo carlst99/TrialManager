@@ -15,21 +15,21 @@ namespace TrialManager.Services
         /// </summary>
         /// <param name="path">The path to the CSV file</param>
         /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
-        IAsyncEnumerable<string> GetDistinctPreferredDays(string path, ClassMap<MappedTrialist> classMap);
+        Task<List<string>> GetDistinctPreferredDays(string path, ClassMap<MappedTrialist> classMap);
 
         /// <summary>
         /// Imports data from a CSV file as a collection of <see cref="MappedTrialist"/> and builds a list of duplicates to resolve
         /// </summary>
         /// <param name="path">The path to the csv file</param>
         /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
-        IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, ClassMap<MappedTrialist> classMap);
+        Task<List<DuplicateTrialistPair>> GetMappedDuplicates(string path, ClassMap<MappedTrialist> classMap);
 
         /// <summary>
         /// Builds a <see cref="Trialist"/> list, factoring in resolved duplicates
         /// </summary>
         /// <param name="duplicates">A list of resolved duplicates</param>
         /// <param name="preferredDayMappings">Preferred day mappings</param>
-        IAsyncEnumerable<Trialist> BuildTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings);
+        Task<List<Trialist>> BuildTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings);
 
         /// <summary>
         /// Performs a basic check for a CSV file by looking for the separator chars (; or ,)
