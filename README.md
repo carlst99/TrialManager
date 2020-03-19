@@ -14,6 +14,5 @@ Please use only if you understand what you are doing.
 We are nearing the release of the first version. Please hold tight!
 
 ---
-
 I intend to release TrialManager only when I am confident that all features work properly and it is customisable to the extent that it will fulfil the requirements of most different trial formats.
 This means a significant amount of work and testing is required before I start work on release features like installers and documentation.
