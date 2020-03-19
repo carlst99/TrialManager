@@ -1,6 +1,8 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.AppCenter;
 using Realms;
+using Serilog;
+using Squirrel;
 using Stylet;
 using System;
 using System.Diagnostics;
@@ -44,7 +46,7 @@ namespace TrialManager.ViewModels
             ActiveItem = dataImportViewModel;
         }
 
-        public async Task OnDialogHostLoaded()
+        public static async Task OnDialogHostLoaded()
         {
             Realm realmInstance = RealmHelpers.GetRealmInstance();
             Preferences preferences = RealmHelpers.GetUserPreferences(realmInstance);
@@ -66,6 +68,16 @@ namespace TrialManager.ViewModels
                 preferences.IsDiagnosticsEnabled = acceptance;
                 preferences.IsFirstRunComplete = true;
             });
+
+            try
+            {
+                using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/carlst99/TrialManager").ConfigureAwait(false))
+                    await mgr.UpdateApp().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Could not update application");
+            }
         }
 
         public static void OnDocumentationRequested()
