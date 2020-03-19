@@ -2,13 +2,13 @@
 
 ### Download and Install
 
-You can download the latest release of TrialManager from the [releases page](https://github.com/carlst99/TrialManager/releases/latest).
-
-Once the file finishes downloading, you can install it like any other app.
-**You will need the [.NET Framework 4.6.1 Runtime](https://dotnet.microsoft.com/download/dotnet-framework/net461) or higher install to run TrialManager**. You probably already have this installed.
+You can download the latest release of TrialManager from the [releases page](https://github.com/carlst99/TrialManager/releases/latest/). Download and install the `Setup.exe` file.
 
 TrialManager will then keep itself up-to-date automatically, provided you open it while connected to the internet. 
 If unsure, you can always compare the version in the `About` menu with the latest release on the releases page
+
+!!! warning ""
+	**You will need the [.NET Framework 4.6.1 Runtime](https://dotnet.microsoft.com/download/dotnet-framework/net461) or higher install to run TrialManager**. You probably already have this installed.
 
 ### Diagnostics Acceptance
 
