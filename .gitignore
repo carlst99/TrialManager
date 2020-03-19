@@ -338,6 +338,11 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Ignore various files
 /LINZCsvConverter/Resources/nz-street-address.csv
 /TrialManager/secrets.json
 /TrialManager/secrets.txt
+
+# Ignore MkDocs static site content
+site/
