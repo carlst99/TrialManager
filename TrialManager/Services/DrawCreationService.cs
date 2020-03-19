@@ -89,7 +89,7 @@ namespace TrialManager.Services
         private void SortByDistance(List<DayTrialistPair> dayTrialistPairs, DrawCreationOptions options)
         {
             // An improved take function, factoring in dog run count and removing from the list
-            static List<Trialist> TakeAndRemove(List<Trialist> trialists, int runCount)
+            List<Trialist> TakeAndRemove(List<Trialist> trialists, int runCount)
             {
                 List<Trialist> takeList = new List<Trialist>();
                 int index = 0;

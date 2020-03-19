@@ -1,0 +1,559 @@
+﻿<UserControl x:Class="TrialManager.Views.DataImportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:csv="clr-namespace:TrialManager.Model.Csv"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:model="clr-namespace:TrialManager.Model"
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:vm="clr-namespace:TrialManager.ViewModels"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             Cursor="{Binding WindowCursor}"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style x:Key="MaterialDesignDisabledExpander"
+               TargetType="{x:Type Expander}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"/>
+            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <Setter Property="md:ExpanderAssist.DownHeaderPadding" Value="24,12,24,12"/>
+            <Setter Property="md:ExpanderAssist.UpHeaderPadding" Value="24,12,24,12"/>
+            <Setter Property="md:ExpanderAssist.LeftHeaderPadding" Value="12,24,12,24"/>
+            <Setter Property="md:ExpanderAssist.RightHeaderPadding" Value="12,24,12,24"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Expander}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <DockPanel Background="{TemplateBinding Background}">
+                                <ToggleButton Name="HeaderSite"
+                                              BorderThickness="0"
+                                              Content="{TemplateBinding Header}"
+                                              ContentStringFormat="{TemplateBinding HeaderStringFormat}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                                              Cursor="Hand"
+                                              DockPanel.Dock="Top"
+                                              Focusable="False"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              IsEnabled="False"
+                                              IsTabStop="False"
+                                              Opacity=".87"
+                                              Style="{StaticResource MaterialDesignExpanderDownHeaderStyle}"
+                                              TextElement.FontSize="15"/>
+                                <Border Name="ContentSite">
+                                    <Grid Name="ContentPanel"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                        <ContentPresenter Name="PART_Content"
+                                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                                          Focusable="False"
+                                                          Opacity="0"/>
+                                    </Grid>
+                                </Border>
+                            </DockPanel>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="ExpansionStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="0"
+                                                          To="Expanded">
+                                            <VisualTransition.GeneratedEasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </VisualTransition.GeneratedEasingFunction>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Content"
+                                                                               Storyboard.TargetProperty="Visibility">
+                                                    <DiscreteObjectKeyFrame KeyTime="0"
+                                                                            Value="{x:Static Visibility.Visible}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="PART_Content"
+                                                                 Storyboard.TargetProperty="Opacity"
+                                                                 To="1"
+                                                                 Duration="0:0:0.3"/>
+                                            </Storyboard>
+                                        </VisualTransition>
+                                        <VisualTransition GeneratedDuration="0"
+                                                          To="Collapsed">
+                                            <VisualTransition.GeneratedEasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </VisualTransition.GeneratedEasingFunction>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Content"
+                                                                               Storyboard.TargetProperty="Visibility">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0.3"
+                                                                            Value="{x:Static Visibility.Hidden}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                                <DoubleAnimation Storyboard.TargetName="PART_Content"
+                                                                 Storyboard.TargetProperty="Opacity"
+                                                                 To="0"
+                                                                 Duration="0:0:0.3"/>
+                                            </Storyboard>
+                                        </VisualTransition>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Expanded">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="PART_Content"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="1"
+                                                             Duration="0"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Content"
+                                                                           Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Collapsed">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="PART_Content"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0"
+                                                             Duration="0"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_Content"
+                                                                           Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{x:Static Visibility.Hidden}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ExpandDirection" Value="Right">
+                                <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Left"/>
+                                <Setter TargetName="ContentPanel" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform CenterX="1" CenterY="0.5" ScaleX="{Binding Opacity, ElementName=PART_Content}"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="ContentPanel" Property="Height" Value="Auto"/>
+                                <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource MaterialDesignExpanderRightHeaderStyle}"/>
+                            </Trigger>
+
+                            <Trigger Property="ExpandDirection" Value="Left">
+                                <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Right"/>
+                                <Setter TargetName="ContentPanel" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform CenterX="0" CenterY="0.5" ScaleX="{Binding Opacity, ElementName=PART_Content}"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="ContentPanel" Property="Height" Value="Auto"/>
+                                <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource MaterialDesignExpanderLeftHeaderStyle}"/>
+                            </Trigger>
+
+                            <Trigger Property="ExpandDirection" Value="Up">
+                                <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Bottom"/>
+                                <Setter TargetName="ContentPanel" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform CenterX="0.5" CenterY="1" ScaleY="{Binding Opacity, ElementName=PART_Content}"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="ContentPanel" Property="Width" Value="Auto"/>
+                                <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource MaterialDesignExpanderUpHeaderStyle}"/>
+                            </Trigger>
+
+                            <Trigger Property="ExpandDirection" Value="Down">
+                                <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Top"/>
+                                <Setter TargetName="ContentPanel" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform CenterX="0.5" CenterY="0" ScaleY="{Binding Opacity, ElementName=PART_Content}"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="ContentPanel" Property="Width" Value="Auto"/>
+                                <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource MaterialDesignExpanderDownHeaderStyle}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <md:Card Margin="16">
+        <ScrollViewer x:Name="ScrlVwrMain">
+            <StackPanel>
+                <!-- Import Data Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsImportFileSectionExpanded, Mode=OneWay}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="{Binding [Header_SelectDataFile], Mode=OneTime}"
+                                     Icon="1"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Margin="24,8,24,16">
+                        <Button Command="{s:Action OpenFileSelectionDialog}"
+                                Content="{Binding [Command_ImportData], Mode=OneTime}"
+                                Style="{StaticResource MaterialDesignRaisedDarkButton}"/>
+                        <TextBlock Margin="0,8,0,0"
+                                   Style="{StaticResource MaterialDesignBody1TextBlock}">
+                            <Run Text="Selected Data File: "/>
+                            <Run FontWeight="Bold"
+                                 Text="{Binding FileName, Mode=OneWay}"/>
+                        </TextBlock>
+                        <Button Margin="0,8,0,0"
+                                HorizontalAlignment="Left"
+                                Command="{s:Action ValidateAndContinue}"
+                                CommandParameter="{x:Static vm:ImportSection.ImportFile}"
+                                Content="CONTINUE"
+                                IsEnabled="{Binding IsImportFileSectionValid}"/>
+                    </StackPanel>
+                </Expander>
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
+
+                <!-- Setup Mappings Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsSetupMappingsSectionExpanded, Mode=OneWay}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="Setup Property Mappings"
+                                     Icon="2"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Margin="24,8,24,16">
+                        <TextBlock Margin="16,0,0,0"
+                                   FontWeight="Bold"
+                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="Required Mappings"/>
+                        <TextBlock Margin="16,4,0,0"
+                                   Text="These properties are required for TrialManager to operate, and must be set to a value from your CSV file"/>
+                        <DataGrid AutoGenerateColumns="False"
+                                  CellStyle="{StaticResource DataGridVerticalAlignmentCell}"
+                                  ItemsSource="{Binding MappedProperties}"
+                                  Style="{StaticResource DataGridNoScroll}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="Auto"
+                                                    Binding="{Binding MappedProperty, Mode=OneTime}"
+                                                    Header="TrialManager Property"
+                                                    IsReadOnly="True"/>
+                                <DataGridTemplateColumn IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <md:PackIcon Foreground="{StaticResource PrimaryHueLightBrush}"
+                                                         Kind="ArrowBackCircle"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="Auto"
+                                                        Header="CSV File Property">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type model:PropertyHeaderPair}">
+                                            <ComboBox MinWidth="100"
+                                                      Background="{StaticResource MaterialDesignPaper}"
+                                                      ItemsSource="{Binding DataContext.CsvHeaders, Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      SelectedItem="{Binding DataFileProperty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <TextBlock Margin="16,24,0,0"
+                                   FontWeight="Bold"
+                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="Optional Mappings"/>
+                        <TextBlock Margin="16,4,0,0"
+                                   Text="These properties are optional, but improve the functionality of TrialManager and are therefore recommended"/>
+                        <DataGrid AutoGenerateColumns="False"
+                                  CellStyle="{StaticResource DataGridVerticalAlignmentCell}"
+                                  ItemsSource="{Binding OptionalMappedProperties}"
+                                  Style="{StaticResource DataGridNoScroll}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="Auto"
+                                                    Binding="{Binding OptionalMappedProperty, Mode=OneTime}"
+                                                    Header="Optional TrialManager Property"
+                                                    IsReadOnly="True"/>
+                                <DataGridTemplateColumn IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <md:PackIcon Foreground="{StaticResource PrimaryHueLightBrush}"
+                                                         Kind="ArrowBackCircle"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="Auto"
+                                                        Header="CSV File Property">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type model:PropertyHeaderPair}">
+                                            <ComboBox MinWidth="100"
+                                                      Background="{StaticResource MaterialDesignPaper}"
+                                                      ItemsSource="{Binding DataContext.CsvHeaders, Mode=OneTime, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      SelectedItem="{Binding DataFileProperty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <Button Margin="0,0,12,0"
+                                    Command="{s:Action StepBack}"
+                                    CommandParameter="{x:Static vm:ImportSection.SetupMappings}"
+                                    Content="BACK"
+                                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                            <Button Command="{s:Action ValidateAndContinue}"
+                                    CommandParameter="{x:Static vm:ImportSection.SetupMappings}"
+                                    Content="CONTINUE"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
+
+                <!-- Preferred Day Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsPreferredDaySectionExpanded}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="Map 'Preferred Day' Dates"
+                                     Icon="4"/>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Margin="24,8,24,16">
+                        <TextBlock Text="For preferred day values that indicate either: no preference, or spread over multiple days; leave the mapped date on the minimum possible value. The reset button can be used to achieve this."
+                                   TextWrapping="Wrap"/>
+                        <DataGrid Margin="0,16"
+                                  AutoGenerateColumns="False"
+                                  CellStyle="{StaticResource DataGridVerticalAlignmentCell}"
+                                  ItemsSource="{Binding PreferredDayMappings}"
+                                  Style="{StaticResource DataGridNoScroll}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width="Auto"
+                                                    Binding="{Binding PreferredDay, Mode=OneTime}"
+                                                    Header="Date in CSV File"
+                                                    IsReadOnly="True"/>
+                                <DataGridTemplateColumn IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <md:PackIcon Foreground="{StaticResource PrimaryHueLightBrush}"
+                                                         Kind="ArrowBackCircle"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="Auto"
+                                                        Header="Mapped Date">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type model:PreferredDayDateTimePair}">
+                                            <DatePicker FontSize="14"
+                                                        SelectedDate="{Binding Day, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Reset">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Command="{s:Action ResetDateCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="{md:PackIcon Kind=Refresh}"
+                                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                                    ToolTip="Reset Date"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <Button Margin="0,0,12,0"
+                                    Command="{s:Action StepBack}"
+                                    CommandParameter="{x:Static vm:ImportSection.PreferredDay}"
+                                    Content="BACK"
+                                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                            <Button Command="{s:Action ValidateAndContinue}"
+                                    CommandParameter="{x:Static vm:ImportSection.PreferredDay}"
+                                    Content="CONTINUE"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
+
+                <!-- Correct Duplicates Section -->
+                <Expander HorizontalAlignment="Stretch"
+                          IsExpanded="{Binding IsDuplicatesSectionExpanded}"
+                          Style="{StaticResource MaterialDesignDisabledExpander}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <md:Chip Content="Correct Duplicates"
+                                     Icon="5"/>
+                        </StackPanel>
+                    </Expander.Header>
+
+                    <StackPanel Margin="24,8,24,16">
+                        <DataGrid AutoGenerateColumns="False"
+                                  CellStyle="{StaticResource DataGridVerticalAlignmentCell}"
+                                  ItemsSource="{Binding DuplicateTrialistPairs}"
+                                  Style="{StaticResource DataGridNoScroll}">
+                            <DataGrid.RowStyle>
+                                <Style BasedOn="{StaticResource MaterialDesignDataGridRow}"
+                                       TargetType="{x:Type DataGridRow}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type DataGridRow}">
+                                                <Border x:Name="DGR_Border"
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        SnapsToDevicePixels="True">
+                                                    <SelectiveScrollingGrid>
+                                                        <SelectiveScrollingGrid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </SelectiveScrollingGrid.ColumnDefinitions>
+                                                        <SelectiveScrollingGrid.RowDefinitions>
+                                                            <RowDefinition Height="*"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </SelectiveScrollingGrid.RowDefinitions>
+                                                        <DataGridCellsPresenter Grid.Column="1"
+                                                                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                                                Visibility="{Binding NeedsResolving, Mode=OneTime, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"/>
+                                                        <DataGridDetailsPresenter Grid.Row="1"
+                                                                                  Grid.Column="1"
+                                                                                  SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                                                  Visibility="{TemplateBinding DetailsVisibility}"/>
+                                                        <DataGridRowHeader Grid.RowSpan="2"
+                                                                           SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"
+                                                                           Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Row}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
+                                                    </SelectiveScrollingGrid>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.RowStyle>
+
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Width="Auto"
+                                                        Header="Trialist One"
+                                                        IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type csv:DuplicateTrialistPair}">
+                                            <Expander DataContext="{Binding FirstTrialist}"
+                                                      Header="{Binding FullName, Mode=OneTime}">
+                                                <StackPanel Margin="8,0,8,8">
+                                                    <TextBlock>
+                                                        <Run FontWeight="Bold"
+                                                             Text="Status: "/>
+                                                        <Run Text="{Binding Status, Mode=OneTime}"/>
+                                                    </TextBlock>
+                                                    <TextBlock Margin="0,4,0,0">
+                                                        <Run FontWeight="Bold"
+                                                             Text="Address: "/>
+                                                        <Run Text="{Binding Address}"/>
+                                                    </TextBlock>
+                                                    <TextBlock Margin="0,4,0,0"
+                                                               TextWrapping="Wrap">
+                                                        <Run FontWeight="Bold"
+                                                             Text="Dogs: "/>
+                                                        <Run Text="{Binding DogOneName, Mode=OneTime}"/>
+                                                        <Run Text=", "/>
+                                                        <Run Text="{Binding DogTwoName, Mode=OneTime}"/>
+                                                        <Run Text=", "/>
+                                                        <Run Text="{Binding DogThreeName, Mode=OneTime}"/>
+                                                        <Run Text=", "/>
+                                                        <Run Text="{Binding DogFourName, Mode=OneTime}"/>
+                                                        <Run Text=", "/>
+                                                        <Run Text="{Binding DogFiveName, Mode=OneTime}"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Expander>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridCheckBoxColumn Width="Auto"
+                                                        Binding="{Binding KeepFirstTrialist}"
+                                                        Header="Keep"/>
+
+                                <DataGridTemplateColumn Width="Auto"
+                                                        Header="Trialist Two"
+                                                        IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate DataType="{x:Type csv:DuplicateTrialistPair}">
+                                            <Expander DataContext="{Binding SecondTrialist}"
+                                                      Header="{Binding FullName, Mode=OneTime}">
+                                                <StackPanel Margin="8,0,8,8">
+                                                    <TextBlock>
+                                                        <Run FontWeight="Bold"
+                                                             Text="Status: "/>
+                                                        <Run Text="{Binding Status, Mode=OneTime}"/>
+                                                    </TextBlock>
+                                                    <TextBlock Margin="0,4,0,0">
+                                                        <Run FontWeight="Bold"
+                                                             Text="Address: "/>
+                                                        <Run Text="{Binding Address}"/>
+                                                    </TextBlock>
+                                                    <TextBlock Margin="0,4,0,0"
+                                                               TextWrapping="Wrap">
+                                                        <Run FontWeight="Bold"
+                                                             Text="Dogs: "/>
+                                                        <Run Text="{Binding DogOneName, Mode=OneTime}"/>
+                                                        <Run Text=", "/>
+                                                        <Run Text="{Binding DogTwoName, Mode=OneTime}"/>
+                                                        <Run Text=", "/>
+                                                        <Run Text="{Binding DogThreeName, Mode=OneTime}"/>
+                                                        <Run Text=", "/>
+                                                        <Run Text="{Binding DogFourName, Mode=OneTime}"/>
+                                                        <Run Text=", "/>
+                                                        <Run Text="{Binding DogFiveName, Mode=OneTime}"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Expander>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridCheckBoxColumn Width="Auto"
+                                                        Binding="{Binding KeepSecondTrialist}"
+                                                        Header="Keep"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <Button Margin="0,0,12,0"
+                                    Command="{s:Action StepBack}"
+                                    CommandParameter="{x:Static vm:ImportSection.Duplicates}"
+                                    Content="BACK"
+                                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                            <Button Command="{s:Action ValidateAndContinue}"
+                                    CommandParameter="{x:Static vm:ImportSection.Duplicates}"
+                                    Content="FINISH"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+                <Border Height="1"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource MaterialDesignDivider}"
+                        SnapsToDevicePixels="True"/>
+            </StackPanel>
+        </ScrollViewer>
+    </md:Card>
+</UserControl>

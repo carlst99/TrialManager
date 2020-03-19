@@ -27,14 +27,19 @@ namespace TrialManager.Services
         /// </summary>
         /// <param name="path">The path to the CSV file</param>
         /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
-        public async IAsyncEnumerable<string> GetDistinctPreferredDays(string path, ClassMap<MappedTrialist> classMap)
+        public async Task<List<string>> GetDistinctPreferredDays(string path, ClassMap<MappedTrialist> classMap)
         {
-            HashSet<int> dayHashes = new HashSet<int>();
-            await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
+            return await Task.Run(() =>
             {
-                if (dayHashes.Add(mt.PreferredDayString.GetHashCode()))
-                    yield return mt.PreferredDayString;
-            }
+                HashSet<int> dayHashes = new HashSet<int>();
+                List<string> days = new List<string>();
+                foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
+                {
+                    if (dayHashes.Add(mt.PreferredDayString.GetHashCode()))
+                        days.Add(mt.PreferredDayString);
+                }
+                return days;
+            }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -42,28 +47,33 @@ namespace TrialManager.Services
         /// </summary>
         /// <param name="path">The path to the csv file</param>
         /// <param name="classMap">The classmap used to create a <see cref="MappedTrialist"/> object</param>
-        public async IAsyncEnumerable<DuplicateTrialistPair> GetMappedDuplicates(string path, ClassMap<MappedTrialist> classMap)
+        public async Task<List<DuplicateTrialistPair>> GetMappedDuplicates(string path, ClassMap<MappedTrialist> classMap)
         {
-            HashSet<int> trialistHashes = new HashSet<int>();
-            List<MappedTrialist> tempStorageList = new List<MappedTrialist>();
-
-            // Note that this algorithm can result in multiple duplicate fields if the trialist has submitted more than two entries
-            // However as this is unlikely, the user should have enough short-term memory to realise that there are 'duplicate duplicates'
-            await foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
+            return await Task.Run(() =>
             {
-                // If we can add the hash, then we have not yet discovered a potential duplicate
-                if (trialistHashes.Add(mt.GetHashCode()))
+                HashSet<int> trialistHashes = new HashSet<int>();
+                List<MappedTrialist> tempStorageList = new List<MappedTrialist>();
+                List<DuplicateTrialistPair> pairs = new List<DuplicateTrialistPair>();
+
+                // Note that this algorithm can result in multiple duplicate fields if the trialist has submitted more than two entries
+                // However as this is unlikely, the user should have enough short-term memory to realise that there are 'duplicate duplicates'
+                foreach (MappedTrialist mt in EnumerateCsv(path, classMap))
                 {
-                    tempStorageList.Add(mt);
+                    // If we can add the hash, then we have not yet discovered a potential duplicate
+                    if (trialistHashes.Add(mt.GetHashCode()))
+                    {
+                        tempStorageList.Add(mt);
+                    }
+                    else
+                    {
+                        MappedTrialist clash = tempStorageList.First(t => t.GetHashCode().Equals(mt.GetHashCode()));
+                        clash.HasDuplicateClash = true;
+                        pairs.Add(new DuplicateTrialistPair(clash, mt));
+                    }
                 }
-                else
-                {
-                    MappedTrialist clash = tempStorageList.First(t => t.GetHashCode().Equals(mt.GetHashCode()));
-                    clash.HasDuplicateClash = true;
-                    yield return new DuplicateTrialistPair(clash, mt);
-                }
-            }
-            _tempStorageList = tempStorageList.Where(t => !t.HasDuplicateClash);
+                _tempStorageList = tempStorageList.Where(t => !t.HasDuplicateClash);
+                return pairs;
+            }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -71,26 +81,30 @@ namespace TrialManager.Services
         /// </summary>
         /// <param name="duplicates">A list of resolved duplicates</param>
         /// <param name="preferredDayMappings">Preferred day mappings</param>
-        public async IAsyncEnumerable<Trialist> BuildTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
+        public async Task<List<Trialist>> BuildTrialistList(IList<DuplicateTrialistPair> duplicates, IList<PreferredDayDateTimePair> preferredDayMappings)
         {
-            if (preferredDayMappings is null)
+            return await Task.Run(() =>
             {
-                preferredDayMappings = new List<PreferredDayDateTimePair>
+                if (preferredDayMappings is null)
+                {
+                    preferredDayMappings = new List<PreferredDayDateTimePair>
                 {
                     new PreferredDayDateTimePair(null, DateTime.MinValue)
                 };
-            }
+                }
+                List<Trialist> trialists = new List<Trialist>();
+                foreach (MappedTrialist trialist in _tempStorageList)
+                    trialists.Add(trialist.ToTrialist(_locationService, preferredDayMappings));
 
-            foreach (MappedTrialist trialist in _tempStorageList)
-                yield return await trialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
-
-            foreach (DuplicateTrialistPair pair in duplicates)
-            {
-                if (pair.KeepFirstTrialist)
-                    yield return await pair.FirstTrialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
-                if (pair.KeepSecondTrialist)
-                    yield return await pair.SecondTrialist.ToTrialist(_locationService, preferredDayMappings).ConfigureAwait(false);
-            }
+                foreach (DuplicateTrialistPair pair in duplicates)
+                {
+                    if (pair.KeepFirstTrialist)
+                        trialists.Add(pair.FirstTrialist.ToTrialist(_locationService, preferredDayMappings));
+                    if (pair.KeepSecondTrialist)
+                        trialists.Add(pair.SecondTrialist.ToTrialist(_locationService, preferredDayMappings));
+                }
+                return trialists;
+            }).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -102,9 +116,11 @@ namespace TrialManager.Services
             if (!File.Exists(filePath))
                 return false;
 
-            using StreamReader sr = new StreamReader(filePath);
-            string line = await sr.ReadLineAsync().ConfigureAwait(false);
-            return line?.Contains(';') == true || line?.Contains(',') == true;
+            using (StreamReader sr = new StreamReader(filePath))
+            {
+                string line = await sr.ReadLineAsync().ConfigureAwait(false);
+                return line?.Contains(';') == true || line?.Contains(',') == true;
+            }
         }
 
         /// <summary>
@@ -157,12 +173,14 @@ namespace TrialManager.Services
         /// <returns></returns>
         public string[] GetCsvHeaders(string filePath)
         {
-            using CsvReader csvReader = GetCsvReader(filePath);
-            csvReader.Read();
-            csvReader.ReadHeader();
-            string[] headers = new string[csvReader.Context.HeaderRecord.Length];
-            csvReader.Context.HeaderRecord.CopyTo(headers, 0);
-            return headers;
+            using (CsvReader csvReader = GetCsvReader(filePath))
+            {
+                csvReader.Read();
+                csvReader.ReadHeader();
+                string[] headers = new string[csvReader.Context.HeaderRecord.Length];
+                csvReader.Context.HeaderRecord.CopyTo(headers, 0);
+                return headers;
+            }
         }
 
         /// <summary>
@@ -170,11 +188,13 @@ namespace TrialManager.Services
         /// </summary>
         /// <param name="filePath">The path to the CSV file</param>
         /// <param name="classMap">The classmap used to create the <see cref="MappedTrialist"/> object</param>
-        private async IAsyncEnumerable<MappedTrialist> EnumerateCsv(string filePath, ClassMap<MappedTrialist> classMap)
+        private IEnumerable<MappedTrialist> EnumerateCsv(string filePath, ClassMap<MappedTrialist> classMap)
         {
-            using CsvReader csv = GetCsvReader(filePath, classMap);
-            await foreach (MappedTrialist mt in csv.GetRecordsAsync<MappedTrialist>())
-                yield return mt;
+            using (CsvReader csv = GetCsvReader(filePath, classMap))
+            {
+                foreach (MappedTrialist mt in csv.GetRecords<MappedTrialist>())
+                    yield return mt;
+            }
         }
     }
 }

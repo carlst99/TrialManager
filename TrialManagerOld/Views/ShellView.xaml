@@ -1,0 +1,67 @@
+﻿<Window x:Class="TrialManager.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+        xmlns:s="https://github.com/canton7/Stylet"
+        Title="TrialManager"
+        Width="1080"
+        Height="720"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.FontSize="13"
+        TextElement.FontWeight="Regular"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        WindowStartupLocation="CenterScreen">
+    <md:DialogHost Identifier="MainDialogHost"
+                   Loaded="{s:Action OnDialogHostLoaded}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <mde:AppBar Title="{Binding [App_Title], Mode=OneTime}"
+                        AppIcon="{md:PackIcon Kind=FormatListBulletedSquare,
+                                              Size=28}">
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="0,0,8,0"
+                            md:ButtonAssist.CornerRadius="10"
+                            Command="{s:Action OnDocumentationRequested}"
+                            Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                            ToolTip="{Binding [ToolTip_ViewDocumentation], Mode=OneTime}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0,0,8,0"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding [Command_ViewDocumentation], Mode=OneTime}"/>
+                            <md:PackIcon Width="20"
+                                         Height="20"
+                                         Kind="HelpCircle"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button md:ButtonAssist.CornerRadius="10"
+                            Command="{s:Action OnAboutRequested}"
+                            Style="{StaticResource MaterialDesignRaisedLightButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="0,0,8,0"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding [Command_AboutApp], Mode=OneTime}"/>
+                            <md:PackIcon Width="20"
+                                         Height="20"
+                                         Kind="AboutCircle"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </mde:AppBar>
+
+            <ContentControl Grid.Row="1"
+                            s:View.Model="{Binding ActiveItem}"/>
+            <md:Snackbar Grid.Row="2"
+                         MessageQueue="{Binding MessageQueue}"/>
+        </Grid>
+    </md:DialogHost>
+</Window>

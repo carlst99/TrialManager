@@ -201,9 +201,7 @@ namespace TrialManager.ViewModels
         public override async void Prepare(object payload)
         {
             DrawDisplayParams p = (DrawDisplayParams)payload;
-            _trialists = new List<Trialist>();
-            await foreach (Trialist element in p.Trialists)
-                _trialists.Add(element);
+            _trialists = p.Trialists;
             ShowAddressBar = p.LocationSortingEnabled;
             _preparationComplete = true;
             await CreateDraw().ConfigureAwait(false);
