@@ -2,17 +2,13 @@
 
 ### Download and Install
 
-You can download the latest release of TrialManager from the [releases page](https://github.com/carlst99/TrialManager/releases).
+You can download the latest release of TrialManager from the [releases page](https://github.com/carlst99/TrialManager/releases/latest).
 
 Once the file finishes downloading, you can install it like any other app.
-**You will need [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/current/runtime) or higher install to run TrialManager**. If in doubt, download the *x86 version* of .NET Core.
-You will also need to be running **Windows 10**, version 1607 or higher. You can check this in `Settings->System->About`
+**You will need the [.NET Framework 4.6.1 Runtime](https://dotnet.microsoft.com/download/dotnet-framework/net461) or higher install to run TrialManager**. You probably already have this installed.
+
 TrialManager will then keep itself up-to-date automatically, provided you open it while connected to the internet. 
 If unsure, you can always compare the version in the `About` menu with the latest release on the releases page
-
-!!! note
-	Windows Smartscreen may occasionally warn you that the file you are trying to install is not commonly downloaded.
-	This is normal behaviour and can be ignored.
 
 ### Diagnostics Acceptance
 
