@@ -6,6 +6,7 @@ using Squirrel;
 using Stylet;
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using TrialManager.Model;
 using TrialManager.Resources;
@@ -46,7 +47,7 @@ namespace TrialManager.ViewModels
             ActiveItem = dataImportViewModel;
         }
 
-        public static async Task OnDialogHostLoaded()
+        public async Task OnDialogHostLoaded()
         {
             Realm realmInstance = RealmHelpers.GetRealmInstance();
             Preferences preferences = RealmHelpers.GetUserPreferences(realmInstance);
@@ -71,8 +72,12 @@ namespace TrialManager.ViewModels
 
             try
             {
-                using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/carlst99/TrialManager").ConfigureAwait(false))
-                    await mgr.UpdateApp().ConfigureAwait(false);
+                using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/carlst99/TrialManager"))
+                {
+                    ReleaseEntry release = await mgr.Result.UpdateApp().ConfigureAwait(true);
+                    if (release.Version.Version > Assembly.GetEntryAssembly().GetName().Version)
+                        MessageQueue.Enqueue("TrialManager has updated! Restart the app to finish installing");
+                }
             }
             catch (Exception ex)
             {
