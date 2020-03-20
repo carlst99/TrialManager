@@ -72,10 +72,10 @@ namespace TrialManager.ViewModels
 
             try
             {
-                using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/carlst99/TrialManager"))
+                using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/carlst99/TrialManager").ConfigureAwait(false))
                 {
-                    ReleaseEntry release = await mgr.Result.UpdateApp().ConfigureAwait(true);
-                    if (release.Version.Version > Assembly.GetEntryAssembly().GetName().Version)
+                    ReleaseEntry release = await mgr.UpdateApp().ConfigureAwait(false);
+                    if (release?.Version.Version > Assembly.GetEntryAssembly().GetName().Version)
                         MessageQueue.Enqueue("TrialManager has updated! Restart the app to finish installing");
                 }
             }
