@@ -53,7 +53,7 @@ namespace TrialManager
             base.ConfigureIoC(builder);
         }
 
-#region Appdata Helpers
+        #region Appdata Helpers
 
         /// <summary>
         /// Gets the path to the appdata store of respective platforms
@@ -65,7 +65,7 @@ namespace TrialManager
         /// </returns>
         public static string GetPlatformAppdataPath()
         {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TrialManager");
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TrialManager");
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
@@ -79,6 +79,6 @@ namespace TrialManager
         /// <returns></returns>
         public static string GetAppdataFilePath(string fileName) => Path.Combine(GetPlatformAppdataPath(), fileName);
 
-#endregion
+        #endregion
     }
 }
