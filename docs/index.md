@@ -1,6 +1,6 @@
 # TrialManager
 
-![Demo view](img/demo_drawview.png);
+![Demo view](img/demo_drawview.png)
 
 ### Download and Install
 
@@ -8,6 +8,7 @@ You can download the latest release of TrialManager from the [releases page](htt
 
 TrialManager will then keep itself up-to-date automatically, provided you open it while connected to the internet. 
 If unsure, you can always compare the version in the `About` menu with the latest release on the releases page
+
 ### Diagnostics Acceptance
 
 On the first-time run, TrialManager will ask you if you wish to report diagnostics data to the developer.
