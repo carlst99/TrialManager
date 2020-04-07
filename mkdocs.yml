@@ -9,7 +9,7 @@ edit_uri: ''
 
 nav:
     - Home: index.md
-    - About: about.md
+    - "Creating a Google Form": create-google-form.md
 theme:
     name: 'material'
     palette:
