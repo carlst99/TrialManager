@@ -13,6 +13,8 @@ TrialManager requires a CSV file containing your entries to operate. Google Form
 
 ### Using one form for multiple events
 
+Stub
+
 ### Editing the entries in Excel/Google Sheets
 
 Quite often, you'll want to edit the entries, or at least browse through them in a more compact manner than what you can do in Google Forms. Reasons for doing this include:
