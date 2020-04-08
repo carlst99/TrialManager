@@ -9,7 +9,9 @@ edit_uri: ''
 
 nav:
     - Home: index.md
-    - "Creating a Google Form": create-google-form.md
+    - Google Forms:
+        - "Creating a Google Form": google-forms/create-google-form.md
+        - "Downloading and Editing Entries": google-forms/download-edit-entries.md
 theme:
     name: 'material'
     palette:

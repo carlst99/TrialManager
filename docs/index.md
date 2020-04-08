@@ -19,4 +19,4 @@ Note that you can change your decision regarding diagnostics at any time by acce
 
 ![Changing diagnostics acceptance in about menu](img/disable-diagnostics.gif)
 
-`Changing acceptance in the about menu`
+*Above: Changing acceptance in the about menu*
