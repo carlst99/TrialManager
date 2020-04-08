@@ -1,13 +1,20 @@
-# Creating an entry form
+# Creating an entry form [WIP]
 
-Creating an online entry form is where it all starts. 
+Creating an online entry form is where it all starts. The simplest and most convenient way to achieve this (with guaranteed TrialManager compatibility!) is to create a Google Form.
 
 ### Downloading the form for use in TrialManager
-We recommend that you only download the entries once they have closed, so that you don't confuse yourself with multiple datasets.
+
+TrialManager requires a CSV file containing your entries to operate. Google Forms makes it easy to download one directly.
+
+
+
+!!! note
+    We recommend that you only download the entries once they have closed, so that you don't confuse yourself with multiple datasets.
 
 ### Using one form for multiple events
 
 ### Editing the entries in Excel/Google Sheets
+
 Quite often, you'll want to edit the entries, or at least browse through them in a more compact manner than what you can do in Google Forms. Reasons for doing this include:
 
 - Fixing incorrect entries
@@ -15,9 +22,11 @@ Quite often, you'll want to edit the entries, or at least browse through them in
 - Separating [multiple events](#using-one-form-for-multiple-events) into different csv files
 
 ##### Editing in Excel
+
 Start by [downloading](#downloading-the-form-for-use-in-trialmanager) the CSV file. From here, you can simply open it in Excel. Note that when saving, Excel might warn you that saving as CSV could result in losing some features. Ignore this, as no data will be lost.
 
 ##### Editing in Google Sheets
+
 Start by exporting the entries from Google Forms. To do this, open the `Responses` tab of your Google Form, and click the `Create Spreadsheet` button. This will create a Sheets project in your Google Drive.
 
 ![Exporting to Google Sheets](img/create-google-form/export-to-sheets.gif)

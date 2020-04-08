@@ -264,7 +264,7 @@ namespace TrialManager.Services
             foreach (Trialist trialist in trialists)
                 dogCount += trialist.Dogs.Count;
 
-            TrialistDrawEntry[] draw = new TrialistDrawEntry[dogCount * 2];
+            TrialistDrawEntry[] draw = new TrialistDrawEntry[dogCount * minRunSeparation];
             HashSet<int> usedNumbers = new HashSet<int>();
             const int startCount = 0;
             int count = 0;
