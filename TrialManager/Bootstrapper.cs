@@ -32,7 +32,7 @@ namespace TrialManager
             throw new ApplicationException("Remember AppCenter key!");
             Preferences _preferences = RealmHelpers.GetUserPreferences(RealmHelpers.GetRealmInstance());
             if (_preferences.IsDiagnosticsEnabled)
-                AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
+                AppCenter.Start("{App Secret}", typeof(Analytics), typeof(Crashes));
 #endif
 
             base.OnStart();
