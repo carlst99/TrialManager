@@ -17,6 +17,6 @@ Note that you can change your decision regarding diagnostics at any time by acce
 
 **Any data reported by diagnostics is completely anonymous and contains no personal information**
 
-![Changing diagnostics acceptance in about menu](img/diagnostics_switch.png)
+![Changing diagnostics acceptance in about menu](img/disable-diagnostics.gif)
 
 `Changing acceptance in the about menu`
