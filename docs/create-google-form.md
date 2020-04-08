@@ -6,7 +6,11 @@ Creating an online entry form is where it all starts. The simplest and most conv
 
 TrialManager requires a CSV file containing your entries to operate. Google Forms makes it easy to download one directly.
 
+Start by going to `Responses` tab and disallowing responses - flick the 'Accepting Responses' switch to the off position. Next, click on the 'overflow menu' - the three vertical dots, and select 'Download Responses (.csv)'. Watch the animated image below for a guide on this process.
 
+![Forms download process](img/create-google-form/download-process.gif)
+
+This will download the data as a ZIP file. This is similar to a folder - simply double click on the ZIP file to open it and access the CSV file. At this point we recommend extracting the CSV file from the ZIP package, by right-clicking the ZIP file and selecting 'Extract All'. After this process is complete you can safely delete the ZIP file.
 
 !!! note
     We recommend that you only download the entries once they have closed, so that you don't confuse yourself with multiple datasets.
