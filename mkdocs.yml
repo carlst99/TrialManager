@@ -9,7 +9,8 @@ edit_uri: ''
 
 nav:
     - Home: index.md
-    - "Creating a Google Form": create-google-form.md
+    - Google Forms:
+        - "Creating a Google Form": create-google-form.md
 theme:
     name: 'material'
     palette:
@@ -17,8 +18,8 @@ theme:
         accent: 'yellow'
     logo: 'img/icon.png'
     favicon: 'img/favicon.ico'
-    feature:
-        tabs: true
+    features:
+        - tabs: false
 markdown_extensions:
   - admonition
   - toc:
