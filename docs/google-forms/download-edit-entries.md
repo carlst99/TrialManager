@@ -13,6 +13,9 @@ This will download the data as a ZIP file. This is similar to a folder - simply 
 !!! note
     We recommend that you only download the entries once they have closed, so that you don't confuse yourself with multiple datasets.
 
+!!! important
+    Do not disallow responses if you wish to continue collecting them! We only put this into the docs as per the above recommendation.
+
 ### Editing the entries in Excel/Google Sheets
 
 Quite often, you'll want to edit the entries, or at least browse through them in a more compact manner than what you can do in Google Forms. Reasons for doing this include:
