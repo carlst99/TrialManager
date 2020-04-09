@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#creating-an-entry-form-wip" class="md-skip">
+        <a href="#creating-an-entry-form" class="md-skip">
           Skip to content
         </a>
       
@@ -282,8 +282,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#preferred-day-info" class="md-nav__link">
-    Preferred Day Info
+  <a href="#preferred-day-notes" class="md-nav__link">
+    Preferred Day Notes
   </a>
   
 </li>
@@ -294,15 +294,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-one-form-for-multiple-events" class="md-nav__link">
-    Using one form for multiple events
+  <a href="#distributing-your-form" class="md-nav__link">
+    Distributing your form
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#adding-phonemail-entries" class="md-nav__link">
-    Adding Phone/Mail Entries
+  <a href="#moving-on" class="md-nav__link">
+    Moving on
   </a>
   
 </li>
@@ -322,6 +322,18 @@
   <li class="md-nav__item">
     <a href="../download-edit-entries/" title="Downloading and Editing Entries" class="md-nav__link">
       Downloading and Editing Entries
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../advanced-forms/" title="Advanced Form Techniques" class="md-nav__link">
+      Advanced Form Techniques
     </a>
   </li>
 
@@ -379,8 +391,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#preferred-day-info" class="md-nav__link">
-    Preferred Day Info
+  <a href="#preferred-day-notes" class="md-nav__link">
+    Preferred Day Notes
   </a>
   
 </li>
@@ -391,15 +403,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-one-form-for-multiple-events" class="md-nav__link">
-    Using one form for multiple events
+  <a href="#distributing-your-form" class="md-nav__link">
+    Distributing your form
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#adding-phonemail-entries" class="md-nav__link">
-    Adding Phone/Mail Entries
+  <a href="#moving-on" class="md-nav__link">
+    Moving on
   </a>
   
 </li>
@@ -420,25 +432,50 @@
                   
                 
                 
-                <h1 id="creating-an-entry-form-wip">Creating an entry form [WIP]<a class="headerlink" href="#creating-an-entry-form-wip" title="Permanent link">&para;</a></h1>
-<p>Creating an online entry form is where it all starts. The simplest and most convenient way to achieve this (with guaranteed TrialManager compatibility!) is to create a Google Form.</p>
+                <h1 id="creating-an-entry-form">Creating an entry form<a class="headerlink" href="#creating-an-entry-form" title="Permanent link">&para;</a></h1>
+<p>Creating an online entry form is where it all starts. The simplest and most convenient way to achieve this (with guaranteed TrialManager compatibility!) is to create a Google Form. For guidance on creating and editing a Google Form, please read <a href="https://support.google.com/docs/answer/6281888?hl=en&amp;ref_topic=6063584">Google's own documentation</a>.</p>
 <h3 id="basic-requirements">Basic Requirements<a class="headerlink" href="#basic-requirements" title="Permanent link">&para;</a></h3>
 <p>Generally, you'll want your form to display information such as date, address, contact/payment info and important details such as dog clearance requirements. Furthermore, you may want to collect the participant's contact info and specify any other guidelines relevant to the entry.</p>
 <p>However, there are some data points that <strong>you must collect for TrialManager to operate</strong>. TrialManager calls these 'properties'.</p>
 <p><img alt="Displaying basic info" src="../../img/google-forms/basic-info.png" /></p>
 <p><em>Above: An example of providing trial info and collecting participant contact info</em></p>
 <h3 id="trialmanager-required-properties">TrialManager Required Properties<a class="headerlink" href="#trialmanager-required-properties" title="Permanent link">&para;</a></h3>
+<p>TrialManager requires, at a minimum, the:</p>
+<ul>
+<li>full name,</li>
+<li>status,</li>
+<li>first dog name</li>
+</ul>
+<p>from each trialist. We recommend that you use the <code>Short Answer</code> question type for names and the <code>Multiple Choice</code> question type for the status. <strong>You will need to mark these questions as <code>Required</code> so that participants cannot skip them.</strong> </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each property must be put in its own question so that TrialManager can correctly recognise them</p>
+</div>
 <h3 id="trialmanager-optional-properties">TrialManager Optional Properties<a class="headerlink" href="#trialmanager-optional-properties" title="Permanent link">&para;</a></h3>
-<h5 id="preferred-day-info">Preferred Day Info<a class="headerlink" href="#preferred-day-info" title="Permanent link">&para;</a></h5>
-<h3 id="using-one-form-for-multiple-events">Using one form for multiple events<a class="headerlink" href="#using-one-form-for-multiple-events" title="Permanent link">&para;</a></h3>
-<p>Stub</p>
-<h3 id="adding-phonemail-entries">Adding Phone/Mail Entries<a class="headerlink" href="#adding-phonemail-entries" title="Permanent link">&para;</a></h3>
-<p>Occasionally, we've found that some trialists simply cannot fill out an online form. Sometimes people are scared of the new format, but generally with strong encouragement we've found them to overcome that barrier and their feedback is positive. </p>
-<p>However, the most common reason that people cannot use the online form is that they simply don't have access to an internet-connected device. In this case, they'll have to resort back to the old standard of phone/mail entry. <strong>Any entries performed in this way will need to be added to what you have collected online</strong> - there are two ways of achieving this.</p>
-<ol>
-<li>Go through the online entry form yourself, but enter the details they have given you over the phone/mail. This option works well and can be done easily anywhere, but can be more time consuming for large numbers of manual entries</li>
-<li>After entries have closed and you have downloaded the CSV file, you can add each entry into the file (see <a href="../download-edit-entries/#editing-the-entries-in-excelgoogle-sheets">editing entries</a>)</li>
-</ol>
+<p>TrialManager also accepts a number of properties that can enhance the draw creation process. <strong>Each property requires its own question</strong>. The optional properties are:</p>
+<ul>
+<li>Address, used to sort Trialists into the draw based on their distance to the trial grounds</li>
+<li><a href="#preferred-day-info">Preferred day (see notes)</a></li>
+<li>Dog Two-Five Name (Use separate questions for each!)</li>
+<li>Dog One-Five Status (Use separate questions for each!)</li>
+</ul>
+<h5 id="preferred-day-notes">Preferred Day Notes<a class="headerlink" href="#preferred-day-notes" title="Permanent link">&para;</a></h5>
+<p>It is imperative that you use the <code>Multiple Choice</code> question type when giving the entry form a Preferred Day option. This is because TrialManager cannot directly parse written dates, and therefore requires you to 'map' your written date to one that it can understand. Hence, if you give participants the option of writing in their own date, you will have to map tens, possibly hundreds of the different written dates that people enter. <strong>Your preferred day question should look similar to below:</strong></p>
+<p><img alt="Preferred day question exemplar" src="../../img/google-forms/preferred-day-exemplar.png" /></p>
+<h3 id="distributing-your-form">Distributing your form<a class="headerlink" href="#distributing-your-form" title="Permanent link">&para;</a></h3>
+<p>Now that we've created a basic form, we need to send it to prospective trialists. The best way to do this is to get a link to the form and distribute via email, Facebook etc. To obtain a link, click the purple 'Send' button in the top-right corner of your form's design page. Switch to the <code>link</code> tab and copy/paste the provided link into an email or social media post.</p>
+<p><img alt="Obtaining a form link" src="../../img/google-forms/obtaining-link.gif" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On a small screen, the purple send button may turn into a right-facing arrow/paper plane icon</p>
+</div>
+<h3 id="moving-on">Moving on<a class="headerlink" href="#moving-on" title="Permanent link">&para;</a></h3>
+<p>See <a href="../advanced-forms/">Advanced Form Techniques</a> for information on:</p>
+<ul>
+<li>Using one form for multiple events</li>
+<li>Adding in phone/mail entries</li>
+<li>Reusing existing forms</li>
+</ul>
                 
               
               
