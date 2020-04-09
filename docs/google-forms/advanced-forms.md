@@ -1,9 +1,30 @@
-# Advanced Form Techniques
+# Advanced Form Techniques [WIP]
 
 ### Using one form for multiple events
 
-[TODO]
-Remember confirmation message
+Pretty much every trial will have multiple events. Take the 2020 King Country Centre Championships; said trial ran Shorthead, longhead, Zigzag hunt and Straight hunt events. Although creating a different form for each event is a perfectly valid strategy, we don't recommend it; this confuses participants and creates more work for you.
+
+#### Setting up the form
+
+Currently, our recommended method for condensing multiple events into one entry form is as follows:
+
+1. Add a `Title and Description` "question", informing your users to fill out the form separately for each event that they want to enter
+2. Add a `Multiple Choice` question that allows your users to select the event that they are filling out the form for
+3. Click the settings icon in the top-right corner. In the menu that appears, go to the `Presentation` tab. Under the `Confirmation Message` section, write something along the lines of "If you wish to enter another event, please fill out this form again by re-clicking the link"
+
+*Below: What your form should look like after steps 1 and 2*
+
+![Event Separation](../img/google-forms/event-separation.png)
+
+*Below: Setting the confirmation message*
+
+![Setting a confirmation message](../img/google-forms/confirmation-message.png)
+
+#### Formatting the data [WIP]
+
+Using the above technique does result in one hitch - each event will be placed into the same CSV file. You will need to separate each event into a separate file so that TrialManager can do its job.
+
+Start by getting your data into a place where you can edit it - see [Editing Entries](download-edit-entries.md#editing-the-entries-in-excelgoogle-sheets)
 
 ### Adding Phone/Mail Entries
 

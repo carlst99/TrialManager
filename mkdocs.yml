@@ -12,6 +12,7 @@ nav:
     - Google Forms:
         - "Creating a Google Form": google-forms/create-google-form.md
         - "Downloading and Editing Entries": google-forms/download-edit-entries.md
+        - "Advanced Form Techniques": google-forms/advanced-forms.md
 theme:
     name: 'material'
     palette:
