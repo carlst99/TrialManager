@@ -2,6 +2,22 @@
 
 Creating an online entry form is where it all starts. The simplest and most convenient way to achieve this (with guaranteed TrialManager compatibility!) is to create a Google Form.
 
+### Basic Requirements
+
+Generally, you'll want your form to display information such as date, address, contact/payment info and important details such as dog clearance requirements. Furthermore, you may want to collect the participant's contact info and specify any other guidelines relevant to the entry.
+
+However, there are some data points that **you must collect for TrialManager to operate**. TrialManager calls these 'properties'.
+
+![Displaying basic info](../img/google-forms/basic-info.png)
+
+*Above: An example of providing trial info and collecting participant contact info*
+
+### TrialManager Required Properties
+
+### TrialManager Optional Properties
+
+##### Preferred Day Info
+
 ### Using one form for multiple events
 
 Stub

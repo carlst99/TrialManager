@@ -6,7 +6,7 @@ TrialManager requires a CSV file containing your entries to operate. Google Form
 
 Start by going to `Responses` tab and disallowing responses - flick the 'Accepting Responses' switch to the off position. Next, click on the 'overflow menu' - the three vertical dots, and select 'Download Responses (.csv)'. Watch the animated image below for a guide on this process.
 
-![Forms download process](../img/create-google-form/download-process.gif)
+![Forms download process](../img/google-forms/download-process.gif)
 
 This will download the data as a ZIP file. This is similar to a folder - simply double click on the ZIP file to open it and access the CSV file. At this point we recommend extracting the CSV file from the ZIP package, by right-clicking the ZIP file and selecting 'Extract All'. After this process is complete you can safely delete the ZIP file.
 
@@ -29,8 +29,8 @@ Start by [downloading](#downloading-the-form-for-use-in-trialmanager) the CSV fi
 
 Start by exporting the entries from Google Forms. To do this, open the `Responses` tab of your Google Form, and click the `Create Spreadsheet` button. This will create a Sheets project in your Google Drive.
 
-![Exporting to Google Sheets](../img/create-google-form/export-to-sheets.gif)
+![Exporting to Google Sheets](../img/google-forms/export-to-sheets.gif)
 
 After you have editing your entries, you will need to download them from Sheets. To do this, go to the `File` menu. Select the `Download` sub-menu, and then click the `Comma-separated values (*.csv, current sheet) button
 
-![Downloading from Google Sheets](../img/create-google-form/download-from-sheets.gif)
+![Downloading from Google Sheets](../img/google-forms/download-from-sheets.gif)
