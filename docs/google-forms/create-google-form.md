@@ -1,4 +1,4 @@
-# Creating an entry form [WIP]
+# Creating an entry form
 
 Creating an online entry form is where it all starts. The simplest and most convenient way to achieve this (with guaranteed TrialManager compatibility!) is to create a Google Form. For guidance on creating and editing a Google Form, please read [Google's own documentation](https://support.google.com/docs/answer/6281888?hl=en&ref_topic=6063584).
 
@@ -20,7 +20,10 @@ TrialManager requires, at a minimum, the:
 - status,
 - first dog name
 
-from each trialist. We recommend that you use the `Short Answer` question type for names and the `Multiple Choice` question type for the status. **Each property requires its own question**.
+from each trialist. We recommend that you use the `Short Answer` question type for names and the `Multiple Choice` question type for the status. **You will need to mark these questions as `Required` so that participants cannot skip them.** 
+
+!!! note
+    Each property must be put in its own question so that TrialManager can correctly recognise them
 
 ### TrialManager Optional Properties
 
@@ -39,31 +42,17 @@ It is imperative that you use the `Multiple Choice` question type when giving th
 
 ### Distributing your form
 
-[TODO]
+Now that we've created a basic form, we need to send it to prospective trialists. The best way to do this is to get a link to the form and distribute via email, Facebook etc. To obtain a link, click the purple 'Send' button in the top-right corner of your form's design page. Switch to the `link` tab and copy/paste the provided link into an email or social media post.
 
-### Using one form for multiple events
+![Obtaining a form link](../img/google-forms/obtaining-link.gif)
 
-[TODO]
+!!! note
+    On a small screen, the purple send button may turn into a right-facing arrow/paper plane icon
 
-### Adding Phone/Mail Entries
+### Moving on
 
-Occasionally, we've found that some trialists simply cannot fill out an online form. Sometimes people are scared of the new format, but generally with strong encouragement we've found them to overcome that barrier and their feedback is positive. 
+See [Advanced Form Techniques](advanced-forms.md) for information on:
 
-However, the most common reason that people cannot use the online form is that they simply don't have access to an internet-connected device. In this case, they'll have to resort back to the old standard of phone/mail entry. **Any entries performed in this way will need to be added to what you have collected online** - there are two ways of achieving this.
-
-1. Go through the online entry form yourself, but enter the details they have given you over the phone/mail. This option works well and can be done easily anywhere, but can be more time consuming for large numbers of manual entries
-2. After entries have closed and you have downloaded the CSV file, you can add each entry into the file (see [editing entries](download-edit-entries.md#editing-the-entries-in-excelgoogle-sheets))
-
-### Reusing Forms
-
-Google Forms makes it easy to re-use the forms that you have already created. This means that you can simply update anything that has changed, such as date and address, while keeping the same questions as the last form. You can do this in two ways.
-
-1. **Clear all the responses on an existing form**, and [distribute](#distributing-your-form) it again. This is the recommended method. Just remember to clear the responses each time you want to use it for a new trial!
-
-    ![Clearing responses](../img/google-forms/clear-responses.gif)
-
-2. **Make a copy of the form**, and [distribute](#distributing-your-form) the new copy
-
-    ![Copying a form](../img/google-forms/cloning-form.gif)
-
-You can combine these methods to create one form per trial. Start by creating one entry form, then copy and adjust it for each trial that you would normally run in a year. Then, you can reuse each form every year by clearing the previous years responses.
+- Using one form for multiple events
+- Adding in phone/mail entries
+- Reusing existing forms
