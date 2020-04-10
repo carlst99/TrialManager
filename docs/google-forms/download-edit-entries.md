@@ -21,8 +21,8 @@ This will download the data as a ZIP file. This is similar to a folder - simply 
 Quite often, you'll want to edit the entries, or at least browse through them in a more compact manner than what you can do in Google Forms. Reasons for doing this include:
 
 - Fixing incorrect entries
-- To [add phone/mail entries](create-google-form.md#adding-phonemail-entries)
-- Separating [multiple events](create-google-form.md#using-one-form-for-multiple-events) into different csv files
+- To [add phone/mail entries](basic-forms.md#adding-phonemail-entries)
+- Separating [multiple events](basic-forms.md#using-one-form-for-multiple-events) into different csv files
 
 ##### Editing in Excel
 

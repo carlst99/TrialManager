@@ -11,7 +11,7 @@ If unsure, you can always compare the version number in the `About` menu with th
 
 ### First Steps
 
-Unsure of where to start? A good place to begin would be with the guide on [creating a Google form](google-forms/create-google-form.md). From there, move on to [TODO]
+Unsure of where to start? A good place to begin would be with the guide on [creating a Google form](google-forms/basic-forms.md). From there, move on to [TODO]
 
 ### Diagnostics Acceptance
 

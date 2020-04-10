@@ -2,6 +2,14 @@
 
 Creating an online entry form is where it all starts. The simplest and most convenient way to achieve this (with guaranteed TrialManager compatibility!) is to create a Google Form. For guidance on creating and editing a Google Form, please read [Google's own documentation](https://support.google.com/docs/answer/6281888?hl=en&ref_topic=6063584).
 
+To create and distribute a Google Form, you will need a Google Account. Even if you already have one, we would recommend that you **create a new one for your club**, as it will provide a dedicated space for you to create entry forms and conduct club communications via email.
+
+### Video Guide/Exemplar form
+
+Below is a video guide that demonstrates the process of creation a basic form. We recommend you watch it in tandem with reading the documentation and viewing the [exemplar form](https://docs.google.com/forms/d/e/1FAIpQLSd9LCBHg58LT-zWfAv2ZcV5DBB7QD7Edr_QAxR0Zhgi8g70TQ/viewform?usp=sf_link)
+
+
+
 ### Basic Requirements
 
 Generally, you'll want your form to display information such as date, address, contact/payment info and important details such as dog clearance requirements. Furthermore, you may want to collect the participant's contact info and specify any other guidelines relevant to the entry.
