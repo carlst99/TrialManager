@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:md="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:s="https://github.com/canton7/Stylet"
-             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              MaxWidth="350"
              d:DesignHeight="450"
              d:DesignWidth="350"

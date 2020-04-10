@@ -232,16 +232,20 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Resources\AppStrings.Designer.cs" />
-    <Compile Include="Resources\HelpUrls.Designer.cs" />
+    <Compile Include="Resources\HelpUrls1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HelpUrls.resx</DependentUpon>
+    </Compile>
     <Compile Include="Services\CsvImportService.cs" />
     <Compile Include="Services\DataExportService.cs" />
     <Compile Include="Services\DrawCreationService.cs" />
+    <Compile Include="Services\EventSeparatorService.cs" />
     <Compile Include="Services\ICsvImportService.cs" />
     <Compile Include="Services\IDataExportService.cs" />
     <Compile Include="Services\IDrawCreationService.cs" />
     <Compile Include="Services\ILocationService.cs" />
     <Compile Include="Services\INavigationService.cs" />
-    <Compile Include="Services\IPrintService.cs" />
     <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\PrintService.cs" />
@@ -254,10 +258,14 @@
     <Compile Include="ViewModels\Base\ViewModelBase.cs" />
     <Compile Include="ViewModels\DataImportViewModel.cs" />
     <Compile Include="ViewModels\DrawDisplayViewModel.cs" />
+    <Compile Include="ViewModels\EventSeparationViewModel.cs" />
     <Compile Include="ViewModels\MessageDialogViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EventSeparationView.xaml.cs">
+      <DependentUpon>EventSeparationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DataImportView.xaml.cs">
       <DependentUpon>DataImportView.xaml</DependentUpon>
@@ -279,7 +287,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\AppStrings.resx" />
-    <EmbeddedResource Include="Resources\HelpUrls.resx" />
+    <EmbeddedResource Include="Resources\HelpUrls.resx">
+      <LastGenOutput>HelpUrls1.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -298,6 +309,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Views\AboutDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EventSeparationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

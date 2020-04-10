@@ -26,7 +26,7 @@ namespace TrialManager.ViewModels
         private readonly IDataExportService _exportService;
         private readonly IDrawCreationService _drawService;
         private readonly ISnackbarMessageQueue _messageQueue;
-        private readonly IPrintService _printService;
+        private readonly PrintService _printService;
 
         private List<Trialist> _trialists;
         private List<TrialistDrawEntry> _draw;
@@ -81,7 +81,7 @@ namespace TrialManager.ViewModels
             INavigationService navigationService,
             IDataExportService exportService,
             IDrawCreationService drawService,
-            IPrintService printService,
+            PrintService printService,
             ISnackbarMessageQueue messageQueue)
             : base(eventAggregator, navigationService)
         {

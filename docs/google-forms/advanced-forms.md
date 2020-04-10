@@ -1,4 +1,4 @@
-# Advanced Form Techniques [WIP]
+# Advanced Form Techniques
 
 ### Using one form for multiple events
 
@@ -20,9 +20,9 @@ Currently, our recommended method for condensing multiple events into one entry 
 
 ![Setting a confirmation message](../img/google-forms/confirmation-message.png)
 
-#### Formatting the data [WIP]
+#### Formatting the data
 
-Using the above technique does result in one hitch - each event will be placed into the same CSV file. You will need to separate each event into a separate file so that TrialManager can do its job.
+Using the above technique does result in one hitch - each event will be placed into the same CSV file. You will need to separate each event into a separate file so that TrialManager can do its job. If you do not, TrialManager will place every entry into the same draw, regardless of 
 
 Start by getting your data into a place where you can edit it - see [Editing Entries](download-edit-entries.md#editing-the-entries-in-excelgoogle-sheets)
 
