@@ -1,11 +1,15 @@
-﻿using CsvHelper;
+﻿using MaterialDesignThemes.Wpf;
+using Serilog;
 using Stylet;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 using TrialManager.Resources;
 using TrialManager.Services;
+using TrialManager.Views;
 
 namespace TrialManager.ViewModels
 {
@@ -47,11 +51,21 @@ namespace TrialManager.ViewModels
             _separator = separator;
         }
 
-        public void Separate()
+        public async Task Separate()
         {
-            using (CsvReader reader = _importService.GetCsvReader(_filePath))
+            try
             {
-                throw new NotImplementedException();
+                _separator.Separate(_filePath, EventsHeader);
+            }
+            catch (IOException ioex)
+            {
+                Log.Error(ioex, "Could not read/write CSV file");
+                await DisplayIOExceptionDialog().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Could not separate events");
+                await DisplayUnexpectedExceptionDialog().ConfigureAwait(false);
             }
         }
 
@@ -62,6 +76,34 @@ namespace TrialManager.ViewModels
                 FileName = HelpUrls.EventSeparation,
                 UseShellExecute = true
             });
+        }
+
+        /// <summary>
+        /// Displays a <see cref="MessageDialog"/> which alerts the user to an issue with reading the CSV file
+        /// </summary>
+        private async Task DisplayIOExceptionDialog()
+        {
+            MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
+            {
+                Title = "File Error",
+                Message = "TrialManager could not read the CSV file that you have selected. Please ensure that no other programs are using the file and try again",
+                HelpUrl = HelpUrls.IOException
+            });
+            await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Displays a <see cref="MessageDialog"/> which alers the user to an unexpected exception
+        /// </summary>
+        private async Task DisplayUnexpectedExceptionDialog()
+        {
+            MessageDialog messageDialog = new MessageDialog(new MessageDialogViewModel
+            {
+                Title = "Woah!",
+                Message = "TrialManager encountered an unexpected exception when separating the events. Please try again",
+                HelpUrl = HelpUrls.EventSeparation
+            });
+            await DialogHost.Show(messageDialog, "MainDialogHost").ConfigureAwait(false);
         }
 
         public override void Prepare(object payload)
