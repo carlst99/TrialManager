@@ -64,7 +64,8 @@ namespace TrialManager.ViewModels
 
             try
             {
-                _separator.Separate(_filePath, EventsHeader);
+                await _separator.Separate(_filePath, CsvHeaders.IndexOf(EventsHeader)).ConfigureAwait(false);
+                _messageQueue.Enqueue("Done! Please select the new files");
                 NavigationService.Navigate<DataImportViewModel>(this);
             }
             catch (IOException ioex)

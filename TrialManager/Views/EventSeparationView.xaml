@@ -28,6 +28,9 @@
                         here.
                     </Hyperlink>
                     <Run>A new CSV file will be produced for each detected event, and placed in the same folder as the file you selected earlier. The name format is [SELECTED FILE]-[EVENT NAME].csv.</Run>
+                    <LineBreak/>
+                    <LineBreak/>
+                    <Run>Please note that this tool WILL produce incorrect results if your events column has issues; i.e. you renamed an event half-way through the entry process, resulting in the same event having two different names in the CSV file.</Run>
                 </TextBlock>
 
                 <StackPanel Margin="16,16,0,0"
