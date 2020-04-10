@@ -3,7 +3,9 @@ using System;
 
 namespace TrialManager.Services
 {
-    public class NavigationService : INavigationService
+    public delegate void NavigationEventHandler<TViewModel, TPayload>(object sender, TViewModel e, TPayload p);
+
+    public class NavigationService
     {
         /// <summary>
         /// Invoked when a navigation is requested

@@ -48,7 +48,7 @@ namespace TrialManager
             builder.Bind<ILocationService>().To<LocationService>().InSingletonScope();
             builder.Bind<PrintService>().ToSelf().InSingletonScope();
             //Bind UI services
-            builder.Bind<INavigationService>().To<NavigationService>().InSingletonScope();
+            builder.Bind<NavigationService>().ToSelf().InSingletonScope();
             builder.Bind<ISnackbarMessageQueue>().ToFactory(_ => new SnackbarMessageQueue(new TimeSpan(0, 0, 5))).InSingletonScope();
 
             base.ConfigureIoC(builder);

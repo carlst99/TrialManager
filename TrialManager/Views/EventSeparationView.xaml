@@ -16,7 +16,11 @@
     <md:Card Margin="16">
         <ScrollViewer>
             <StackPanel Margin="24,8,24,16">
-                <TextBlock Margin="16,0,0,0">
+                <TextBlock Margin="16,16,0,0"
+                           Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                           Text="Event Separator Tool"/>
+                <TextBlock Margin="16,8,0,0"
+                           TextWrapping="Wrap">
                     <Run>This helper tool will separate multiple events contained in one CSV file, into separate CSV files. You can find the documentation for this feature</Run>
                     <Hyperlink Focusable="False"
                                NavigateUri=""
@@ -26,9 +30,9 @@
                     <Run>A new CSV file will be produced for each detected event, and placed in the same folder as the file you selected earlier. The name format is [SELECTED FILE]-[EVENT NAME].csv.</Run>
                 </TextBlock>
 
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="16,4,0,0"
-                               FontWeight="Bold"
+                <StackPanel Margin="16,16,0,0"
+                            Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold"
                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                Text="Map Events Property:"/>
                     <ComboBox MinWidth="100"
@@ -37,9 +41,14 @@
                               SelectedItem="{Binding EventsHeader, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <Button Margin="8,0,0,0"
-                        Command="{s:Action Separate}"
-                        Content="Separate Events"/>
+                <Grid Margin="16,16,0,0">
+                    <Button HorizontalAlignment="Left"
+                            Command="{s:Action Separate}"
+                            Content="Separate Events"/>
+                    <Button HorizontalAlignment="Right"
+                            Command="{s:Action NavigateBack}"
+                            Content="Back"/>
+                </Grid>
             </StackPanel>
         </ScrollViewer>
     </md:Card>

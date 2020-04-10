@@ -27,7 +27,7 @@ namespace TrialManager.ViewModels
             }
         }
 
-        public AboutDialogViewModel(IEventAggregator eventAggregator, INavigationService navigationService)
+        public AboutDialogViewModel(IEventAggregator eventAggregator, NavigationService navigationService)
             : base (eventAggregator, navigationService)
         {
             _realmInstance = RealmHelpers.GetRealmInstance();

@@ -17,6 +17,7 @@ namespace TrialManager.ViewModels
     {
         private readonly CsvImportService _importService;
         private readonly EventSeparatorService _separator;
+        private readonly ISnackbarMessageQueue _messageQueue;
 
         private ReadOnlyCollection<string> _csvHeaders;
         private string _filePath;
@@ -42,20 +43,29 @@ namespace TrialManager.ViewModels
 
         public EventSeparationViewModel(
             CsvImportService importService,
-            EventAggregator eventAggregator,
+            IEventAggregator eventAggregator,
             EventSeparatorService separator,
-            INavigationService navigationService)
+            ISnackbarMessageQueue messageQueue,
+            NavigationService navigationService)
             : base(eventAggregator, navigationService)
         {
             _importService = importService;
             _separator = separator;
+            _messageQueue = messageQueue;
         }
 
         public async Task Separate()
         {
+            if (string.IsNullOrEmpty(EventsHeader))
+            {
+                _messageQueue.Enqueue("Please select the Events header in the dropdown");
+                return;
+            }
+
             try
             {
                 _separator.Separate(_filePath, EventsHeader);
+                NavigationService.Navigate<DataImportViewModel>(this);
             }
             catch (IOException ioex)
             {
@@ -76,6 +86,11 @@ namespace TrialManager.ViewModels
                 FileName = HelpUrls.EventSeparation,
                 UseShellExecute = true
             });
+        }
+
+        public void NavigateBack()
+        {
+            NavigationService.Navigate<DataImportViewModel>(this);
         }
 
         /// <summary>

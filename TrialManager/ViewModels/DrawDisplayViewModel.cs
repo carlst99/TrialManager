@@ -78,7 +78,7 @@ namespace TrialManager.ViewModels
 
         public DrawDisplayViewModel(
             IEventAggregator eventAggregator,
-            INavigationService navigationService,
+            NavigationService navigationService,
             IDataExportService exportService,
             IDrawCreationService drawService,
             PrintService printService,

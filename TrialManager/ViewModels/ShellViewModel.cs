@@ -21,6 +21,7 @@ namespace TrialManager.ViewModels
     {
         private readonly DrawDisplayViewModel _drawDisplayViewModel;
         private readonly DataImportViewModel _dataImportViewModel;
+        private readonly EventSeparationViewModel _eventSeparationViewModel;
         private readonly AboutDialogViewModel _aboutDialogViewModel;
         private ISnackbarMessageQueue _messageQueue;
 
@@ -32,15 +33,17 @@ namespace TrialManager.ViewModels
 
         public ShellViewModel(
             IEventAggregator eventAggregator,
-            INavigationService navigationService,
+            NavigationService navigationService,
             DataImportViewModel dataImportViewModel,
             DrawDisplayViewModel drawDisplayViewModel,
+            EventSeparationViewModel eventSeparationViewModel,
             AboutDialogViewModel aboutDialogViewModel,
             ISnackbarMessageQueue messageQueue)
             : base (eventAggregator, navigationService)
         {
             _drawDisplayViewModel = drawDisplayViewModel;
             _dataImportViewModel = dataImportViewModel;
+            _eventSeparationViewModel = eventSeparationViewModel;
             _aboutDialogViewModel = aboutDialogViewModel;
             MessageQueue = messageQueue;
 
@@ -109,6 +112,11 @@ namespace TrialManager.ViewModels
             else if (e == _dataImportViewModel.GetType())
             {
                 ActiveItem = _dataImportViewModel;
+            }
+            else if (e == _eventSeparationViewModel.GetType())
+            {
+                _eventSeparationViewModel.Prepare(p);
+                ActiveItem = _eventSeparationViewModel;
             }
         }
     }

@@ -166,7 +166,7 @@ namespace TrialManager.ViewModels
 
         public DataImportViewModel(
             IEventAggregator eventAggregator,
-            INavigationService navigationService,
+            NavigationService navigationService,
             ICsvImportService importService,
             ISnackbarMessageQueue messageQueue)
             : base(eventAggregator, navigationService)
@@ -263,8 +263,7 @@ namespace TrialManager.ViewModels
                         List<Trialist> trialists = await _importService.BuildTrialistList(DuplicateTrialistPairs, PreferredDayMappings).ConfigureAwait(false);
                         WindowCursor = Cursors.Arrow;
                         bool locationEnabled = OptionalMappedProperties.First(p => p.OptionalMappedProperty == OptionalMappedProperty.Address).DataFileProperty != DEFAULT_PROPERTY_INDICATOR;
-                        DrawDisplayParams par = new DrawDisplayParams(trialists, locationEnabled);
-                        NavigationService.Navigate<DrawDisplayViewModel, DrawDisplayParams>(this, par);
+
                         IsDuplicatesSectionExpanded = false;
                         IsImportFileSectionExpanded = true;
                         DuplicateTrialistPairs = null;
@@ -272,6 +271,9 @@ namespace TrialManager.ViewModels
                         FilePath = string.Empty;
                         MappedProperties = null;
                         CsvHeaders = null;
+
+                        DrawDisplayParams par = new DrawDisplayParams(trialists, locationEnabled);
+                        NavigationService.Navigate<DrawDisplayViewModel, DrawDisplayParams>(this, par);
                     }
                     catch (Exception ex)
                     {
@@ -311,6 +313,11 @@ namespace TrialManager.ViewModels
         public static void ResetDateCommand(PreferredDayDateTimePair pair)
         {
             pair.Day = DateTime.MinValue;
+        }
+
+        public void StartEventSeparation()
+        {
+            NavigationService.Navigate<EventSeparationViewModel, string>(this, FilePath);
         }
 
         #endregion
