@@ -2,6 +2,9 @@
 
 ![Image of draw creation page](img/demo_drawview.png)
 
+!!! warning
+    Please note that these docs are still a work-in-progress! Please submit an [issue](https://github.com/carlst99/TrialManager/issues) if you would like to suggest a change.
+
 ### Download and Install
 
 You can download the latest release of TrialManager from the [releases page](https://github.com/carlst99/TrialManager/releases/latest/). Download and install the `Setup.exe` file.
