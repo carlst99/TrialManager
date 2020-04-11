@@ -61,11 +61,20 @@ namespace TrialManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://www.github.com/carlst99/TrialManager.
+        ///   Looks up a localized string similar to https://carlst99.github.io/TrialManager.
         /// </summary>
         public static string Default {
             get {
                 return ResourceManager.GetString("Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://carlst99.github.io/TrialManager/google-forms/advanced-forms/#formatting-the-data.
+        /// </summary>
+        public static string EventSeparation {
+            get {
+                return ResourceManager.GetString("EventSeparation", resourceCulture);
             }
         }
         

@@ -6,6 +6,7 @@ using Squirrel;
 using Stylet;
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using TrialManager.Model;
 using TrialManager.Resources;
@@ -20,6 +21,7 @@ namespace TrialManager.ViewModels
     {
         private readonly DrawDisplayViewModel _drawDisplayViewModel;
         private readonly DataImportViewModel _dataImportViewModel;
+        private readonly EventSeparationViewModel _eventSeparationViewModel;
         private readonly AboutDialogViewModel _aboutDialogViewModel;
         private ISnackbarMessageQueue _messageQueue;
 
@@ -31,22 +33,24 @@ namespace TrialManager.ViewModels
 
         public ShellViewModel(
             IEventAggregator eventAggregator,
-            INavigationService navigationService,
+            NavigationService navigationService,
             DataImportViewModel dataImportViewModel,
             DrawDisplayViewModel drawDisplayViewModel,
+            EventSeparationViewModel eventSeparationViewModel,
             AboutDialogViewModel aboutDialogViewModel,
             ISnackbarMessageQueue messageQueue)
             : base (eventAggregator, navigationService)
         {
             _drawDisplayViewModel = drawDisplayViewModel;
             _dataImportViewModel = dataImportViewModel;
+            _eventSeparationViewModel = eventSeparationViewModel;
             _aboutDialogViewModel = aboutDialogViewModel;
             MessageQueue = messageQueue;
 
             ActiveItem = dataImportViewModel;
         }
 
-        public static async Task OnDialogHostLoaded()
+        public async Task OnDialogHostLoaded()
         {
             Realm realmInstance = RealmHelpers.GetRealmInstance();
             Preferences preferences = RealmHelpers.GetUserPreferences(realmInstance);
@@ -72,7 +76,11 @@ namespace TrialManager.ViewModels
             try
             {
                 using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/carlst99/TrialManager").ConfigureAwait(false))
-                    await mgr.UpdateApp().ConfigureAwait(false);
+                {
+                    ReleaseEntry release = await mgr.UpdateApp().ConfigureAwait(false);
+                    if (release?.Version.Version > Assembly.GetEntryAssembly().GetName().Version)
+                        MessageQueue.Enqueue("TrialManager has updated! Restart the app to finish installing");
+                }
             }
             catch (Exception ex)
             {
@@ -104,6 +112,11 @@ namespace TrialManager.ViewModels
             else if (e == _dataImportViewModel.GetType())
             {
                 ActiveItem = _dataImportViewModel;
+            }
+            else if (e == _eventSeparationViewModel.GetType())
+            {
+                _eventSeparationViewModel.Prepare(p);
+                ActiveItem = _eventSeparationViewModel;
             }
         }
     }

@@ -32,7 +32,7 @@ namespace TrialManager
             throw new ApplicationException("Remember AppCenter key!");
             Preferences _preferences = RealmHelpers.GetUserPreferences(RealmHelpers.GetRealmInstance());
             if (_preferences.IsDiagnosticsEnabled)
-                AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
+                AppCenter.Start("{App Secret}", typeof(Analytics), typeof(Crashes));
 #endif
 
             base.OnStart();
@@ -44,10 +44,11 @@ namespace TrialManager
             builder.Bind<ICsvImportService>().To<CsvImportService>().InSingletonScope();
             builder.Bind<IDataExportService>().To<DataExportService>().InSingletonScope();
             builder.Bind<IDrawCreationService>().To<DrawCreationService>().InSingletonScope();
+            builder.Bind<EventSeparatorService>().ToSelf().InSingletonScope();
             builder.Bind<ILocationService>().To<LocationService>().InSingletonScope();
-            builder.Bind<IPrintService>().To<PrintService>().InSingletonScope();
+            builder.Bind<PrintService>().ToSelf().InSingletonScope();
             //Bind UI services
-            builder.Bind<INavigationService>().To<NavigationService>().InSingletonScope();
+            builder.Bind<NavigationService>().ToSelf().InSingletonScope();
             builder.Bind<ISnackbarMessageQueue>().ToFactory(_ => new SnackbarMessageQueue(new TimeSpan(0, 0, 5))).InSingletonScope();
 
             base.ConfigureIoC(builder);

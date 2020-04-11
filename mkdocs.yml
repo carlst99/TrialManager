@@ -9,7 +9,10 @@ edit_uri: ''
 
 nav:
     - Home: index.md
-    - About: about.md
+    - Google Forms:
+        - "Creating a Google Form": google-forms/basic-forms.md
+        - "Downloading and Editing Entries": google-forms/download-edit-entries.md
+        - "Advanced Form Techniques": google-forms/advanced-forms.md
 theme:
     name: 'material'
     palette:
@@ -17,8 +20,8 @@ theme:
         accent: 'yellow'
     logo: 'img/icon.png'
     favicon: 'img/favicon.ico'
-    feature:
-        tabs: true
+    features:
+        - tabs: false
 markdown_extensions:
   - admonition
   - toc:

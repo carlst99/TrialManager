@@ -192,6 +192,7 @@
                                      Icon="1"/>
                         </StackPanel>
                     </Expander.Header>
+
                     <StackPanel Margin="24,8,24,16">
                         <Button Command="{s:Action OpenFileSelectionDialog}"
                                 Content="{Binding [Command_ImportData], Mode=OneTime}"
@@ -202,12 +203,17 @@
                             <Run FontWeight="Bold"
                                  Text="{Binding FileName, Mode=OneWay}"/>
                         </TextBlock>
-                        <Button Margin="0,8,0,0"
-                                HorizontalAlignment="Left"
-                                Command="{s:Action ValidateAndContinue}"
-                                CommandParameter="{x:Static vm:ImportSection.ImportFile}"
-                                Content="CONTINUE"
-                                IsEnabled="{Binding IsImportFileSectionValid}"/>
+                        <Grid Margin="0,8,0,0">
+                            <Button HorizontalAlignment="Left"
+                                    Command="{s:Action ValidateAndContinue}"
+                                    CommandParameter="{x:Static vm:ImportSection.ImportFile}"
+                                    Content="CONTINUE"
+                                    IsEnabled="{Binding IsImportFileSectionValid}"/>
+                            <Button HorizontalAlignment="Right"
+                                    Command="{s:Action StartEventSeparation}"
+                                    Content="Separate Events"
+                                    IsEnabled="{Binding IsImportFileSectionValid}"/>
+                        </Grid>
                     </StackPanel>
                 </Expander>
                 <Border Height="1"
