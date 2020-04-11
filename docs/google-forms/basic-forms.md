@@ -4,11 +4,9 @@ Creating an online entry form is where it all starts. The simplest and most conv
 
 To create and distribute a Google Form, you will need a Google Account. Even if you already have one, we would recommend that you **create a new one for your club**, as it will provide a dedicated space for you to create entry forms and conduct club communications via email.
 
-### Video Guide/Exemplar form
+### Exemplar form
 
-Below is a video guide that demonstrates the process of creation a basic form. We recommend you watch it in tandem with reading the documentation and viewing the [exemplar form](https://docs.google.com/forms/d/e/1FAIpQLSd9LCBHg58LT-zWfAv2ZcV5DBB7QD7Edr_QAxR0Zhgi8g70TQ/viewform?usp=sf_link)
-
-
+We have created an [exemplar form](https://docs.google.com/forms/d/e/1FAIpQLSd9LCBHg58LT-zWfAv2ZcV5DBB7QD7Edr_QAxR0Zhgi8g70TQ/viewform?usp=sf_link) which we recommend you refer to while reading the documentation.
 
 ### Basic Requirements
 

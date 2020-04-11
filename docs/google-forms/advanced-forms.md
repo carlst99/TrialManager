@@ -1,4 +1,4 @@
-# Advanced Form Techniques [WIP]
+# Advanced Form Techniques
 
 ### Using one form for multiple events
 
@@ -20,11 +20,24 @@ Currently, our recommended method for condensing multiple events into one entry 
 
 ![Setting a confirmation message](../img/google-forms/confirmation-message.png)
 
-#### Formatting the data [WIP]
+#### Formatting the data
 
-Using the above technique does result in one hitch - each event will be placed into the same CSV file. You will need to separate each event into a separate file so that TrialManager can do its job.
+Using the above technique does result in one hitch - each event will be placed into the same CSV file. You will need to separate each event into a separate file so that TrialManager can do its job. If you do not, TrialManager will place every entry into the same draw, regardless of the participant's selected event.
 
-Start by getting your data into a place where you can edit it - see [Editing Entries](download-edit-entries.md#editing-the-entries-in-excelgoogle-sheets)
+Start by [downloading your data](download-edit-entries.md#downloading-the-form-for-use-in-trialmanager). You should have a CSV file similar to *figure 1* that contains all the events in one file, with an events column. TrialManager has a built-in tool to help separate files like this - here's how to use it
+
+1. Import the file into TrialManager
+2. Select the `Separate Events` button, instead of continuing through the import process
+3. In the dropdown, select the header name of the events column in your CSV file. In our case, that name is 'Event  Select one only' (see fig. 1)
+4. Click the `Separate Events` button. This will produce a CSV file for each event, with the name format [SELECTED FILE]-[EVENT NAME].csv
+
+*Below: Figure 1 - Combined Events CSV file*
+
+![Non-separated CSV](../img/google-forms/non-separated-csv.png)
+
+*Below: Figure 2 - Using the event separator tool*
+
+![Separating Events](../img/google-forms/separating-events.gif)
 
 ### Adding Phone/Mail Entries
 

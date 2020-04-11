@@ -7,7 +7,7 @@ using TrialManager.Model.Draw;
 
 namespace TrialManager.Services
 {
-    public class PrintService : IPrintService
+    public class PrintService
     {
         public bool Print(IEnumerable<TrialistDrawEntry> drawEntries, string title)
         {

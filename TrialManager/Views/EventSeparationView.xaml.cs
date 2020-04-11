@@ -5,9 +5,9 @@ namespace TrialManager.Views
     /// <summary>
     /// Interaction logic for DataImportView.xaml
     /// </summary>
-    public partial class DataImportView : UserControl
+    public partial class EventSeparationView : UserControl
     {
-        public DataImportView()
+        public EventSeparationView()
         {
             InitializeComponent();
         }

@@ -7,7 +7,7 @@ namespace TrialManager.ViewModels.Base
     {
         string this[string index] { get; }
         IEventAggregator EventAggregator { get; }
-        INavigationService NavigationService { get; }
+        NavigationService NavigationService { get; }
         void Prepare(object payload);
     }
 }

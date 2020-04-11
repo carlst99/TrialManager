@@ -124,10 +124,11 @@ namespace TrialManager.Services
         }
 
         /// <summary>
-        /// Gets a CSV reader setup with an <see cref="EntityStatusConverter"/> and provided classmap
+        /// Gets a CSV reader setup with the provided classmap and a string trimmer
         /// </summary>
         /// <param name="filePath">The path to the file upon which a CSV reader should be open</param>
         /// <param name="classMap">The classmap to use</param>
+        /// <remarks>If the provided classmap is null, no <see cref="ClassMap"/> will be registered</remarks>
         /// <returns></returns>
         public CsvReader GetCsvReader(string filePath, ClassMap<MappedTrialist> classMap = null)
         {

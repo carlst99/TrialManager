@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="TrialManager.Views.EventSeparationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:csv="clr-namespace:TrialManager.Model.Csv"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:model="clr-namespace:TrialManager.Model"
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:vm="clr-namespace:TrialManager.ViewModels"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             Cursor="{Binding WindowCursor}"
+             mc:Ignorable="d">
+
+    <md:Card Margin="16">
+        <ScrollViewer>
+            <StackPanel Margin="24,8,24,16">
+                <TextBlock Margin="16,16,0,0"
+                           Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                           Text="Event Separator Tool"/>
+                <TextBlock Margin="16,8,0,0"
+                           TextWrapping="Wrap">
+                    <Run>This helper tool will separate multiple events contained in one CSV file, into separate CSV files. You can find the documentation for this feature</Run>
+                    <Hyperlink Focusable="False"
+                               NavigateUri=""
+                               RequestNavigate="{s:Action NavigateToDocumentation}">
+                        here.
+                    </Hyperlink>
+                    <Run>A new CSV file will be produced for each detected event, and placed in the same folder as the file you selected earlier. The name format is [SELECTED FILE]-[EVENT NAME].csv.</Run>
+                    <LineBreak/>
+                    <LineBreak/>
+                    <Run>Please note that this tool WILL produce incorrect results if your events column has issues; i.e. you renamed an event half-way through the entry process, resulting in the same event having two different names in the CSV file.</Run>
+                </TextBlock>
+
+                <StackPanel Margin="16,16,0,0"
+                            Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                               Text="Map Events Property:"/>
+                    <ComboBox MinWidth="100"
+                              Margin="16,0,0,0"
+                              ItemsSource="{Binding CsvHeaders, Mode=OneTime}"
+                              SelectedItem="{Binding EventsHeader, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <Grid Margin="16,16,0,0">
+                    <Button HorizontalAlignment="Left"
+                            Command="{s:Action Separate}"
+                            Content="Separate Events"/>
+                    <Button HorizontalAlignment="Right"
+                            Command="{s:Action NavigateBack}"
+                            Content="Back"/>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </md:Card>
+</UserControl>

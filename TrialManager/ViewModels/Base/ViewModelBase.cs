@@ -10,9 +10,9 @@ namespace TrialManager.ViewModels.Base
     {
         public string this[string index] => AppStrings.ResourceManager.GetString(index);
         public IEventAggregator EventAggregator { get; }
-        public INavigationService NavigationService { get; }
+        public NavigationService NavigationService { get; }
 
-        protected ViewModelBase(IEventAggregator eventAggregator, INavigationService navigationService)
+        protected ViewModelBase(IEventAggregator eventAggregator, NavigationService navigationService)
         {
             EventAggregator = eventAggregator;
             NavigationService = navigationService;
@@ -29,9 +29,9 @@ namespace TrialManager.ViewModels.Base
     {
         public string this[string index] => AppStrings.ResourceManager.GetString(index);
         public IEventAggregator EventAggregator { get; }
-        public INavigationService NavigationService { get; }
+        public NavigationService NavigationService { get; }
 
-        protected ViewModelConductorBase(IEventAggregator eventAggregator, INavigationService navigationService)
+        protected ViewModelConductorBase(IEventAggregator eventAggregator, NavigationService navigationService)
         {
             EventAggregator = eventAggregator;
             NavigationService = navigationService;

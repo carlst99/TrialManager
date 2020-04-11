@@ -11,7 +11,7 @@ If unsure, you can always compare the version number in the `About` menu with th
 
 ### First Steps
 
-Unsure of where to start? A good place to begin would be with the guide on [creating a Google form](google-forms/basic-forms.md). From there, move on to [TODO]
+Unsure of where to start? A good place to begin would be with the guide on [creating a Google Form](google-forms/basic-forms.md). From there, move on to [TODO]
 
 ### Diagnostics Acceptance
 
@@ -21,6 +21,6 @@ Note that you can change your decision regarding diagnostics at any time by acce
 
 **Any data reported by diagnostics is completely anonymous and contains no personal information**
 
-![Changing diagnostics acceptance in about menu](img/disable-diagnostics.gif)
+*Below: Changing acceptance in the about menu*
 
-*Above: Changing acceptance in the about menu*
+![Changing diagnostics acceptance in about menu](img/disable-diagnostics.gif)
