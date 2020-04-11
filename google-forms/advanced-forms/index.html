@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#advanced-form-techniques-wip" class="md-skip">
+        <a href="#advanced-form-techniques" class="md-skip">
           Skip to content
         </a>
       
@@ -225,7 +225,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../create-google-form/" title="Creating a Google Form" class="md-nav__link">
+    <a href="../basic-forms/" title="Creating a Google Form" class="md-nav__link">
       Creating a Google Form
     </a>
   </li>
@@ -299,8 +299,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#formatting-the-data-wip" class="md-nav__link">
-    Formatting the data [WIP]
+  <a href="#formatting-the-data" class="md-nav__link">
+    Formatting the data
   </a>
   
 </li>
@@ -377,8 +377,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#formatting-the-data-wip" class="md-nav__link">
-    Formatting the data [WIP]
+  <a href="#formatting-the-data" class="md-nav__link">
+    Formatting the data
   </a>
   
 </li>
@@ -418,7 +418,7 @@
                   
                 
                 
-                <h1 id="advanced-form-techniques-wip">Advanced Form Techniques [WIP]<a class="headerlink" href="#advanced-form-techniques-wip" title="Permanent link">&para;</a></h1>
+                <h1 id="advanced-form-techniques">Advanced Form Techniques<a class="headerlink" href="#advanced-form-techniques" title="Permanent link">&para;</a></h1>
 <h3 id="using-one-form-for-multiple-events">Using one form for multiple events<a class="headerlink" href="#using-one-form-for-multiple-events" title="Permanent link">&para;</a></h3>
 <p>Pretty much every trial will have multiple events. Take the 2020 King Country Centre Championships; said trial ran Shorthead, longhead, Zigzag hunt and Straight hunt events. Although creating a different form for each event is a perfectly valid strategy, we don't recommend it; this confuses participants and creates more work for you.</p>
 <h4 id="setting-up-the-form">Setting up the form<a class="headerlink" href="#setting-up-the-form" title="Permanent link">&para;</a></h4>
@@ -432,9 +432,19 @@
 <p><img alt="Event Separation" src="../../img/google-forms/event-separation.png" /></p>
 <p><em>Below: Setting the confirmation message</em></p>
 <p><img alt="Setting a confirmation message" src="../../img/google-forms/confirmation-message.png" /></p>
-<h4 id="formatting-the-data-wip">Formatting the data [WIP]<a class="headerlink" href="#formatting-the-data-wip" title="Permanent link">&para;</a></h4>
-<p>Using the above technique does result in one hitch - each event will be placed into the same CSV file. You will need to separate each event into a separate file so that TrialManager can do its job.</p>
-<p>Start by getting your data into a place where you can edit it - see <a href="../download-edit-entries/#editing-the-entries-in-excelgoogle-sheets">Editing Entries</a></p>
+<h4 id="formatting-the-data">Formatting the data<a class="headerlink" href="#formatting-the-data" title="Permanent link">&para;</a></h4>
+<p>Using the above technique does result in one hitch - each event will be placed into the same CSV file. You will need to separate each event into a separate file so that TrialManager can do its job. If you do not, TrialManager will place every entry into the same draw, regardless of the participant's selected event.</p>
+<p>Start by <a href="../download-edit-entries/#downloading-the-form-for-use-in-trialmanager">downloading your data</a>. You should have a CSV file similar to <em>figure 1</em> that contains all the events in one file, with an events column. TrialManager has a built-in tool to help separate files like this - here's how to use it</p>
+<ol>
+<li>Import the file into TrialManager</li>
+<li>Select the <code>Separate Events</code> button, instead of continuing through the import process</li>
+<li>In the dropdown, select the header name of the events column in your CSV file. In our case, that name is 'Event  Select one only' (see fig. 1)</li>
+<li>Click the <code>Separate Events</code> button. This will produce a CSV file for each event, with the name format [SELECTED FILE]-[EVENT NAME].csv</li>
+</ol>
+<p><em>Below: Figure 1 - Combined Events CSV file</em></p>
+<p><img alt="Non-separated CSV" src="../../img/google-forms/non-separated-csv.png" /></p>
+<p><em>Below: Figure 2 - Using the event separator tool</em></p>
+<p><img alt="Separating Events" src="../../img/google-forms/separating-events.gif" /></p>
 <h3 id="adding-phonemail-entries">Adding Phone/Mail Entries<a class="headerlink" href="#adding-phonemail-entries" title="Permanent link">&para;</a></h3>
 <p>Occasionally, we've found that some trialists simply cannot fill out an online form. Sometimes people are scared of the new format, but generally with strong encouragement we've found them to overcome that barrier and their feedback is positive. </p>
 <p>However, the most common reason that people cannot use the online form is that they simply don't have access to an internet-connected device. In this case, they'll have to resort back to the old standard of phone/mail entry. <strong>Any entries performed in this way will need to be added to what you have collected online</strong> - there are two ways of achieving this.</p>
